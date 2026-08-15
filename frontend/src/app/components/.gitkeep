@@ -1,0 +1,7 @@
+// PREORBIT — Components Directory
+//
+// Place feature-scoped, non-page components here.
+// Examples: NavbarComponent, FooterComponent, SidebarComponent, ProgressCardComponent
+//
+// Every component must have its own isolated CSS file.
+// No cross-component CSS leaking is allowed.

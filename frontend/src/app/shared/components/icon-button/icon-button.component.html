@@ -1,0 +1,13 @@
+<!-- PREORBIT — Icon Button Component -->
+
+<button
+  class="icon-btn"
+  [class]="'icon-btn icon-btn--' + variant + ' icon-btn--' + size"
+  [disabled]="disabled"
+  [attr.aria-label]="label"
+  [title]="label"
+  (click)="onClick($event)"
+  type="button"
+>
+  <i [class]="'ph ' + icon" aria-hidden="true"></i>
+</button>

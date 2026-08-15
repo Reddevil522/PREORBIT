@@ -1,0 +1,108 @@
+<!-- PREORBIT — Login Page -->
+<div class="login-page">
+
+  <!-- Ambient glow orbs (CSS-only, decorative) -->
+  <div class="login-page__orb login-page__orb--1" aria-hidden="true"></div>
+  <div class="login-page__orb login-page__orb--2" aria-hidden="true"></div>
+
+  <div class="login-page__container">
+
+    <!-- Brand -->
+    <div class="login-page__brand">
+      <span class="login-page__brand-name">PREORBIT</span>
+      <p class="login-page__brand-tagline">Your placement journey starts here</p>
+    </div>
+
+    <!-- Card -->
+    <div class="login-page__card">
+
+      <div class="login-page__card-header">
+        <h1 class="login-page__title">Welcome back</h1>
+        <p class="login-page__subtitle">Sign in to continue preparing</p>
+      </div>
+
+      <!-- Error message -->
+      @if (errorMessage()) {
+        <div class="login-page__error" role="alert">
+          <i class="ph ph-warning-circle"></i>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <!-- Form -->
+      <form class="login-page__form" (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
+
+        <!-- Email -->
+        <div class="login-page__field">
+          <label class="login-page__label" for="login-email">Email address</label>
+          <div class="login-page__input-wrapper">
+            <i class="ph ph-envelope login-page__input-icon"></i>
+            <input
+              id="login-email"
+              class="login-page__input"
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              [(ngModel)]="email"
+              required
+              [disabled]="isLoading()"
+            />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="login-page__field">
+          <label class="login-page__label" for="login-password">Password</label>
+          <div class="login-page__input-wrapper">
+            <i class="ph ph-lock login-page__input-icon"></i>
+            <input
+              id="login-password"
+              class="login-page__input login-page__input--has-action"
+              [type]="showPassword() ? 'text' : 'password'"
+              name="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              [(ngModel)]="password"
+              required
+              [disabled]="isLoading()"
+            />
+            <button
+              type="button"
+              class="login-page__input-toggle"
+              (click)="togglePassword()"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            >
+              <i class="ph" [class.ph-eye]="!showPassword()" [class.ph-eye-slash]="showPassword()"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button
+          id="login-submit-btn"
+          class="login-page__submit-btn"
+          type="submit"
+          [disabled]="isLoading()"
+        >
+          @if (isLoading()) {
+            <span class="login-page__spinner" aria-hidden="true"></span>
+            <span>Signing in…</span>
+          } @else {
+            <i class="ph ph-sign-in"></i>
+            <span>Sign In</span>
+          }
+        </button>
+
+      </form>
+
+      <!-- Footer -->
+      <div class="login-page__card-footer">
+        <span class="login-page__footer-text">Don't have an account?</span>
+        <a routerLink="/register" class="login-page__register-link">Create account</a>
+      </div>
+
+    </div><!-- /card -->
+
+  </div><!-- /container -->
+</div>

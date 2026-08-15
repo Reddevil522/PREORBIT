@@ -1,0 +1,11 @@
+/*
+ * PREORBIT — Root Component CSS
+ *
+ * Only styles that apply to the root app-root shell belong here.
+ * All feature/page/component styles live in their own scoped CSS files.
+ */
+
+:host {
+  display: block;
+  min-height: 100vh;
+}

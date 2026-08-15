@@ -1,0 +1,84 @@
+import { Component, computed, OnInit, signal, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink, ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { AptitudeChapter } from '../../../config/aptitude.config';
+import { TestMetadata } from '../../../core/models/test.model';
+import { AptitudePracticeService } from '../../../core/services/aptitude-practice.service';
+import { TestCardComponent } from '../../../shared/components/test-card/test-card.component';
+import { forkJoin, map } from 'rxjs';
+
+@Component({
+  selector: 'app-aptitude-practice',
+  standalone: true,
+  imports: [CommonModule, RouterLink, FormsModule, TestCardComponent],
+  templateUrl: './aptitude-practice.component.html',
+  styleUrl: './aptitude-practice.component.css'
+})
+export class AptitudePracticeComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private practiceService = inject(AptitudePracticeService);
+
+  subject = signal<string>('');
+  title = signal<string>('');
+  chapters = signal<AptitudeChapter[]>([]);
+  allTests = signal<TestMetadata[]>([]);
+  searchQuery = signal<string>('');
+
+  ngOnInit() {
+    this.route.paramMap.subscribe(params => {
+      const subjectParam = params.get('subject') as 'quantitative' | 'logical-reasoning';
+      if (!subjectParam) return;
+      
+      this.subject.set(subjectParam);
+      
+      if (subjectParam === 'quantitative') {
+        this.title.set('Quantitative Aptitude Practice');
+      } else if (subjectParam === 'logical-reasoning') {
+        this.title.set('Logical Reasoning Practice');
+      }
+
+      this.practiceService.getPracticeChapters(subjectParam).subscribe(chapters => {
+        this.chapters.set(chapters);
+        
+        // Fetch mock tests for all chapters
+        const testsObservables = chapters.map(ch => 
+          this.practiceService.getChapterTests(subjectParam, ch.slug)
+        );
+
+        if (testsObservables.length > 0) {
+          forkJoin(testsObservables).pipe(
+            map(results => results.flat())
+          ).subscribe(tests => {
+            this.allTests.set(tests);
+          });
+        } else {
+          this.allTests.set([]);
+        }
+      });
+    });
+  }
+
+  filteredChapters = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    const all = this.chapters();
+    if (!query) return all;
+    
+    return all.filter(c => 
+      c.title.toLowerCase().includes(query) || 
+      c.description.toLowerCase().includes(query)
+    );
+  });
+
+  testsByChapter = computed(() => {
+    const tests = this.allTests();
+    const map = new Map<string, TestMetadata[]>();
+    tests.forEach(test => {
+      if (!map.has(test.chapterSlug)) {
+        map.set(test.chapterSlug, []);
+      }
+      map.get(test.chapterSlug)?.push(test);
+    });
+    return map;
+  });
+}

@@ -1,0 +1,57 @@
+/* ============================================================
+   PREORBIT — Glass Surface Component CSS  (Prompt 9 — polished)
+   ============================================================
+   Scoped to: glass-surface.component
+   BEM prefix: .glass-surface
+   Zero global leakage.
+   ============================================================ */
+
+/* ── Host ────────────────────────────────────────────────── */
+:host {
+  display: block;
+}
+
+/* ── Base surface ────────────────────────────────────────── */
+.glass-surface {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-xs);
+  transition:
+    background-color var(--transition-theme),
+    border-color     var(--transition-theme),
+    box-shadow       var(--transition-theme);
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Blur/glass modifier ─────────────────────────────────── */
+.glass-surface--blur {
+  background: var(--glass-bg);
+  border-color: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+/* ── Elevated modifier ───────────────────────────────────── */
+.glass-surface--elevated {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-default);
+}
+
+.glass-surface--blur.glass-surface--elevated {
+  box-shadow: var(--glass-shadow), var(--shadow-md);
+}
+
+/* ── Padding presets ─────────────────────────────────────── */
+.glass-surface--p-none { padding: 0; }
+.glass-surface--p-sm   { padding: var(--space-3); }
+.glass-surface--p-md   { padding: var(--space-5); }
+.glass-surface--p-lg   { padding: var(--space-6); }
+.glass-surface--p-xl   { padding: var(--space-8); }
+
+/* ── Radius presets ──────────────────────────────────────── */
+.glass-surface--r-md  { border-radius: var(--radius-md);  }
+.glass-surface--r-lg  { border-radius: var(--radius-lg);  }
+.glass-surface--r-xl  { border-radius: var(--radius-xl);  }
+.glass-surface--r-2xl { border-radius: var(--radius-2xl); }

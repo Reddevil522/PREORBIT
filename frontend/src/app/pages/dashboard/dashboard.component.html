@@ -1,0 +1,60 @@
+<!-- PREORBIT — Dashboard Page (Prompt 9 — polished) -->
+
+<div class="dash">
+
+  <!-- Page header -->
+  <header class="dash__header">
+    <div class="dash__header-text">
+      <h1 class="dash__title">Dashboard</h1>
+      <p class="dash__subtitle">Welcome back — your study platform is ready.</p>
+    </div>
+  </header>
+
+  <!-- Navigation cards -->
+  <section class="dash__section" aria-label="Study sections">
+    <h2 class="dash__section-label">Study Sections</h2>
+    <div class="dash__grid">
+
+      <a routerLink="/java-dsa" class="dash__card dash__card--java" aria-label="Go to Java DSA">
+        <div class="dash__card-icon">
+          <i class="ph ph-code" aria-hidden="true"></i>
+        </div>
+        <div class="dash__card-body">
+          <span class="dash__card-title">Java DSA</span>
+          <span class="dash__card-desc">Data structures &amp; algorithms</span>
+        </div>
+        <i class="ph ph-arrow-right dash__card-arrow" aria-hidden="true"></i>
+      </a>
+
+      <a routerLink="/aptitude" class="dash__card dash__card--apt" aria-label="Go to Aptitude">
+        <div class="dash__card-icon">
+          <i class="ph ph-brain" aria-hidden="true"></i>
+        </div>
+        <div class="dash__card-body">
+          <span class="dash__card-title">Aptitude</span>
+          <span class="dash__card-desc">Quantitative &amp; reasoning</span>
+        </div>
+        <i class="ph ph-arrow-right dash__card-arrow" aria-hidden="true"></i>
+      </a>
+
+      <a routerLink="/core-cs" class="dash__card dash__card--cs" aria-label="Go to Core CS">
+        <div class="dash__card-icon">
+          <i class="ph ph-cpu" aria-hidden="true"></i>
+        </div>
+        <div class="dash__card-body">
+          <span class="dash__card-title">Core CS</span>
+          <span class="dash__card-desc">OS, Networks, DBMS &amp; more</span>
+        </div>
+        <i class="ph ph-arrow-right dash__card-arrow" aria-hidden="true"></i>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- Status banner -->
+  <div class="dash__status">
+    <i class="ph ph-rocket-launch" aria-hidden="true"></i>
+    <span>Dashboard content and progress tracking coming soon.</span>
+  </div>
+
+</div>

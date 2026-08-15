@@ -1,0 +1,141 @@
+/* ============================================================
+   PREORBIT — App Shell Component CSS  (Prompt 9 — polished)
+   ============================================================
+   Scoped to: app-shell.component
+   Layout grid: Sidebar | (Header / Content)
+   ============================================================ */
+
+/* ── Host: fills viewport ────────────────────────────────── */
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+/* ── Shell grid ──────────────────────────────────────────── */
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: 1fr;
+  height: 100dvh;
+  background-color: var(--bg-base);
+  overflow: hidden;
+  position: relative;
+  transition:
+    grid-template-columns var(--transition-normal),
+    background-color      var(--transition-theme);
+}
+
+/* ── Compact grid ────────────────────────────────────────── */
+.shell--compact {
+  grid-template-columns: var(--sidebar-width-compact) 1fr;
+}
+
+/* ── Sidebar slot ────────────────────────────────────────── */
+.shell__sidebar {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.shell__body {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-base);
+  transition: background-color var(--transition-theme);
+}
+
+/* ── Header slot ─────────────────────────────────────────── */
+.shell__header {
+  flex-shrink: 0;
+  height: var(--header-height);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+/* ── Main scrollable content area ────────────────────────── */
+.shell__main {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--page-padding-y) var(--page-padding-x);
+  background-color: var(--bg-base);
+  transition: background-color var(--transition-theme);
+  /* Scroll snap for smoother experience */
+  scroll-behavior: smooth;
+}
+
+/* Route content fade-in animation */
+.shell__main > * {
+  animation: preorbit-fade-in 220ms ease both;
+}
+
+/* ── Mobile overlay backdrop ─────────────────────────────── */
+.shell__overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: hsla(223, 30%, 3%, 0.65);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: calc(var(--z-sticky) - 1);
+  animation: preorbit-fade-in var(--transition-normal) ease;
+}
+
+/* ── Tablet: tighter padding ─────────────────────────────── */
+@media (max-width: 1024px) {
+  .shell__main {
+    padding: var(--space-6) var(--space-6);
+  }
+}
+
+/* ── Mobile: single column, fixed sidebar ───────────────── */
+@media (max-width: 768px) {
+  /* Always single column on mobile regardless of compact state */
+  .shell,
+  .shell--compact {
+    grid-template-columns: 1fr;
+  }
+
+  /* Sidebar as fixed off-canvas drawer */
+  .shell__sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100dvh;
+    z-index: var(--z-sticky);
+    transform: translateX(-100%);
+    transition: transform var(--transition-normal);
+    /* Ensure it renders above the overlay */
+    will-change: transform;
+  }
+
+  /* Slide in when toggled */
+  .shell--sidebar-open .shell__sidebar {
+    transform: translateX(0);
+  }
+
+  /* Show overlay when open */
+  .shell--sidebar-open .shell__overlay {
+    display: block;
+  }
+
+  .shell__body {
+    grid-column: 1;
+  }
+
+  .shell__main {
+    padding: var(--space-5) var(--space-4);
+  }
+}
+
+/* ── Light mode: subtle background texture ───────────────── */
+[data-theme="light"] .shell,
+[data-theme="light"] .shell__body,
+[data-theme="light"] .shell__main {
+  background-color: var(--bg-base);
+}

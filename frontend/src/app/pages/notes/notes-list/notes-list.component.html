@@ -1,0 +1,38 @@
+<div class="notes-list-container">
+  
+  <header class="notes-list__header">
+    <h1 class="notes-list__title">{{ sectionTitle() | titlecase }} Theory</h1>
+    <p class="notes-list__subtitle">Select a chapter to begin studying.</p>
+  </header>
+
+  <div *ngIf="error()" class="notes-list__error">
+    <i class="ph ph-warning-circle"></i>
+    <p>{{ error() }}</p>
+  </div>
+
+  <div *ngIf="!error()" class="notes-list__grid">
+    <a *ngFor="let chapter of chapters(); let i = index" 
+       [routerLink]="chapter.path" 
+       class="chapter-card">
+      
+      <div class="chapter-card__icon">
+        <i class="ph ph-book-open-text"></i>
+      </div>
+
+      <div class="chapter-card__content">
+        <h2 class="chapter-card__title">
+          <span class="chapter-card__index">{{ i + 1 }}.</span>
+          {{ chapter.title | titlecase }}
+        </h2>
+      </div>
+
+      <div class="chapter-card__status" *ngIf="chapter.isCompleted">
+        <i class="ph-fill ph-check-circle"></i>
+      </div>
+      
+      <div class="chapter-card__action">
+        <i class="ph ph-caret-right"></i>
+      </div>
+    </a>
+  </div>
+</div>

@@ -1,0 +1,6 @@
+// PREORBIT — Shared Directory
+//
+// Place reusable components, directives, pipes, and UI utilities here.
+// Examples: ButtonComponent, CardComponent, LoadingSpinnerComponent
+//
+// All shared components must have isolated CSS files.

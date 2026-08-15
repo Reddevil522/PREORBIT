@@ -1,0 +1,6 @@
+// PREORBIT — Core Directory
+//
+// Place singleton services, interceptors, guards, and app-wide providers here.
+// Examples: ApiService, AuthGuard, JwtInterceptor, ThemeService
+//
+// Convention: core/services/, core/guards/, core/interceptors/

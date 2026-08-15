@@ -1,0 +1,9 @@
+// PREORBIT — Pages Directory
+//
+// Place full-page route components here, each in its own folder.
+// Examples: pages/home/, pages/dashboard/, pages/test/, pages/results/
+//
+// Each page folder must contain:
+//   - <page>.component.ts
+//   - <page>.component.html
+//   - <page>.component.css   ← isolated, no global leakage

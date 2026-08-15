@@ -1,0 +1,212 @@
+:host {
+  display: block;
+}
+
+.core-cs-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.header-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--primary, #10b981);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.header-text h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary, #111827);
+  letter-spacing: -0.025em;
+}
+
+.header-text p {
+  font-size: 1.125rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface, #ffffff);
+  padding: 2rem;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border, #e5e7eb);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary, #10b981);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.card-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.card-action {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-hover, #f3f4f6);
+  color: var(--text-secondary, #6b7280);
+  transition: all 0.2s ease;
+}
+
+.feature-card:hover .card-action {
+  background: var(--primary, #10b981);
+  color: white;
+  transform: translateX(4px);
+}
+
+.card-content h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary, #111827);
+}
+
+.card-content p {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.module-options {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+.option-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.theory-pill {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.practice-pill {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+/* Animations */
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dark Mode Support */
+:host-context(html.dark) .header-icon {
+  background: var(--surface, #1f2937);
+  border-color: var(--border, #374151);
+}
+
+:host-context(html.dark) .header-text h1,
+:host-context(html.dark) .card-content h2 {
+  color: var(--text-primary, #f9fafb);
+}
+
+:host-context(html.dark) .header-text p,
+:host-context(html.dark) .card-content p {
+  color: var(--text-secondary, #9ca3af);
+}
+
+:host-context(html.dark) .feature-card {
+  background: var(--surface, #1f2937);
+  border-color: var(--border, #374151);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+:host-context(html.dark) .card-action {
+  background: var(--surface-hover, #374151);
+  color: var(--text-secondary, #9ca3af);
+}
+
+:host-context(html.dark) .theory-pill {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+}
+
+:host-context(html.dark) .practice-pill {
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .core-cs-container {
+    padding: 1.5rem;
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}

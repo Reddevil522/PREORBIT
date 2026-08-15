@@ -1,0 +1,90 @@
+<div class="notes-viewer-container">
+  <!-- Top bar / Back link -->
+  <div class="notes-viewer__header-actions">
+    <a [routerLink]="backLink()" class="notes-viewer__back-link">
+      <i class="ph ph-arrow-left"></i> Back to Chapters
+    </a>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="notes-viewer__state notes-viewer__state--loading">
+    <div class="spinner"></div>
+    <p>Loading notes...</p>
+  </div>
+
+  <!-- Error / Not Found State -->
+  <div *ngIf="error()" class="notes-viewer__state notes-viewer__state--error">
+    <i class="ph ph-warning-circle"></i>
+    <p>{{ error() }}</p>
+  </div>
+
+  <!-- Content Loaded -->
+  <div *ngIf="!isLoading() && !error() && notes() as n">
+    
+    <!-- Title & Description -->
+    <header class="notes-viewer__header">
+      <h1 class="notes-viewer__title">{{ n.title }}</h1>
+      <p class="notes-viewer__description">{{ n.description }}</p>
+    </header>
+
+    <!-- Empty State -->
+    <div *ngIf="n.sections.length === 0" class="notes-viewer__state notes-viewer__state--empty">
+      <i class="ph ph-file-dashed"></i>
+      <p>Notes are being prepared for this chapter.</p>
+    </div>
+
+    <!-- Sections -->
+    <article class="notes-viewer__article">
+      <section *ngFor="let section of n.sections" class="notes-viewer__section">
+        <h2 class="notes-viewer__heading">{{ section.heading }}</h2>
+        
+        <div class="notes-viewer__content">
+          <p>{{ section.content.trim() }}</p>
+        </div>
+
+        <div *ngIf="section.code" class="notes-viewer__code-block">
+          <div class="notes-viewer__code-header">
+            <span class="notes-viewer__code-lang">{{ section.language || 'code' }}</span>
+          </div>
+          <pre><code>{{ section.code }}</code></pre>
+        </div>
+      </section>
+    </article>
+
+    <!-- Completion Action -->
+    <div class="notes-viewer__completion">
+      <button 
+        class="btn-complete" 
+        [class.btn-complete--done]="isCompleted()"
+        (click)="markCompleted()"
+        [disabled]="isCompleted()"
+      >
+        <i class="ph" [class.ph-check-circle]="isCompleted()" [class.ph-circle]="!isCompleted()"></i>
+        {{ isCompleted() ? 'Theory Completed ✓' : 'Mark Theory as Completed' }}
+      </button>
+    </div>
+
+    <!-- Navigation Footer -->
+    <footer class="notes-viewer__footer">
+      <div class="notes-viewer__nav-item">
+        <a *ngIf="prevChapter()" [routerLink]="prevChapter()?.path" class="nav-btn">
+          <i class="ph ph-arrow-left"></i>
+          <span>
+            <small>Previous Chapter</small>
+            <strong>{{ prevChapter()?.title | titlecase }}</strong>
+          </span>
+        </a>
+      </div>
+
+      <div class="notes-viewer__nav-item notes-viewer__nav-item--next">
+        <a *ngIf="nextChapter()" [routerLink]="nextChapter()?.path" class="nav-btn nav-btn--next">
+          <span>
+            <small>Next Chapter</small>
+            <strong>{{ nextChapter()?.title | titlecase }}</strong>
+          </span>
+          <i class="ph ph-arrow-right"></i>
+        </a>
+      </div>
+    </footer>
+  </div>
+</div>

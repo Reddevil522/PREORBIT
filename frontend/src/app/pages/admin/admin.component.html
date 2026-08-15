@@ -1,0 +1,194 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <div class="header-text">
+      <h1>Admin Panel</h1>
+      <p>Manage PREORBIT questions and tests.</p>
+    </div>
+    <a routerLink="/admin/tests" class="btn-secondary manage-tests-btn">Manage Tests</a>
+  </div>
+
+  <div class="upload-card glass-panel" *ngIf="!previewSummary && !importSuccess">
+    <h2>Upload Questions (JSON)</h2>
+    <p class="subtitle">Select a .json file containing the questions metadata and content to preview it.</p>
+
+    <div class="file-upload-wrapper">
+      <input type="file" id="jsonUpload" accept=".json,application/json" (change)="onFileSelected($event)" class="file-input" />
+      <label for="jsonUpload" class="file-label">
+        <i class="ph ph-file-arrow-up icon"></i>
+        <span class="text">{{ selectedFile ? selectedFile.name : 'Select JSON File' }}</span>
+      </label>
+    </div>
+
+    <div class="file-info" *ngIf="selectedFile">
+      <span class="badge size-badge">Size: {{ getFileSize() }}</span>
+      <span class="badge type-badge" style="margin-left: 0.5rem">Type: JSON</span>
+    </div>
+
+    <!-- General Error -->
+    <div class="alert error-alert" *ngIf="generalError">
+      <strong>Error:</strong> {{ generalError }}
+    </div>
+
+    <!-- Validation Errors List -->
+    <div class="alert error-alert" *ngIf="validationErrors.length > 0">
+      <h3>Validation Failed</h3>
+      <ul class="error-list">
+        <li *ngFor="let err of validationErrors">
+          <i class="ph ph-x-circle error-icon"></i>
+          <strong>Question {{ err.questionNumber }}</strong>: {{ err.message }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn-primary upload-btn" [disabled]="!selectedFile || isUploading" (click)="previewFile()">
+        {{ isUploading ? 'Validating...' : 'Upload & Validate' }}
+      </button>
+      <button class="btn-secondary" *ngIf="selectedFile && !isUploading" (click)="cancel()">Remove</button>
+    </div>
+  </div>
+
+
+
+  <!-- Preview Section -->
+  <div class="preview-section" *ngIf="previewSummary">
+    <div class="glass-panel success-panel">
+      <h3>✓ Validation Successful</h3>
+      <p class="subtitle">The JSON structure is valid. Here is the test preview:</p>
+
+      <div class="preview-grid">
+        <div class="preview-item">
+          <span class="label">Module</span>
+          <span class="value">{{ previewSummary.module }}</span>
+        </div>
+        <div class="preview-item">
+          <span class="label">Subject</span>
+          <span class="value">{{ previewSummary.subject }}</span>
+        </div>
+        <div class="preview-item">
+          <span class="label">Chapter</span>
+          <span class="value">{{ previewSummary.chapterSlug }}</span>
+        </div>
+        <div class="preview-item">
+          <span class="label">Test ID</span>
+          <span class="value">{{ previewSummary.testId }}</span>
+        </div>
+        <div class="preview-item">
+          <span class="label">Total Questions</span>
+          <span class="value">{{ previewSummary.totalQuestions }}</span>
+        </div>
+        <div class="preview-item" *ngIf="previewSummary.module !== 'aptitude'">
+          <span class="label">Multiple Choice</span>
+          <span class="value">{{ previewSummary.multipleChoiceCount }}</span>
+        </div>
+        <div class="preview-item" *ngIf="previewSummary.module !== 'aptitude'">
+          <span class="label">MCQ</span>
+          <span class="value">{{ previewSummary.mcqCount }}</span>
+        </div>
+        <div class="preview-item">
+          <span class="label">Total Marks</span>
+          <span class="value">{{ previewSummary.totalMarks }}</span>
+        </div>
+      </div>
+      
+      <div class="preview-actions">
+        <button class="btn-secondary" (click)="cancel()">Cancel</button>
+        <button class="btn-primary" (click)="showImportConfirmation()">Import to Database</button>
+      </div>
+    </div>
+
+    <!-- Question Cards -->
+    <h3 class="questions-header">Review Questions</h3>
+    <div class="questions-list">
+      <div class="question-card glass-panel" *ngFor="let q of previewQuestions; let i = index">
+        <div class="q-header">
+          <span class="q-number">Question {{ i + 1 }}</span>
+          <span class="badge type-badge">{{ q.questionType || 'aptitude' }}</span>
+          <span class="badge marks-badge">{{ q.marks }} Mark</span>
+        </div>
+        
+        <p class="q-text">{{ q.question }}</p>
+        
+        <div class="options-list">
+          <div class="option-item" *ngFor="let opt of q.options"
+               [class.is-correct]="q.correctAnswer === opt.key || (q.correctAnswers && q.correctAnswers.includes(opt.key))">
+            <span class="opt-key">{{ opt.key }}</span>
+            <span class="opt-text">{{ opt.text }}</span>
+            <span class="correct-indicator" *ngIf="q.correctAnswer === opt.key || (q.correctAnswers && q.correctAnswers.includes(opt.key))">✓ Correct Answer</span>
+          </div>
+        </div>
+
+        <div class="explanation-box" *ngIf="q.explanation">
+          <strong>Explanation:</strong> {{ q.explanation }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Overlay -->
+  <div class="overlay-container" *ngIf="showConfirmation">
+    <div class="confirmation-dialog glass-panel">
+      <h3>Confirm Import</h3>
+      <p class="subtitle">You are about to import the following test into the database:</p>
+      
+      <div class="confirm-details">
+        <div class="detail-row"><span>Module:</span> <strong>{{ previewSummary?.module }}</strong></div>
+        <div class="detail-row"><span>Subject:</span> <strong>{{ previewSummary?.subject }}</strong></div>
+        <div class="detail-row"><span>Chapter:</span> <strong>{{ previewSummary?.chapterSlug }}</strong></div>
+        <div class="detail-row"><span>Test ID:</span> <strong>{{ previewSummary?.testId }}</strong></div>
+        <div class="detail-row"><span>Questions:</span> <strong>{{ previewSummary?.totalQuestions }}</strong></div>
+        <div class="detail-row"><span>Total Marks:</span> <strong>{{ previewSummary?.totalMarks }}</strong></div>
+      </div>
+
+      <div class="action-buttons right-align">
+        <button class="btn-secondary" [disabled]="isImporting" (click)="cancelImport()">Cancel</button>
+        <button class="btn-primary" [disabled]="isImporting" (click)="confirmImport()">
+          {{ isImporting ? 'Importing...' : 'Confirm Import' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success UI -->
+  <div class="success-card glass-panel" *ngIf="importSuccess && importResult">
+    <div class="success-header">
+      <i class="ph ph-check-circle success-icon"></i>
+      <h2>Import Successful</h2>
+      <p class="subtitle">The test has been saved and is now available.</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <span class="stat-value">{{ importResult.totalQuestions }}</span>
+        <span class="stat-label">Questions Imported</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-value">{{ importResult.totalMarks }}</span>
+        <span class="stat-label">Total Marks</span>
+      </div>
+    </div>
+
+    <div class="preview-grid mt-4">
+      <div class="preview-item">
+        <span class="label">Module</span>
+        <span class="value">{{ importResult.module }}</span>
+      </div>
+      <div class="preview-item">
+        <span class="label">Subject</span>
+        <span class="value">{{ importResult.subject }}</span>
+      </div>
+      <div class="preview-item">
+        <span class="label">Chapter</span>
+        <span class="value">{{ importResult.chapterSlug }}</span>
+      </div>
+      <div class="preview-item">
+        <span class="label">Test ID</span>
+        <span class="value">{{ importResult.testId }}</span>
+      </div>
+    </div>
+
+    <div class="action-buttons center-align mt-6">
+      <button class="btn-primary" (click)="cancel()">Upload Another</button>
+    </div>
+  </div>
+</div>

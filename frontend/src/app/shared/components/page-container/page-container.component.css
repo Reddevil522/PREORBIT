@@ -1,0 +1,72 @@
+/* ============================================================
+   PREORBIT — Page Container Component CSS
+   ============================================================
+   Scoped to: page-container.component
+   Fully isolated — zero global leakage.
+
+   Provides consistent page-level layout constraints so that
+   individual pages do not need to duplicate spacing/width logic.
+   ============================================================ */
+
+/* ── Host ────────────────────────────────────────────────── */
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* ── Base container ──────────────────────────────────────── */
+.page-container {
+  width: 100%;
+  margin-inline: auto;
+  /* Horizontal padding applied responsively in modifiers */
+}
+
+/* ── Vertical padding modifier ───────────────────────────── */
+.page-container--vpad {
+  padding-block: var(--space-8);
+}
+
+/* ── Max-width variants ──────────────────────────────────── */
+.page-container--narrow {
+  max-width: 640px;
+}
+
+.page-container--default {
+  max-width: 1100px;
+}
+
+.page-container--wide {
+  max-width: 1400px;
+}
+
+.page-container--full {
+  max-width: none;
+}
+
+/* ── Responsive horizontal padding ──────────────────────── */
+/* Default: generous spacing on large screens */
+.page-container {
+  padding-inline: var(--space-8);
+}
+
+@media (max-width: 1024px) {
+  .page-container {
+    padding-inline: var(--space-6);
+  }
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding-inline: var(--space-4);
+  }
+
+  .page-container--vpad {
+    padding-block: var(--space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .page-container {
+    padding-inline: var(--space-3);
+  }
+}

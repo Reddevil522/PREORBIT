@@ -1,0 +1,105 @@
+<div class="theory-container fade-in" *ngIf="subject()">
+  <!-- Header -->
+  <div class="header">
+    <a [routerLink]="['/core-cs', subject()?.slug]" class="back-btn">
+      <i class="ph ph-arrow-left"></i>
+    </a>
+    <div class="header-content">
+      <div class="title-row">
+        <div class="icon-wrapper">
+          <i class="ph ph-book-open-text"></i>
+        </div>
+        <h1>{{ subject()?.title }} Theory</h1>
+      </div>
+      <p>Master {{ subject()?.title }} concepts through structured, comprehensive notes.</p>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section">
+    <div class="search-box">
+      <i class="ph ph-magnifying-glass search-icon"></i>
+      <input 
+        type="text" 
+        [ngModel]="searchQuery()" 
+        (ngModelChange)="searchQuery.set($event)"
+        placeholder="Search chapters by title or keyword..."
+        class="search-input"
+      >
+      <button 
+        *ngIf="searchQuery()" 
+        class="clear-btn"
+        (click)="searchQuery.set('')"
+      >
+        <i class="ph ph-x"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Content Grid -->
+  <div class="chapters-grid" *ngIf="filteredChapters().length > 0; else emptyState">
+    <a *ngFor="let chapter of filteredChapters(); let i = index" 
+       [routerLink]="['/core-cs', subject()?.slug, 'theory', chapter.slug]" 
+       class="chapter-card">
+      
+      <div class="card-header">
+        <div class="chapter-number">{{ (chapter.order < 10 ? '0' : '') + chapter.order }}</div>
+        <div class="chapter-status" [ngClass]="{
+          'status-completed': isChapterCompleted(chapter.slug),
+          'status-progress': isChapterInProgress(chapter.slug),
+          'status-not-started': !isChapterCompleted(chapter.slug) && !isChapterInProgress(chapter.slug)
+        }">
+          <i class="ph" [ngClass]="{
+            'ph-check-circle': isChapterCompleted(chapter.slug),
+            'ph-clock-countdown': isChapterInProgress(chapter.slug),
+            'ph-circle': !isChapterCompleted(chapter.slug) && !isChapterInProgress(chapter.slug)
+          }"></i>
+          {{ isChapterCompleted(chapter.slug) ? 'Completed' : (isChapterInProgress(chapter.slug) ? 'In Progress' : 'Not Started') }}
+        </div>
+      </div>
+      
+      <div class="chapter-body">
+        <div class="chapter-icon">
+          <i class="ph {{ subject()?.icon }}"></i>
+        </div>
+        <div class="chapter-content">
+          <h2>{{ chapter.title }}</h2>
+          <p>{{ chapter.description }}</p>
+        </div>
+      </div>
+
+      <div class="chapter-footer">
+        <span class="open-text">Theory</span>
+        <div class="chapter-action">
+          <i class="ph ph-arrow-right"></i>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Empty State -->
+  <ng-template #emptyState>
+    <div class="empty-state">
+      <div class="empty-icon">
+        <i class="ph ph-magnifying-glass-minus"></i>
+      </div>
+      <h3>No chapters found</h3>
+      <p>Try a different search term.</p>
+      <button class="clear-search-btn" (click)="searchQuery.set('')">
+        Clear Search
+      </button>
+    </div>
+  </ng-template>
+</div>
+
+<!-- Not Found State -->
+<div class="not-found-container" *ngIf="!subject()">
+  <div class="empty-state">
+    <div class="empty-icon error-icon">
+      <i class="ph ph-warning-circle"></i>
+    </div>
+    <h3>Subject Not Found</h3>
+    <p>The requested Core CS subject could not be found.</p>
+    <a routerLink="/core-cs" class="return-btn">Return to Core CS</a>
+  </div>
+</div>

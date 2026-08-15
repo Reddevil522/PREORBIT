@@ -1,0 +1,76 @@
+<!-- PREORBIT — Header Component (Prompt 8 enhanced) -->
+
+<header class="header" role="banner">
+
+  <!-- ── Left cluster ───────────────────────────────────────── -->
+  <div class="header__left">
+
+    <!-- Mobile hamburger using IconButtonComponent -->
+    <div class="header__menu-wrap">
+      <app-icon-button
+        icon="ph-list"
+        label="Toggle navigation menu"
+        variant="ghost"
+        size="md"
+        (clicked)="onMenuToggle()"
+        id="header-menu-toggle"
+      />
+    </div>
+
+    <!-- Mobile brand (hidden on desktop — sidebar shows it) -->
+    <div class="header__mobile-brand" aria-hidden="true">
+      <div class="header__mobile-logo">
+        <i class="ph-fill ph-planet"></i>
+      </div>
+      <span class="header__mobile-brand-name">PREORBIT</span>
+    </div>
+
+    <!-- Desktop page title -->
+    <div class="header__page-title" aria-live="polite" aria-atomic="true">
+      <h1 class="header__title">{{ pageTitle() }}</h1>
+    </div>
+
+  </div>
+
+  <!-- ── Right cluster ──────────────────────────────────────── -->
+  <div class="header__right">
+
+    <!-- Theme toggle using IconButtonComponent -->
+    <app-icon-button
+      [icon]="theme.isDark() ? 'ph-sun' : 'ph-moon'"
+      [label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+      variant="ghost"
+      size="md"
+      (clicked)="onThemeToggle()"
+      id="header-theme-toggle"
+    />
+
+    <!-- Divider -->
+    <span class="header__divider" aria-hidden="true"></span>
+
+    <!-- User profile area -->
+    <button
+      class="header__profile-btn"
+      aria-label="User profile menu"
+      id="header-user-profile"
+      type="button"
+    >
+      <!-- Avatar -->
+      <div class="header__avatar" aria-hidden="true">
+        <i class="ph-fill ph-user-circle"></i>
+      </div>
+
+      <!-- User info (desktop) -->
+      <div class="header__user-info">
+        <span class="header__user-name">
+          {{ auth.currentUser()?.name || 'Student' }}
+        </span>
+      </div>
+
+      <!-- Caret -->
+      <i class="ph ph-caret-down header__caret" aria-hidden="true"></i>
+    </button>
+
+  </div>
+
+</header>

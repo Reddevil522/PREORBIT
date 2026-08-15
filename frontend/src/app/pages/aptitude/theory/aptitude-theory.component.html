@@ -1,0 +1,77 @@
+<div class="theory-container fade-in">
+  <div class="header">
+    <div class="header-top">
+      <div class="header-title-area">
+        <a [routerLink]="['/aptitude', subject()]" class="back-btn">
+          <i class="ph ph-arrow-left"></i>
+        </a>
+        <div class="header-text">
+          <h1>{{ title() }}</h1>
+          <p>Learn chapter concepts ({{ filteredChapters().length }} Chapters)</p>
+        </div>
+      </div>
+      <!-- Future: Switch to practice could go here -->
+    </div>
+    
+    <div class="search-container">
+      <i class="ph ph-magnifying-glass search-icon"></i>
+      <input type="text" 
+             placeholder="Search chapters..." 
+             [ngModel]="searchQuery()" 
+             (ngModelChange)="searchQuery.set($event)"
+             class="search-input">
+    </div>
+  </div>
+
+  <div class="chapters-grid" *ngIf="filteredChapters().length > 0; else emptyState">
+    <a *ngFor="let chapter of filteredChapters()" 
+       [routerLink]="['/aptitude', subject(), 'theory', chapter.slug]" 
+       (click)="onChapterClick(chapter)"
+       class="chapter-card">
+       
+      <div class="card-header">
+        <div class="chapter-number">{{ chapter.order | number:'2.0-0' }}</div>
+        <div class="chapter-status" [ngClass]="{
+          'status-completed': chapter.status === 'Completed',
+          'status-progress': chapter.status === 'In Progress',
+          'status-not-started': chapter.status === 'Not Started'
+        }">
+          <i class="ph" [ngClass]="{
+            'ph-check-circle': chapter.status === 'Completed',
+            'ph-clock-countdown': chapter.status === 'In Progress',
+            'ph-circle': chapter.status === 'Not Started'
+          }"></i>
+          {{ chapter.status }}
+        </div>
+      </div>
+      
+      <div class="chapter-body">
+        <div class="chapter-icon">
+          <i class="ph {{ chapter.icon }}"></i>
+        </div>
+        <div class="chapter-content">
+          <h2>{{ chapter.title }}</h2>
+          <p>{{ chapter.description }}</p>
+        </div>
+      </div>
+
+      <div class="chapter-footer">
+        <span class="open-text">Theory</span>
+        <div class="chapter-action">
+          <i class="ph ph-arrow-right"></i>
+        </div>
+      </div>
+      
+    </a>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state fade-in">
+      <div class="empty-icon">
+        <i class="ph ph-magnifying-glass-minus"></i>
+      </div>
+      <h2>No chapters found</h2>
+      <p>Try a different search term.</p>
+    </div>
+  </ng-template>
+</div>

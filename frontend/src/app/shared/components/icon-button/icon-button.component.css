@@ -1,0 +1,128 @@
+/* ============================================================
+   PREORBIT — Icon Button Component CSS  (Prompt 9 — polished)
+   ============================================================
+   Scoped to: icon-button.component
+   BEM prefix: .icon-btn
+   Zero global leakage.
+   ============================================================ */
+
+/* ── Host ────────────────────────────────────────────────── */
+:host {
+  display: inline-flex;
+}
+
+/* ── Base button ─────────────────────────────────────────── */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition:
+    background-color var(--transition-fast),
+    color            var(--transition-fast),
+    border-color     var(--transition-fast),
+    box-shadow       var(--transition-fast),
+    transform        var(--transition-instant),
+    opacity          var(--transition-fast);
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+}
+
+/* Micro press effect */
+.icon-btn:active:not(:disabled) {
+  transform: scale(0.93);
+}
+
+/* Focus ring */
+.icon-btn:focus-visible {
+  outline: 2px solid var(--preorbit-primary);
+  outline-offset: 2px;
+}
+
+/* Disabled */
+.icon-btn:disabled,
+.icon-btn[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Sizes ───────────────────────────────────────────────── */
+.icon-btn--sm {
+  width: 28px;
+  height: 28px;
+  font-size: 0.9rem;
+  border-radius: var(--radius-sm);
+}
+
+.icon-btn--md {
+  width: 36px;
+  height: 36px;
+  font-size: 1.1rem;
+}
+
+.icon-btn--lg {
+  width: 44px;
+  height: 44px;
+  font-size: 1.3rem;
+  border-radius: var(--radius-lg);
+}
+
+/* ── Ghost (default) ─────────────────────────────────────── */
+.icon-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-secondary);
+}
+
+.icon-btn--ghost:hover {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+}
+
+.icon-btn--ghost:active:not(:disabled) {
+  background-color: var(--bg-overlay);
+}
+
+/* ── Subtle (soft background) ────────────────────────────── */
+.icon-btn--subtle {
+  background-color: var(--bg-elevated);
+  border-color: var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+.icon-btn--subtle:hover {
+  background-color: var(--bg-overlay);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-xs);
+}
+
+/* ── Filled (brand gradient) ─────────────────────────────── */
+.icon-btn--filled {
+  background: linear-gradient(
+    140deg,
+    var(--preorbit-primary),
+    var(--preorbit-accent)
+  );
+  border-color: transparent;
+  color: var(--text-on-brand);
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.icon-btn--filled:hover {
+  filter: brightness(1.08);
+  box-shadow: var(--shadow-glow-primary), var(--shadow-sm);
+}
+
+.icon-btn--filled:active:not(:disabled) {
+  filter: brightness(0.94);
+  transform: scale(0.91);
+}

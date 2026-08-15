@@ -1,0 +1,11 @@
+# ============================================================
+# PREORBIT Backend — .gitignore
+# ============================================================
+
+node_modules/
+.env
+dist/
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db

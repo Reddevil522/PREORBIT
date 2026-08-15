@@ -1,0 +1,41 @@
+<a [routerLink]="route" 
+   (click)="onCardClick()"
+   class="test-card fade-in"
+   [class.disabled]="!isReady">
+   
+  <div class="card-header">
+    <div class="test-icon" [class.not-ready]="test.status === 'not-available' || test.status === 'locked'">
+      <i class="ph" [ngClass]="{
+        'ph-exam': test.status === 'available',
+        'ph-lock-key': test.status === 'locked' || test.status === 'not-available',
+        'ph-check-circle': test.status === 'completed'
+      }"></i>
+    </div>
+    <div class="test-status" [ngClass]="{
+      'status-available': test.status === 'available',
+      'status-not-ready': test.status === 'not-available' || test.status === 'locked',
+      'status-completed': test.status === 'completed'
+    }">
+      {{ test.status === 'not-available' ? 'Not Available' : (test.status === 'locked' ? 'Locked' : (test.status === 'completed' ? 'Completed' : 'Available')) }}
+    </div>
+  </div>
+
+  <div class="card-body">
+    <h3>{{ test.title }}</h3>
+    <div class="test-details">
+      <span class="detail-item">
+        <i class="ph ph-question"></i>
+        {{ test.totalQuestions }} Questions
+      </span>
+      <span class="detail-item" *ngIf="test.multipleChoiceCount || test.mcqCount">
+        <i class="ph ph-list-numbers"></i>
+        {{ test.multipleChoiceCount }} MC, {{ test.mcqCount }} MCQ
+      </span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="action-text">{{ isReady ? 'Start Test' : 'Locked' }}</span>
+    <i class="ph" [ngClass]="isReady ? 'ph-arrow-right' : 'ph-lock'"></i>
+  </div>
+</a>

@@ -1,0 +1,84 @@
+{
+  "module": "core-cs",
+  "subject": "oop",
+  "chapterSlug": "inheritance",
+  "testId": "inheritance-test-1",
+  "questions": [
+    {
+      "question": "Which of the following is true about inheritance in OOP?",
+      "options": [
+        {
+          "key": "a",
+          "text": "It allows a class to derive properties and methods from another class."
+        },
+        {
+          "key": "b",
+          "text": "It restricts the reuse of code."
+        },
+        {
+          "key": "c",
+          "text": "It requires all classes to be in the same package."
+        },
+        {
+          "key": "d",
+          "text": "It is only supported in Java."
+        }
+      ],
+      "marks": 1,
+      "questionType": "mcq",
+      "correctAnswer": "a"
+    },
+    {
+      "question": "What keyword is used to implement inheritance in Java?",
+      "options": [
+        {
+          "key": "a",
+          "text": "implements"
+        },
+        {
+          "key": "b",
+          "text": "extends"
+        },
+        {
+          "key": "c",
+          "text": "inherits"
+        },
+        {
+          "key": "d",
+          "text": "super"
+        }
+      ],
+      "marks": 1,
+      "questionType": "mcq",
+      "correctAnswer": "b"
+    },
+    {
+      "question": "Which of the following are types of inheritance supported in Java?",
+      "options": [
+        {
+          "key": "a",
+          "text": "Single Inheritance"
+        },
+        {
+          "key": "b",
+          "text": "Multiple Inheritance with Classes"
+        },
+        {
+          "key": "c",
+          "text": "Multilevel Inheritance"
+        },
+        {
+          "key": "d",
+          "text": "Hierarchical Inheritance"
+        }
+      ],
+      "marks": 1,
+      "questionType": "multiple-choice",
+      "correctAnswers": [
+        "a",
+        "c",
+        "d"
+      ]
+    }
+  ]
+}

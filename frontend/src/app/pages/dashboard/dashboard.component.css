@@ -1,0 +1,239 @@
+/*
+ * PREORBIT — Dashboard Page CSS  (Prompt 9 — polished)
+ * Scope: dashboard.component ONLY
+ * Class prefix: .dash__
+ * ─────────────────────────────────────────────────────────────
+ */
+
+/* ── Page wrapper ────────────────────────────────────────── */
+.dash {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  max-width: var(--content-max-width);
+  margin-inline: auto;
+  animation: preorbit-fade-up 280ms ease both;
+}
+
+/* ── Page header ─────────────────────────────────────────── */
+.dash__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: border-color var(--transition-theme);
+}
+
+.dash__title {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--text-primary);
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-snug);
+}
+
+.dash__subtitle {
+  margin-top: var(--space-1);
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  line-height: var(--lh-normal);
+}
+
+/* ── Section ─────────────────────────────────────────────── */
+.dash__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.dash__section-label {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--ls-widest);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ── Cards grid ──────────────────────────────────────────── */
+.dash__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+/* ── Card base ───────────────────────────────────────────── */
+.dash__card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-5);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition:
+    transform        var(--transition-normal),
+    box-shadow       var(--transition-normal),
+    border-color     var(--transition-normal),
+    background-color var(--transition-fast);
+  box-shadow: var(--shadow-xs);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover lift */
+.dash__card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-default);
+  color: var(--text-primary);
+}
+
+.dash__card:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-xs);
+}
+
+/* Subtle glow on left edge */
+.dash__card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    180deg,
+    var(--preorbit-primary),
+    var(--preorbit-accent)
+  );
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.dash__card:hover::before {
+  opacity: 1;
+}
+
+/* ── Card icon ───────────────────────────────────────────── */
+.dash__card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  font-size: 1.5rem;
+  transition:
+    background-color var(--transition-fast),
+    box-shadow       var(--transition-fast);
+}
+
+/* Per-card icon colors */
+.dash__card--java .dash__card-icon {
+  background: hsla(246, 80%, 66%, 0.12);
+  color: var(--preorbit-primary-light);
+}
+
+.dash__card--java:hover .dash__card-icon {
+  background: hsla(246, 80%, 66%, 0.20);
+  box-shadow: 0 0 16px hsla(246, 80%, 66%, 0.18);
+}
+
+.dash__card--apt .dash__card-icon {
+  background: hsla(162, 72%, 40%, 0.10);
+  color: var(--preorbit-accent-light);
+}
+
+.dash__card--apt:hover .dash__card-icon {
+  background: hsla(162, 72%, 40%, 0.18);
+  box-shadow: 0 0 16px hsla(162, 72%, 40%, 0.16);
+}
+
+.dash__card--cs .dash__card-icon {
+  background: hsla(38, 92%, 56%, 0.10);
+  color: var(--preorbit-warning);
+}
+
+.dash__card--cs:hover .dash__card-icon {
+  background: hsla(38, 92%, 56%, 0.18);
+  box-shadow: 0 0 16px hsla(38, 92%, 56%, 0.14);
+}
+
+/* ── Card body ───────────────────────────────────────────── */
+.dash__card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.dash__card-title {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.dash__card-desc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+  line-height: 1.3;
+}
+
+/* ── Arrow ───────────────────────────────────────────────── */
+.dash__card-arrow {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition:
+    transform var(--transition-fast),
+    color     var(--transition-fast);
+}
+
+.dash__card:hover .dash__card-arrow {
+  color: var(--preorbit-primary-light);
+  transform: translateX(3px);
+}
+
+/* ── Status banner ───────────────────────────────────────── */
+.dash__status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  background: var(--preorbit-primary-faint);
+  border: 1px solid hsla(246, 80%, 66%, 0.14);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  color: var(--preorbit-primary-light);
+}
+
+[data-theme="light"] .dash__status {
+  color: var(--preorbit-primary-dark);
+  background: hsla(246, 80%, 66%, 0.07);
+  border-color: hsla(246, 80%, 66%, 0.12);
+}
+
+.dash__status i {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dash__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dash__title {
+    font-size: var(--text-2xl);
+  }
+}

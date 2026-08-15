@@ -1,0 +1,55 @@
+<!-- PREORBIT — Sidebar Component (Prompt 8 enhanced) -->
+
+<aside class="sidebar" [class.sidebar--open]="isOpen" [class.sidebar--compact]="isCompact()"
+  aria-label="Main navigation">
+
+  <!-- ── Brand / Logo + Collapse Toggle ──────────────────────── -->
+  <div class="sidebar__brand">
+    <div class="sidebar__logo-mark" aria-hidden="true">
+      <i class="ph-fill ph-planet"></i>
+    </div>
+    <span class="sidebar__brand-name">PREORBIT</span>
+
+
+  </div>
+
+  <!-- ── Primary Navigation ────────────────────────────────── -->
+  <nav class="sidebar__nav" aria-label="Primary navigation">
+    <ul class="sidebar__nav-list" role="list">
+      @for (item of navItems(); track item.route) {
+      <li class="sidebar__nav-item">
+        <a [routerLink]="item.route" routerLinkActive="sidebar__nav-link--active"
+          [routerLinkActiveOptions]="{ exact: false }" class="sidebar__nav-link" [attr.aria-label]="item.label"
+          [title]="isCompact() ? item.label : ''" (click)="onNavClick()">
+          <!-- Icon -->
+          <span class="sidebar__nav-icon" aria-hidden="true">
+            <i [class]="item.icon"></i>
+          </span>
+
+          <!-- Label (hidden in compact mode) -->
+          <span class="sidebar__nav-label">{{ item.label }}</span>
+
+          <!-- Active indicator pill on left edge -->
+          <span class="sidebar__nav-indicator" aria-hidden="true"></span>
+        </a>
+      </li>
+      }
+    </ul>
+  </nav>
+
+
+  <!-- ── Footer: User Info + Logout ────────────────────────── -->
+  <div class="sidebar__footer">
+
+
+
+    <!-- Logout button -->
+    <button class="sidebar__logout-btn" (click)="onLogout()" aria-label="Sign out"
+      [title]="isCompact() ? 'Sign out' : ''">
+      <i class="ph-bold ph-sign-out" aria-hidden="true"></i>
+      <span class="sidebar__logout-label">Sign Out</span>
+    </button>
+
+  </div>
+
+</aside>

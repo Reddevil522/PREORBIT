@@ -1,0 +1,266 @@
+/* ============================================================
+   PREORBIT — Header Component CSS  (Prompt 9 — polished)
+   ============================================================
+   Scoped to: header.component
+   BEM prefix: .header__
+   Zero global leakage.
+   ============================================================ */
+
+/* ── Host ────────────────────────────────────────────────── */
+:host {
+  display: block;
+  width: 100%;
+  height: var(--header-height);
+}
+
+/* ── Header strip ────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-height);
+  padding: 0 var(--space-6);
+  gap: var(--space-3);
+
+  /* Premium glassmorphism */
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow:
+    0 1px 0 var(--border-subtle),
+    0 4px 16px hsla(223, 40%, 2%, 0.12);
+
+  transition:
+    background-color var(--transition-theme),
+    border-color     var(--transition-theme),
+    box-shadow       var(--transition-theme);
+}
+
+/* Light mode header: slightly stronger surface */
+[data-theme="light"] .header {
+  background: var(--glass-bg-strong);
+  box-shadow:
+    0 1px 0 var(--border-default),
+    0 2px 12px hsla(220, 18%, 18%, 0.08);
+}
+
+/* ── Left cluster ────────────────────────────────────────── */
+.header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  flex: 1;
+}
+
+/* ── Mobile hamburger (hidden on desktop) ────────────────── */
+.header__menu-wrap {
+  display: none;
+  flex-shrink: 0;
+}
+
+/* ── Mobile brand (hidden on desktop) ────────────────────── */
+.header__mobile-brand {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.header__mobile-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    140deg,
+    var(--preorbit-primary),
+    var(--preorbit-accent)
+  );
+  font-size: 0.9rem;
+  color: var(--text-on-brand);
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.header__mobile-brand-name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-bold);
+  letter-spacing: var(--ls-widest);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* ── Desktop page title ──────────────────────────────────── */
+.header__page-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.header__title {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  letter-spacing: var(--ls-tight);
+  /* Animate when route changes */
+  animation: preorbit-fade-in 200ms ease both;
+}
+
+/* ── Right cluster ───────────────────────────────────────── */
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+/* ── Divider ─────────────────────────────────────────────── */
+.header__divider {
+  display: block;
+  width: 1px;
+  height: 20px;
+  background: var(--border-default);
+  margin: 0 var(--space-2);
+  flex-shrink: 0;
+  transition: background-color var(--transition-theme);
+}
+
+/* ── User profile button ─────────────────────────────────── */
+.header__profile-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-1);
+  border-radius: var(--radius-full);
+  background: none;
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    border-color     var(--transition-fast),
+    box-shadow       var(--transition-fast);
+}
+
+.header__profile-btn:hover {
+  background-color: var(--bg-elevated);
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-xs);
+}
+
+.header__profile-btn:focus-visible {
+  outline: 2px solid var(--preorbit-primary);
+  outline-offset: 2px;
+}
+
+/* ── User avatar ─────────────────────────────────────────── */
+.header__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    140deg,
+    var(--preorbit-primary),
+    var(--preorbit-accent)
+  );
+  font-size: 1.05rem;
+  color: var(--text-on-brand);
+  box-shadow: 0 1px 6px hsla(246, 80%, 30%, 0.28);
+}
+
+/* ── User text ───────────────────────────────────────────── */
+.header__user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+.header__user-name {
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+  line-height: 1.25;
+}
+
+.header__user-role {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: capitalize;
+  letter-spacing: var(--ls-wide);
+  line-height: 1.25;
+}
+
+.header__user-role--admin {
+  color: var(--preorbit-accent);
+  font-weight: var(--font-semibold);
+}
+
+/* ── Caret ───────────────────────────────────────────────── */
+.header__caret {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* ── Tablet ──────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .header {
+    padding: 0 var(--space-5);
+  }
+
+  .header__user-info,
+  .header__caret {
+    display: none;
+  }
+
+  .header__profile-btn {
+    padding: var(--space-1);
+  }
+}
+
+/* ── Mobile ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .header {
+    padding: 0 var(--space-4);
+  }
+
+  .header__menu-wrap {
+    display: flex;
+  }
+
+  .header__mobile-brand {
+    display: flex;
+  }
+
+  .header__page-title {
+    display: none;
+  }
+
+  .header__divider {
+    display: none;
+  }
+
+  .header__user-info,
+  .header__caret {
+    display: none;
+  }
+
+  .header__profile-btn {
+    padding: var(--space-1);
+  }
+}

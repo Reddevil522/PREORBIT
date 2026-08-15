@@ -1,0 +1,79 @@
+﻿<div class="logical-container fade-in">
+  <div class="header">
+    <div class="header-top">
+      <div class="header-title-area">
+        <a routerLink="/aptitude" class="back-btn">
+          <i class="ph ph-arrow-left"></i>
+        </a>
+        <div class="header-text">
+          <h1>Logical Reasoning</h1>
+          <p>Develop critical thinking through puzzles, sequences, and deductive logic</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cards-grid">
+    <!-- Theory Card -->
+    <a routerLink="/aptitude/logical-reasoning/theory" class="feature-card">
+      <div class="card-header">
+        <div class="card-icon theory-icon">
+          <i class="ph ph-book-open-text"></i>
+        </div>
+        <div class="card-action">
+          <i class="ph ph-arrow-right"></i>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <h2>Theory</h2>
+        <p>Learn core concepts, patterns, and shortcuts chapter by chapter.</p>
+      </div>
+
+      <div class="card-footer">
+        <div class="progress-info">
+          <span class="progress-title">Theory Progress</span>
+          <span class="progress-stats">{{ completedTheoryCount() }} / {{ totalChapters }} Chapters Completed</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="(completedTheoryCount() / totalChapters) * 100"></div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Tests Card -->
+    <a routerLink="/aptitude/logical-reasoning/practice" class="feature-card">
+      <div class="card-header">
+        <div class="card-icon tests-icon">
+          <i class="ph ph-exam"></i>
+        </div>
+        <div class="card-action">
+          <i class="ph ph-arrow-right"></i>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <h2>Tests</h2>
+        <p>Practice chapter-wise tests.</p>
+        <div class="test-rules">
+          <span><i class="ph ph-stack"></i> Minimum 4 Tests per Chapter</span>
+          <span><i class="ph ph-list-numbers"></i> 25 Questions per Test</span>
+        </div>
+      </div>
+
+      <div class="card-footer test-summary-footer">
+        <div class="test-stat">
+          <span class="stat-value">{{ availableTestsCount() ?? '�' }}</span>
+          <span class="stat-label">Available</span>
+        </div>
+        <div class="test-stat">
+          <span class="stat-value">{{ completedTestsCount() ?? '�' }}</span>
+          <span class="stat-label">Completed</span>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+
+

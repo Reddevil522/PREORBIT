@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>PREORBIT — Placement Preparation Platform</title>
+  <meta name="description" content="PREORBIT is a modern, premium placement-preparation study platform for Java DSA, Aptitude, and Core CS.">
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Theme color (updated by JS for dark/light) -->
+  <meta name="theme-color" id="meta-theme-color" content="#0b0d14">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- Google Fonts — Outfit + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Phosphor Icons — Modern icon library -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+
+  <!--
+    Flash-Of-Unstyled-Theme prevention.
+    Runs synchronously before Angular boots so the correct
+    data-theme is set before the first paint.
+  -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('preorbit_theme');
+        var theme = stored === 'light' || stored === 'dark'
+          ? stored
+          : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', theme);
+        // Update theme-color meta
+        var meta = document.getElementById('meta-theme-color');
+        if (meta) {
+          meta.content = theme === 'light' ? '#f3f5f8' : '#0b0d14';
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <app-root></app-root>
+</body>
+</html>

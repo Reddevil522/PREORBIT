@@ -1,0 +1,74 @@
+<div class="practice-container fade-in">
+  <div class="header">
+    <div class="header-top">
+      <div class="header-title-area">
+        <a [routerLink]="['/aptitude', subject()]" class="back-btn">
+          <i class="ph ph-arrow-left"></i>
+        </a>
+        <div class="header-text">
+          <h1>{{ title() }}</h1>
+          <p>Chapter-wise practice tests ({{ filteredChapters().length }} Chapters)</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <!-- Switch back to theory easily -->
+        <a [routerLink]="['/aptitude', subject(), 'theory']" class="switch-btn">
+          <i class="ph ph-book-open-text"></i> Switch to Theory
+        </a>
+      </div>
+    </div>
+    
+    <div class="search-container">
+      <i class="ph ph-magnifying-glass search-icon"></i>
+      <input type="text" 
+             placeholder="Search chapters..." 
+             [ngModel]="searchQuery()" 
+             (ngModelChange)="searchQuery.set($event)"
+             class="search-input">
+    </div>
+  </div>
+
+  <div class="content-area" *ngIf="filteredChapters().length > 0; else emptyState">
+    
+    <div *ngFor="let chapter of filteredChapters()" class="chapter-section">
+      <div class="chapter-header">
+        <div class="chapter-info">
+          <div class="chapter-icon">
+            <i class="ph {{ chapter.icon }}"></i>
+          </div>
+          <div>
+            <h2>{{ chapter.title }}</h2>
+            <p>{{ chapter.description }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="tests-grid" *ngIf="testsByChapter().get(chapter.slug) as tests; else noTests">
+        <ng-container *ngIf="tests.length > 0; else noTests">
+          <!-- We can use the existing shared test-card, but we wrap it to not trigger real routing since tests are locked -->
+          <app-test-card *ngFor="let test of tests" [test]="test" [routePrefix]="'/aptitude/' + subject() + '/practice'"></app-test-card>
+        </ng-container>
+      </div>
+
+      <ng-template #noTests>
+        <div class="no-tests-state">
+          <i class="ph ph-hammer"></i>
+          <p>Tests are being prepared for this chapter.</p>
+        </div>
+      </ng-template>
+
+    </div>
+
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state fade-in">
+      <div class="empty-icon">
+        <i class="ph ph-magnifying-glass-minus"></i>
+      </div>
+      <h2>No chapters found</h2>
+      <p>Try a different search term.</p>
+    </div>
+  </ng-template>
+</div>

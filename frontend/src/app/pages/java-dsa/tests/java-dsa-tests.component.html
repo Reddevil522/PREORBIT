@@ -1,0 +1,59 @@
+<div class="tests-container fade-in">
+  <div class="header">
+    <div class="header-top">
+      <div class="header-title-area">
+        <a routerLink="/java-dsa" class="back-btn">
+          <i class="ph ph-arrow-left"></i>
+        </a>
+        <div class="header-text">
+          <h1>Java DSA Tests</h1>
+          <p>Practice chapter-wise assessments</p>
+        </div>
+      </div>
+      <a routerLink="/java-dsa/theory" class="switch-module-btn">
+        <i class="ph ph-arrow-left"></i>
+        <span>Switch to Theory</span>
+      </a>
+    </div>
+    
+    <div class="search-container">
+      <i class="ph ph-magnifying-glass search-icon"></i>
+      <input type="text" 
+             placeholder="Search chapters (e.g. Arrays, Tree)..." 
+             [ngModel]="searchQuery()" 
+             (ngModelChange)="searchQuery.set($event)"
+             class="search-input">
+    </div>
+  </div>
+
+  <div class="chapters-list" *ngIf="filteredChapters().length > 0; else emptyState">
+    <div *ngFor="let chapter of filteredChapters()" class="chapter-section">
+      
+      <div class="section-header">
+        <div class="section-icon">
+          <i class="ph {{ chapter.icon }}"></i>
+        </div>
+        <h2>{{ chapter.title }}</h2>
+      </div>
+
+      <div class="tests-grid">
+        <app-test-card 
+          *ngFor="let test of testsByChapter().get(chapter.slug) || []" 
+          [test]="test" 
+          routePrefix="/java-dsa/tests">
+        </app-test-card>
+      </div>
+
+    </div>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state fade-in">
+      <div class="empty-icon">
+        <i class="ph ph-magnifying-glass-minus"></i>
+      </div>
+      <h2>No chapters found</h2>
+      <p>Try a different search term.</p>
+    </div>
+  </ng-template>
+</div>

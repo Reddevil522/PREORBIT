@@ -1,0 +1,10 @@
+<!-- PREORBIT — Glass Surface Component -->
+
+<div
+  class="glass-surface"
+  [class.glass-surface--elevated]="elevated"
+  [class.glass-surface--blur]="blur"
+  [class]="'glass-surface glass-surface--p-' + padding + ' glass-surface--r-' + radius + (elevated ? ' glass-surface--elevated' : '') + (blur ? ' glass-surface--blur' : '') + (extraClass ? ' ' + extraClass : '')"
+>
+  <ng-content />
+</div>

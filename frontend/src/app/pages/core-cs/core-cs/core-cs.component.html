@@ -1,0 +1,38 @@
+<div class="core-cs-container fade-in">
+  <div class="header">
+    <div class="header-icon">
+      <i class="ph ph-cpu"></i>
+    </div>
+    <div class="header-text">
+      <h1>Core CS</h1>
+      <p>Master essential computer science fundamentals for interviews</p>
+    </div>
+  </div>
+
+  <div class="cards-grid">
+    <a *ngFor="let subject of subjects()" [routerLink]="['/core-cs', subject.slug]" class="feature-card">
+      <div class="card-header">
+        <div class="card-icon">
+          <i class="ph {{ subject.icon }}"></i>
+        </div>
+        <div class="card-action">
+          <i class="ph ph-arrow-right"></i>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <h2>{{ subject.title }}</h2>
+        <p>{{ subject.description }}</p>
+        
+        <div class="module-options">
+          <span class="option-pill theory-pill">
+            <i class="ph ph-book-open-text"></i> Theory
+          </span>
+          <span class="option-pill practice-pill">
+            <i class="ph ph-exam"></i> Practice
+          </span>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>

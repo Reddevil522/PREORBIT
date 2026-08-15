@@ -1,0 +1,161 @@
+<!-- PREORBIT — Register Page -->
+<div class="register-page">
+
+  <div class="register-page__orb register-page__orb--1" aria-hidden="true"></div>
+  <div class="register-page__orb register-page__orb--2" aria-hidden="true"></div>
+
+  <div class="register-page__container">
+
+    <!-- Brand -->
+    <div class="register-page__brand">
+      <span class="register-page__brand-name">PREORBIT</span>
+      <p class="register-page__brand-tagline">Join thousands preparing for placements</p>
+    </div>
+
+    <!-- Card -->
+    <div class="register-page__card">
+
+      <div class="register-page__card-header">
+        <h1 class="register-page__title">Create account</h1>
+        <p class="register-page__subtitle">Free access to all study materials</p>
+      </div>
+
+      <!-- Error -->
+      @if (errorMessage()) {
+        <div class="register-page__alert register-page__alert--error" role="alert">
+          <i class="ph ph-warning-circle"></i>
+          <span>{{ errorMessage() }}</span>
+        </div>
+      }
+
+      <!-- Success -->
+      @if (successMessage()) {
+        <div class="register-page__alert register-page__alert--success" role="status">
+          <i class="ph ph-check-circle"></i>
+          <span>{{ successMessage() }}</span>
+        </div>
+      }
+
+      <!-- Form -->
+      <form class="register-page__form" (ngSubmit)="onSubmit()" #regForm="ngForm" novalidate>
+
+        <!-- Name -->
+        <div class="register-page__field">
+          <label class="register-page__label" for="reg-name">Full name</label>
+          <div class="register-page__input-wrapper">
+            <i class="ph ph-user register-page__input-icon"></i>
+            <input
+              id="reg-name"
+              class="register-page__input"
+              type="text"
+              name="name"
+              placeholder="Your full name"
+              autocomplete="name"
+              [(ngModel)]="name"
+              required
+              [disabled]="isLoading()"
+            />
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="register-page__field">
+          <label class="register-page__label" for="reg-email">Email address</label>
+          <div class="register-page__input-wrapper">
+            <i class="ph ph-envelope register-page__input-icon"></i>
+            <input
+              id="reg-email"
+              class="register-page__input"
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              [(ngModel)]="email"
+              required
+              [disabled]="isLoading()"
+            />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="register-page__field">
+          <label class="register-page__label" for="reg-password">Password</label>
+          <div class="register-page__input-wrapper">
+            <i class="ph ph-lock register-page__input-icon"></i>
+            <input
+              id="reg-password"
+              class="register-page__input register-page__input--has-action"
+              [type]="showPassword() ? 'text' : 'password'"
+              name="password"
+              placeholder="Min. 6 characters"
+              autocomplete="new-password"
+              [(ngModel)]="password"
+              required
+              [disabled]="isLoading()"
+            />
+            <button
+              type="button"
+              class="register-page__input-toggle"
+              (click)="togglePassword()"
+              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+            >
+              <i class="ph" [class.ph-eye]="!showPassword()" [class.ph-eye-slash]="showPassword()"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="register-page__field">
+          <label class="register-page__label" for="reg-confirm">Confirm password</label>
+          <div class="register-page__input-wrapper">
+            <i class="ph ph-lock-key register-page__input-icon"></i>
+            <input
+              id="reg-confirm"
+              class="register-page__input register-page__input--has-action"
+              [type]="showConfirm() ? 'text' : 'password'"
+              name="confirmPassword"
+              placeholder="Re-enter your password"
+              autocomplete="new-password"
+              [(ngModel)]="confirmPassword"
+              required
+              [disabled]="isLoading()"
+            />
+            <button
+              type="button"
+              class="register-page__input-toggle"
+              (click)="toggleConfirm()"
+              [attr.aria-label]="showConfirm() ? 'Hide password' : 'Show password'"
+            >
+              <i class="ph" [class.ph-eye]="!showConfirm()" [class.ph-eye-slash]="showConfirm()"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button
+          id="register-submit-btn"
+          class="register-page__submit-btn"
+          type="submit"
+          [disabled]="isLoading()"
+        >
+          @if (isLoading()) {
+            <span class="register-page__spinner" aria-hidden="true"></span>
+            <span>Creating account…</span>
+          } @else {
+            <i class="ph ph-rocket-launch"></i>
+            <span>Create Account</span>
+          }
+        </button>
+
+      </form>
+
+      <!-- Footer -->
+      <div class="register-page__card-footer">
+        <span class="register-page__footer-text">Already have an account?</span>
+        <a routerLink="/login" class="register-page__login-link">Sign in</a>
+      </div>
+
+    </div><!-- /card -->
+
+  </div><!-- /container -->
+</div>

@@ -1,0 +1,151 @@
+<div class="result-page-container">
+  <!-- Loading State -->
+  <div *ngIf="isLoading()" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading Result...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!isLoading() && errorMsg()" class="error-state">
+    <p>{{ errorMsg() }}</p>
+    <div class="action-buttons">
+      <button class="btn btn-outline" (click)="retryFetch()">Try Again</button>
+      <button class="btn btn-primary" routerLink="/dashboard">Back to Dashboard</button>
+    </div>
+  </div>
+
+  <!-- Result Content -->
+  <div *ngIf="!isLoading() && !errorMsg() && testMetadata() && evaluation()" class="result-content animate-fade-in">
+    
+    <!-- Header -->
+    <div class="result-header card glass-card">
+      <div class="status-badge">TEST COMPLETED</div>
+      <h2>{{ testMetadata().testName }}</h2>
+      <p class="subtitle">{{ testMetadata().module | uppercase }} <span *ngIf="testMetadata().subject">• {{ testMetadata().subject | uppercase }}</span></p>
+      
+      <div class="score-highlight">
+        <span class="marks">{{ evaluation().obtainedMarks }} / {{ evaluation().maximumMarks }} Marks</span>
+        <span class="percentage">{{ evaluation().percentage }}%</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="global-actions">
+      <button class="btn btn-primary" (click)="retakeTest()">Retake Test</button>
+      <button class="btn btn-outline" (click)="backToTests()">Back to Tests</button>
+      <button class="btn btn-outline" routerLink="/dashboard">Back to Dashboard</button>
+    </div>
+
+    <div class="result-grid">
+      <!-- Question Statistics -->
+      <div class="card stat-card glass-card">
+        <h3>Question Statistics</h3>
+        <div class="stat-list">
+          <div class="stat-item">
+            <span>Total Questions</span>
+            <span class="val">{{ evaluation().totalQuestions }}</span>
+          </div>
+          <div class="stat-item">
+            <span>Attempted</span>
+            <span class="val">{{ evaluation().attempted }}</span>
+          </div>
+          <div class="stat-item text-success">
+            <span>Correct</span>
+            <span class="val">{{ evaluation().correct }}</span>
+          </div>
+          <div class="stat-item text-danger">
+            <span>Incorrect</span>
+            <span class="val">{{ evaluation().incorrect }}</span>
+          </div>
+          <div class="stat-item text-warning">
+            <span>Unattempted</span>
+            <span class="val">{{ evaluation().unattempted }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Summary -->
+      <div class="card stat-card glass-card">
+        <h3>Performance</h3>
+        <div class="stat-list">
+          <div class="stat-item">
+            <span>Accuracy</span>
+            <span class="val">{{ getAccuracy() }}%</span>
+          </div>
+          <div class="stat-item" *ngIf="timeTaken()">
+            <span>Time Taken</span>
+            <span class="val">{{ timeTaken() }}</span>
+          </div>
+          <div class="stat-item">
+            <span>Chapter</span>
+            <span class="val">{{ testMetadata().chapterName || 'N/A' }}</span>
+          </div>
+          <div class="stat-item" *ngIf="submittedAt()">
+            <span>Completed</span>
+            <span class="val">{{ submittedAt() | date:'medium' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Question Analysis -->
+    <div class="question-analysis">
+      <h3 class="section-title">Question Analysis</h3>
+      
+      <div class="question-card card glass-card" *ngFor="let q of questionsAnalysis(); let i = index">
+        
+        <div class="q-header">
+          <span class="q-number">Q{{ i + 1 }}</span>
+          <span class="q-status" [ngClass]="{
+            'status-correct': q.status === 'Correct',
+            'status-incorrect': q.status === 'Incorrect',
+            'status-unattempted': q.status === 'Unattempted'
+          }">
+            <i class="icon" *ngIf="q.status === 'Correct'">✓</i>
+            <i class="icon" *ngIf="q.status === 'Incorrect'">✗</i>
+            <i class="icon" *ngIf="q.status === 'Unattempted'">—</i>
+            {{ q.status }}
+          </span>
+          <span class="q-marks">{{ q.marks }}/1</span>
+        </div>
+
+        <div class="q-text" [innerHTML]="q.question"></div>
+
+        <div class="q-options">
+          <div class="option-item" *ngFor="let opt of q.options"
+               [ngClass]="{
+                 'is-student-ans': hasSelected(q.studentAnswer, opt.key),
+                 'is-correct-ans': isCorrectOption(q.correctAnswer, opt.key)
+               }">
+            <div class="opt-key">
+              <span *ngIf="q.questionType === 'mcq'">{{ hasSelected(q.studentAnswer, opt.key) ? '◉' : '○' }}</span>
+              <span *ngIf="q.questionType === 'multiple-choice'">{{ hasSelected(q.studentAnswer, opt.key) ? '☑' : '☐' }}</span>
+              {{ opt.key }}
+            </div>
+            <div class="opt-text">{{ opt.text }}</div>
+          </div>
+        </div>
+
+        <div class="q-footer">
+          <div class="answer-legend">
+            <p><strong>Your Answer:</strong> 
+              <span *ngIf="!hasStudentAnswer(q)">Not answered</span>
+              <span *ngIf="hasStudentAnswer(q) && !isArray(q.studentAnswer)">{{ q.studentAnswer }}</span>
+              <span *ngIf="hasStudentAnswer(q) && isArray(q.studentAnswer)">{{ q.studentAnswer.join(', ') }}</span>
+            </p>
+            <p><strong>Correct Answer:</strong> 
+              <span *ngIf="!isArray(q.correctAnswer)">{{ q.correctAnswer }}</span>
+              <span *ngIf="isArray(q.correctAnswer)">{{ q.correctAnswer.join(', ') }}</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="q-explanation" *ngIf="q.explanation">
+          <strong>Explanation:</strong>
+          <p [innerHTML]="q.explanation"></p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

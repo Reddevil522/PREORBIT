@@ -1,0 +1,43 @@
+<!-- PREORBIT — App Shell (Prompt 8 enhanced) -->
+<!-- Authenticated layout: Sidebar + Header + Main Content -->
+
+<div
+  class="shell"
+  [class.shell--sidebar-open]="isSidebarOpen()"
+  [class.shell--compact]="isSidebarCompact()"
+>
+
+  <!-- ── Sidebar ──────────────────────────────────────────── -->
+  <app-sidebar
+    class="shell__sidebar"
+    [isOpen]="isSidebarOpen()"
+    (closeRequest)="closeSidebar()"
+    (compactChange)="onSidebarCompactChange($event)"
+  />
+
+  <!-- ── Body (Header + Content) ──────────────────────────── -->
+  <div class="shell__body">
+
+    <!-- ── Header ─────────────────────────────────────────── -->
+    <app-header
+      class="shell__header"
+      (menuToggle)="toggleSidebar()"
+    />
+
+    <!-- ── Main Content ───────────────────────────────────── -->
+    <main class="shell__main" id="main-content">
+      <router-outlet />
+    </main>
+
+  </div>
+
+  <!-- ── Mobile Overlay ────────────────────────────────────── -->
+  @if (isSidebarOpen()) {
+    <div
+      class="shell__overlay"
+      (click)="closeSidebar()"
+      aria-hidden="true"
+    ></div>
+  }
+
+</div>

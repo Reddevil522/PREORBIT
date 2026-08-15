@@ -1,0 +1,303 @@
+<div class="admin-test-container">
+  <div class="header-section">
+    <div class="header-title-row">
+      <h1>Test Management</h1>
+      <!-- Subtle indicator: silent background refresh running -->
+      <span class="refresh-indicator" *ngIf="backgroundRefreshing">
+        <span class="refresh-dot"></span> Refreshing...
+      </span>
+    </div>
+
+    <div class="search-bar">
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+        viewBox="0 0 256 256">
+        <path
+          d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z">
+        </path>
+      </svg>
+      <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" placeholder="Search tests..."
+        class="search-input">
+    </div>
+
+    <!-- Dynamic Filters Row -->
+    <div class="filters-row">
+      <!-- Module Filter -->
+      <div class="custom-select-wrapper">
+        <div class="custom-select-trigger" [class.active]="activeDropdown === 'module'"
+          (click)="toggleDropdown('module', $event)">
+          <span>{{ getFilterLabel('module') }}</span>
+          <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            viewBox="0 0 256 256">
+            <path
+              d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
+            </path>
+          </svg>
+        </div>
+        <div class="custom-select-menu" *ngIf="activeDropdown === 'module'">
+          <div class="custom-select-option" [class.selected]="moduleFilter === ''"
+            (click)="setFilter('module', '', $event)">All Modules</div>
+          <div class="custom-select-option" [class.selected]="moduleFilter === 'java-dsa'"
+            (click)="setFilter('module', 'java-dsa', $event)">Java DSA</div>
+          <div class="custom-select-option" [class.selected]="moduleFilter === 'core-cs'"
+            (click)="setFilter('module', 'core-cs', $event)">Core CS</div>
+          <div class="custom-select-option" [class.selected]="moduleFilter === 'aptitude'"
+            (click)="setFilter('module', 'aptitude', $event)">Aptitude</div>
+        </div>
+      </div>
+
+      <!-- Subject Filter -->
+      <div class="custom-select-wrapper" *ngIf="availableSubjects.length > 0">
+        <div class="custom-select-trigger" [class.active]="activeDropdown === 'subject'"
+          (click)="toggleDropdown('subject', $event)">
+          <span>{{ getFilterLabel('subject') | titlecase }}</span>
+          <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            viewBox="0 0 256 256">
+            <path
+              d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
+            </path>
+          </svg>
+        </div>
+        <div class="custom-select-menu" *ngIf="activeDropdown === 'subject'">
+          <div class="custom-select-option" [class.selected]="subjectFilter === ''"
+            (click)="setFilter('subject', '', $event)">All Subjects</div>
+          <div class="custom-select-option" *ngFor="let s of availableSubjects" [class.selected]="subjectFilter === s"
+            (click)="setFilter('subject', s, $event)">{{ s | titlecase }}</div>
+        </div>
+      </div>
+
+      <!-- Chapter Filter -->
+      <div class="custom-select-wrapper" *ngIf="availableChapters.length > 0">
+        <div class="custom-select-trigger" [class.active]="activeDropdown === 'chapter'"
+          (click)="toggleDropdown('chapter', $event)">
+          <span>{{ getFilterLabel('chapter') | titlecase }}</span>
+          <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            viewBox="0 0 256 256">
+            <path
+              d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
+            </path>
+          </svg>
+        </div>
+        <div class="custom-select-menu" *ngIf="activeDropdown === 'chapter'">
+          <div class="custom-select-option" [class.selected]="chapterFilter === ''"
+            (click)="setFilter('chapter', '', $event)">All Chapters</div>
+          <div class="custom-select-option" *ngFor="let c of availableChapters"
+            [class.selected]="chapterFilter === c.slug" (click)="setFilter('chapter', c.slug, $event)">{{ c.name |
+            titlecase }}</div>
+        </div>
+      </div>
+
+      <!-- Availability Filter -->
+      <div class="custom-select-wrapper">
+        <div class="custom-select-trigger" [class.active]="activeDropdown === 'availability'"
+          (click)="toggleDropdown('availability', $event)">
+          <span>{{ getFilterLabel('availability') }}</span>
+          <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            viewBox="0 0 256 256">
+            <path
+              d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
+            </path>
+          </svg>
+        </div>
+        <div class="custom-select-menu" *ngIf="activeDropdown === 'availability'">
+          <div class="custom-select-option" [class.selected]="availabilityFilter === ''"
+            (click)="setFilter('availability', '', $event)">All Availability</div>
+          <div class="custom-select-option" [class.selected]="availabilityFilter === 'Available'"
+            (click)="setFilter('availability', 'Available', $event)">Available</div>
+          <div class="custom-select-option" [class.selected]="availabilityFilter === 'Locked'"
+            (click)="setFilter('availability', 'Locked', $event)">Locked</div>
+          <div class="custom-select-option" [class.selected]="availabilityFilter === 'Incomplete'"
+            (click)="setFilter('availability', 'Incomplete', $event)">Incomplete</div>
+        </div>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="custom-select-wrapper">
+        <div class="custom-select-trigger" [class.active]="activeDropdown === 'status'"
+          (click)="toggleDropdown('status', $event)">
+          <span>{{ getFilterLabel('status') }}</span>
+          <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            viewBox="0 0 256 256">
+            <path
+              d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z">
+            </path>
+          </svg>
+        </div>
+        <div class="custom-select-menu" *ngIf="activeDropdown === 'status'">
+          <div class="custom-select-option" [class.selected]="statusFilter === ''"
+            (click)="setFilter('status', '', $event)">All Statuses</div>
+          <div class="custom-select-option" [class.selected]="statusFilter === 'Available'"
+            (click)="setFilter('status', 'Available', $event)">Available</div>
+          <div class="custom-select-option" [class.selected]="statusFilter === 'Incomplete'"
+            (click)="setFilter('status', 'Incomplete', $event)">Incomplete</div>
+          <div class="custom-select-option" [class.selected]="statusFilter === 'Draft'"
+            (click)="setFilter('status', 'Draft', $event)">Draft</div>
+          <div class="custom-select-option" [class.selected]="statusFilter === 'Locked'"
+            (click)="setFilter('status', 'Locked', $event)">Locked</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert error-alert mt-4" *ngIf="availabilityError">
+    {{ availabilityError }}
+  </div>
+
+  <!-- Background refresh error (non-blocking) -->
+  <div class="alert background-error-alert mt-4" *ngIf="backgroundError">
+    {{ backgroundError }}
+  </div>
+
+  <!-- Loading State: only shown on very first load when there is zero cached data -->
+  <div class="loading-state" *ngIf="loading && chapters.length === 0">
+    <div class="loading-minimal">
+      <span class="loading-dot"></span>
+      <span class="loading-dot"></span>
+      <span class="loading-dot"></span>
+      <span class="loading-label">Loading tests...</span>
+    </div>
+  </div>
+
+  <!-- Error State (no data at all) -->
+  <div class="error-state" *ngIf="!loading && !backgroundRefreshing && error && chapters.length === 0">
+    {{ error }}
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state" *ngIf="!loading && !error && chapters.length === 0">
+    <h2>No tests available</h2>
+    <p>Upload a valid JSON question file to create your first test.</p>
+    <a routerLink="/admin" class="btn-primary">Upload Questions</a>
+  </div>
+
+  <!-- Chapter Grouped Test List -->
+  <div class="chapter-list" *ngIf="chapters.length > 0">
+    <div class="chapter-group glass-panel mb-4" *ngFor="let chapter of chapters; trackBy: trackByChapterSlug">
+
+      <!-- Chapter Summary -->
+      <div class="chapter-summary" style="background: var(--bg-surface); padding:15px; border-radius: 10px;">
+        <div class="chapter-title-area mb-3">
+          <h2 class="chapter-title m-0" style="font-size: 1.2rem; font-weight: 600;">{{ chapter.chapterName | titlecase
+            }}</h2>
+          <div class="badge-group mt-2" style="align-items: center;">
+            <span class="badge module-pill">{{ formatModule(chapter.module) }}</span>
+            <span class="subject-text" *ngIf="chapter.subject || chapter.section">{{ (chapter.subject ||
+              chapter.section) | uppercase }}</span>
+          </div>
+        </div>
+
+        <div class="chapter-stats"
+          style="border-top: 1px solid var(--border-color); padding-top: 1rem; display: flex; flex-wrap: wrap; gap: 2rem; align-items: center;">
+          <div class="stat-group flex flex-col" style="display: flex; flex-direction: column;">
+            <span class="stat-label text-gray-500 font-medium">TESTS</span>
+            <span class="stat-value font-bold" style="color: var(--text-primary);">{{ chapter.totalTests }}{{
+              chapter.requiredTests ? ' / ' + chapter.requiredTests : '' }}</span>
+          </div>
+          <div class="stat-group flex flex-col" style="display: flex; flex-direction: column;">
+            <span class="stat-label text-gray-500 font-medium">STATUS</span>
+            <span class="badge status-badge" style="margin-top: 4px;"
+              [ngClass]="{'available': chapter.status === 'Complete', 'incomplete': chapter.status === 'Incomplete'}">{{
+              chapter.status | uppercase }}</span>
+          </div>
+          <div class="stat-group flex flex-col" style="display: flex; flex-direction: column;">
+            <span class="stat-label text-gray-500 font-medium">AVAILABLE</span>
+            <span class="stat-value available-count font-bold" style="color: var(--success-color, #22c55e);">{{
+              chapter.availableTests }}</span>
+          </div>
+          <div class="stat-group flex flex-col" style="display: flex; flex-direction: column;">
+            <span class="stat-label text-gray-500 font-medium">LOCKED</span>
+            <span class="stat-value locked-count font-bold" style="color: var(--danger-color, #ef4444);">{{
+              chapter.lockedTests }}</span>
+          </div>
+
+          <div style="flex-grow: 1; display: flex; justify-content: flex-end; align-items: center;">
+            <button class="btn-toggle-tests" (click)="toggleChapter(chapter)">
+              {{ chapter.isExpanded ? '▲ Hide Tests' : '▼ Show Tests' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Test Grid for this Chapter -->
+      <div class="test-grid" *ngIf="chapter.isExpanded">
+        <div class="test-card" *ngFor="let test of chapter.tests">
+          <div class="card-header">
+            <h3 class="test-name">
+              {{ test.testName }}
+              <span class="test-number text-gray-500" *ngIf="test.testNumber">#{{ test.testNumber }}</span>
+            </h3>
+            <div class="badge-group">
+              <span class="badge status-badge" [ngClass]="test.status">{{ test.status | titlecase }}</span>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <p class="test-meta">
+              <span *ngIf="test.subject">{{ test.subject | titlecase }} &bull; </span>
+              <span *ngIf="test.section">{{ test.section | titlecase }} &bull; </span>
+              <span>{{ test.chapterName || (test.chapterSlug | titlecase) }}</span>
+            </p>
+          </div>
+
+          <div class="card-footer">
+            <div class="stat">
+              <span class="stat-value">{{ test.questionCount }}</span>
+              <span class="stat-label">Questions</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">{{ test.totalMarks }}</span>
+              <span class="stat-label">Marks</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Availability</span>
+              <span class="stat-value"
+                [ngClass]="{'text-available': test.isAvailable, 'text-locked': !test.isAvailable && test.status !== 'incomplete'}"
+                style="font-weight: 500;">
+                {{ test.isAvailable ? 'Available' : (test.status === 'incomplete' ? 'Incomplete' : 'Locked') }}
+              </span>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button class="btn-secondary btn-sm" (click)="viewTest(test._id, $event)">View</button>
+            <button class="btn-primary btn-sm" [class.btn-danger]="test.isAvailable"
+              [disabled]="updatingTestId === test._id || test.status === 'incomplete' || test.status === 'draft'"
+              (click)="toggleAvailability(test, $event)">
+              {{ updatingTestId === test._id ? 'Updating...' : (test.isAvailable ? 'Disable' : 'Enable') }}
+            </button>
+            <button class="btn-danger btn-sm" (click)="openDeleteModal(test, $event)">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="overlay-container" *ngIf="showDeleteModal">
+    <div class="confirmation-dialog glass-panel">
+      <h3>Delete Test?</h3>
+      <p class="subtitle">This action will permanently delete this test and all of its questions.</p>
+
+      <div class="confirm-details" *ngIf="testToDelete">
+        <div class="detail-row"><span>Module:</span> <strong>{{ testToDelete.module | titlecase }}</strong></div>
+        <div class="detail-row" *ngIf="testToDelete.subject || testToDelete.section">
+          <span>Subject:</span> <strong>{{ (testToDelete.subject || testToDelete.section) | titlecase }}</strong>
+        </div>
+        <div class="detail-row"><span>Chapter:</span> <strong>{{ testToDelete.chapterSlug | titlecase }}</strong></div>
+        <div class="detail-row"><span>Test Name:</span> <strong>{{ testToDelete.testName }}</strong></div>
+        <div class="detail-row"><span>Test ID:</span> <strong>{{ testToDelete.testId }}</strong></div>
+        <div class="detail-row"><span>Questions:</span> <strong>{{ testToDelete.questionCount }}</strong></div>
+      </div>
+
+      <div class="alert error-alert mt-4" *ngIf="deleteError">
+        {{ deleteError }}
+      </div>
+
+      <div class="action-buttons right-align mt-6">
+        <button class="btn-secondary" [disabled]="isDeleting" (click)="cancelDelete()">Cancel</button>
+        <button class="btn-danger" [disabled]="isDeleting" (click)="confirmDelete()">
+          {{ isDeleting ? 'Deleting...' : 'Delete Test' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,232 @@
+<div class="test-engine-container">
+  
+  <!-- LOADING STATE -->
+  <div class="status-container" *ngIf="status === 'loading'">
+    <div class="loader"></div>
+    <p>Loading test data...</p>
+  </div>
+
+  <!-- ERROR STATE -->
+  <div class="status-container error-container" *ngIf="status === 'error'">
+    <div class="error-icon">⚠️</div>
+    <h2>Test Unavailable</h2>
+    <p>{{ errorMessage }}</p>
+    <button class="btn btn-primary" routerLink="/dashboard">Back to Dashboard</button>
+  </div>
+
+  <!-- INSTRUCTIONS STATE -->
+  <div class="instructions-container" *ngIf="status === 'instructions' && testMetadata">
+    <div class="card premium-card">
+      <div class="card-header">
+        <h1>{{ testMetadata.testName }}</h1>
+        <div class="breadcrumb">
+          <span>{{ testMetadata.module | uppercase }}</span>
+          <span *ngIf="testMetadata.subject"> → {{ testMetadata.subject | uppercase }}</span>
+          <span *ngIf="testMetadata.section"> → {{ testMetadata.section | uppercase }}</span>
+          <span> → {{ testMetadata.chapterName || testMetadata.chapterSlug }}</span>
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <div class="test-stats">
+          <div class="stat-box">
+            <span class="stat-value">{{ testMetadata.questionCount }}</span>
+            <span class="stat-label">Questions</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-value">{{ testMetadata.totalMarks }}</span>
+            <span class="stat-label">Total Marks</span>
+          </div>
+        </div>
+
+        <div class="instructions-content">
+          <h3>Instructions</h3>
+          <ul>
+            <li>Answer all questions carefully.</li>
+            <li *ngIf="testMetadata.module === 'core-cs' || testMetadata.module === 'java-dsa'">
+              This test contains both Single Choice (MCQ) and Multiple Choice questions.
+            </li>
+            <li>Each question carries {{ questions[0]?.marks || 1 }} mark(s).</li>
+            <li>Use Next and Previous buttons to navigate.</li>
+            <li>Your answers are saved locally as you progress.</li>
+            <li>Submit the test only after completing all questions.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button class="btn btn-secondary" routerLink="/dashboard">Cancel</button>
+        <button class="btn btn-primary start-btn" [disabled]="isStarting" (click)="startTest()">
+          {{ isStarting ? 'Starting...' : 'Start Test' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- IN-PROGRESS STATE -->
+  <div class="in-progress-container" *ngIf="status === 'in-progress' && currentQuestion">
+    
+    <!-- Header -->
+    <header class="test-header">
+      <div class="header-left">
+        <h2>{{ testMetadata?.testName }} <span class="badge badge-in-progress">In Progress</span></h2>
+      </div>
+      <div class="header-right">
+        <div class="question-progress">
+          Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="test-layout">
+      
+      <!-- Question Section -->
+      <main class="question-area">
+        <div class="question-card card">
+          <div class="question-meta">
+            <span class="question-type badge" [ngClass]="{'badge-mcq': currentQuestion.questionType === 'mcq', 'badge-multi': currentQuestion.questionType === 'multiple-choice'}">
+              {{ currentQuestion.questionType === 'multiple-choice' ? 'Multiple Choice' : 'Single Choice (MCQ)' }}
+            </span>
+            <span class="question-marks">{{ currentQuestion.marks }} Mark(s)</span>
+          </div>
+
+          <div class="question-text">
+            <p>{{ currentQuestion.question }}</p>
+          </div>
+
+          <div class="options-container">
+            <div 
+              class="option-item" 
+              *ngFor="let option of currentQuestion.options"
+              [class.selected]="isOptionSelected(currentQuestion, option.key)"
+              (click)="toggleOption(currentQuestion, option.key)"
+            >
+              <div class="option-indicator">
+                <!-- Radio for MCQ, Checkbox for Multiple Choice (visual only) -->
+                <div class="indicator-circle" *ngIf="currentQuestion.questionType === 'mcq'">
+                  <div class="inner-circle" *ngIf="isOptionSelected(currentQuestion, option.key)"></div>
+                </div>
+                <div class="indicator-square" *ngIf="currentQuestion.questionType === 'multiple-choice'">
+                  <span class="check-mark" *ngIf="isOptionSelected(currentQuestion, option.key)">✓</span>
+                </div>
+              </div>
+              <div class="option-text">{{ option.text }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Footer -->
+        <div class="test-navigation" *ngIf="attemptStatus !== 'submitted'">
+          <button 
+            class="btn btn-outline" 
+            [disabled]="currentQuestionIndex === 0"
+            (click)="goToPrevious()"
+          >
+            ← Previous
+          </button>
+          
+          <button 
+            class="btn btn-primary" 
+            *ngIf="currentQuestionIndex < questions.length - 1"
+            (click)="goToNext()"
+          >
+            Next →
+          </button>
+
+          <button 
+            class="btn btn-success submit-btn" 
+            *ngIf="currentQuestionIndex === questions.length - 1"
+            (click)="openSubmitModal()"
+          >
+            Submit Test
+          </button>
+        </div>
+      </main>
+
+      <!-- Sidebar (Navigation Grid) -->
+      <aside class="test-sidebar" *ngIf="attemptStatus !== 'submitted'">
+        <div class="sidebar-card card">
+          <h3>Question Navigator</h3>
+          
+          <!-- Answered Summary -->
+          <div class="nav-summary">
+            <div class="summary-stat">
+              <span class="stat-num">{{ answeredCount }} / {{ questions.length }}</span>
+              <span class="stat-text">Answered</span>
+            </div>
+            <div class="summary-stat">
+              <span class="stat-num">{{ questions.length - answeredCount }}</span>
+              <span class="stat-text">Unanswered</span>
+            </div>
+          </div>
+
+          <div class="navigator-grid">
+            <button 
+              class="nav-bubble" 
+              *ngFor="let q of questions; let i = index"
+              [class.current]="i === currentQuestionIndex"
+              [class.answered]="isQuestionAnswered(q._id) && i !== currentQuestionIndex"
+              (click)="goToQuestion(i)"
+            >
+              {{ i + 1 }}
+            </button>
+          </div>
+          
+          <div class="nav-legend">
+            <div class="legend-item"><span class="bubble-demo current"></span> Current</div>
+            <div class="legend-item"><span class="bubble-demo answered"></span> Answered</div>
+            <div class="legend-item"><span class="bubble-demo"></span> Unanswered</div>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- SUBMITTED STATE OVERLAY / SUCCESS VIEW -->
+  <div class="submitted-container" *ngIf="status === 'submitted'">
+    <div class="card premium-card success-card">
+      <div class="success-icon">✓</div>
+      <h2>Test Submitted Successfully</h2>
+      <p>Your test has been submitted and answers are locked.</p>
+      <div class="card-footer">
+        <button class="btn btn-outline" (click)="goBackToPractice()">Back to Test</button>
+        <button class="btn btn-secondary" [disabled]="isRetaking" (click)="retakeTest()">
+          {{ isRetaking ? 'Retaking...' : 'Retake Test' }}
+        </button>
+        <button class="btn btn-primary" routerLink="/dashboard">Continue to Dashboard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBMIT CONFIRMATION MODAL -->
+  <div class="modal-overlay" *ngIf="showSubmitModal">
+    <div class="modal-card card premium-card">
+      <div class="modal-header">
+        <h2>Submit Test?</h2>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to submit? You cannot change your answers after submission.</p>
+        <div class="nav-summary modal-summary">
+          <div class="summary-stat">
+            <span class="stat-num">{{ answeredCount }} / {{ questions.length }}</span>
+            <span class="stat-text">Answered</span>
+          </div>
+          <div class="summary-stat">
+            <span class="stat-num">{{ questions.length - answeredCount }}</span>
+            <span class="stat-text">Unanswered</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" [disabled]="isSubmitting" (click)="closeSubmitModal()">Cancel</button>
+        <button class="btn btn-success" [disabled]="isSubmitting" (click)="confirmSubmit()">
+          {{ isSubmitting ? 'Submitting...' : 'Submit Test' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+

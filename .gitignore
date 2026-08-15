@@ -1,0 +1,43 @@
+# ============================================================
+# PREORBIT — Root .gitignore
+# ============================================================
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables (never commit real credentials)
+.env
+**/.env
+
+# Build outputs
+dist/
+**/dist/
+
+# Angular cache
+.angular/
+**/.angular/
+
+# Test coverage
+coverage/
+**/coverage/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE / Editor
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
