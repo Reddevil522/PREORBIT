@@ -73,7 +73,7 @@
 /* Stats Grid */
 .dash__stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
   gap: var(--space-4);
 }
 
@@ -113,7 +113,7 @@
 /* Chapter Summary */
 .dash__chapter-summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
   gap: var(--space-4);
 }
 
@@ -154,7 +154,7 @@
 /* Module Grid */
 .dash__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: var(--space-4);
 }
 
@@ -419,6 +419,7 @@
   background: var(--preorbit-primary-dark);
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
+  color: #fff;
 }
 
 .dash__summary-box--inprogress i {
@@ -444,7 +445,7 @@
 /* Overview stats row */
 .dash__cp-overview {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 140px), 1fr));
   gap: var(--space-4);
 }
 
@@ -496,7 +497,7 @@
   font-size: var(--text-xs);
   color: var(--text-muted);
   margin-top: 2px;
-  font-weight: 500;
+  font-weight: var(--font-medium);
 }
 
 /* Status Breakdown */
@@ -557,7 +558,7 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   transition: opacity 0.15s;
 }
 
@@ -672,7 +673,7 @@
   padding: 2px 8px;
   border-radius: 20px;
   font-size: 0.68rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   white-space: nowrap;
 }
 

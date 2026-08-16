@@ -109,7 +109,7 @@
           <span class="q-marks">{{ q.marks }}/1</span>
         </div>
 
-        <div class="q-text" [innerHTML]="q.question"></div>
+        <div class="q-text">{{ q.question }}</div>
 
         <div class="q-options">
           <div class="option-item" *ngFor="let opt of q.options"
@@ -142,7 +142,7 @@
 
         <div class="q-explanation" *ngIf="q.explanation">
           <strong>Explanation:</strong>
-          <p [innerHTML]="q.explanation"></p>
+          <p>{{ q.explanation }}</p>
         </div>
 
       </div>

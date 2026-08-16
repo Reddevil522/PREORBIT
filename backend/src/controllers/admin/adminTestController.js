@@ -17,21 +17,21 @@ exports.getTests = async (req, res, next) => {
 
     const query = {};
 
-    // Filters
-    if (module) query.module = module;
+    // Filters (Cast to string to prevent object operator injection)
+    if (module) query.module = String(module);
     if (subject) {
-      // Handle 'subject' param which could mean section for aptitude
-      if (module === 'aptitude') {
-        query.section = subject;
+      if (String(module) === 'aptitude') {
+        query.section = String(subject);
       } else {
-        query.subject = subject;
+        query.subject = String(subject);
       }
     }
-    if (status) query.status = status;
+    if (status) query.status = String(status);
 
     // Search
     if (search) {
-      const searchRegex = new RegExp(search, 'i');
+      const escapeRegex = (string) => string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const searchRegex = new RegExp(escapeRegex(String(search)), 'i');
       query.$or = [
         { testId: searchRegex },
         { testName: searchRegex },

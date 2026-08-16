@@ -61,7 +61,7 @@
 
 .header-content h1 {
   font-size: 2rem;
-  font-weight: 800;
+  font-weight: var(--font-extrabold);
   margin: 0;
   color: var(--text-primary, #111827);
   letter-spacing: -0.025em;
@@ -152,7 +152,7 @@
 
 .chapter-number {
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: #8b5cf6;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -162,14 +162,14 @@
 
 .chapter-info h2 {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   color: var(--text-primary, #111827);
   margin: 0;
 }
 
 .tests-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: 1.5rem;
 }
 
@@ -223,7 +223,7 @@
 
 .empty-state h3 {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   color: var(--text-primary, #111827);
   margin: 0 0 0.5rem 0;
 }
@@ -239,7 +239,7 @@
   border: none;
   padding: 0.75rem 1.5rem;
   border-radius: 12px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
@@ -355,7 +355,7 @@
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -384,7 +384,7 @@
 
 .theory-stat.completed {
   color: #10b981;
-  font-weight: 500;
+  font-weight: var(--font-medium);
 }
 
 :host-context(html.dark) .stat-badge.not-started {

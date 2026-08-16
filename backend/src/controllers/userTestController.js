@@ -91,19 +91,18 @@ exports.getAvailableTests = async (req, res, next) => {
     const { module, subject } = req.query;
     let userId = req.user.userId;
 
-    if (req.user.role === 'admin' || userId === 'admin') {
-      const mongoose = require('mongoose');
-      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return sendError(res, 400, 'Invalid authenticated user identity');
     }
 
     const query = { status: { $in: ['available', 'locked'] } };
 
-    if (module) query.module = module;
+    if (module) query.module = String(module);
     if (subject) {
-      if (module === 'aptitude') {
-        query.section = subject;
+      if (String(module) === 'aptitude') {
+        query.section = String(subject);
       } else {
-        query.subject = subject;
+        query.subject = String(subject);
       }
     }
 
@@ -181,16 +180,15 @@ exports.getTestSummary = async (req, res, next) => {
     const { module, subject } = req.query;
     let userId = req.user.userId;
 
-    if (req.user.role === 'admin' || userId === 'admin') {
-      const mongoose = require('mongoose');
-      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return sendError(res, 400, 'Invalid authenticated user identity');
     }
 
     const query = {};
-    if (module) query.module = module;
+    if (module) query.module = String(module);
     if (subject) {
-      if (module === 'aptitude') query.section = subject;
-      else query.subject = subject;
+      if (String(module) === 'aptitude') query.section = String(subject);
+      else query.subject = String(subject);
     }
 
     // 1. Get ALL tests for this module/subject (we need them all to determine sequence)
@@ -280,9 +278,8 @@ exports.getTestMetadata = async (req, res, next) => {
     const { testId } = req.params;
     let userId = req.user.userId;
 
-    if (req.user.role === 'admin' || userId === 'admin') {
-      const mongoose = require('mongoose');
-      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return sendError(res, 400, 'Invalid authenticated user identity');
     }
 
     const test = await PracticeTest.findOne({ testId }).lean();
@@ -322,10 +319,8 @@ exports.startTest = async (req, res, next) => {
     const { testId } = req.params;
     let userId = req.user.userId;
 
-    // Admin preview support: Use a dummy ObjectId so TestAttempt validation passes
-    if (req.user.role === 'admin' || userId === 'admin') {
-      const mongoose = require('mongoose');
-      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return sendError(res, 400, 'Invalid authenticated user identity');
     }
 
     // 1. Fetch the test metadata
@@ -387,6 +382,10 @@ exports.startTest = async (req, res, next) => {
 
     // 4. Fetch questions matching the testId
     const rawQuestions = await QuestionModel.find({ testId }).lean();
+    
+    if (!rawQuestions || rawQuestions.length === 0) {
+      return sendError(res, 400, 'This test currently has no questions available.');
+    }
 
     // 4.5. Randomize or order questions based on the attempt
     const orderedQuestions = await processAttemptQuestions(test, activeAttempt, rawQuestions);
@@ -427,10 +426,8 @@ exports.submitTest = async (req, res, next) => {
     const { testId } = req.params;
     let userId = req.user.userId;
     
-    // Admin preview support: Use a dummy ObjectId
-    if (req.user.role === 'admin' || userId === 'admin') {
-      const mongoose = require('mongoose');
-      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return sendError(res, 400, 'Invalid authenticated user identity');
     }
 
     const { attemptId, answers } = req.body;
@@ -617,9 +614,8 @@ exports.resumeTest = async (req, res, next) => {
     const { testId } = req.params;
     let userId = req.user.userId;
 
-    if (req.user.role === 'admin' || userId === 'admin') {
-      const mongoose = require('mongoose');
-      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return sendError(res, 400, 'Invalid authenticated user identity');
     }
 
     const test = await PracticeTest.findOne({ testId });
@@ -706,9 +702,8 @@ exports.saveAnswer = async (req, res, next) => {
     const { questionId, selectedAnswer } = req.body;
     let userId = req.user.userId;
 
-    if (req.user.role === 'admin' || userId === 'admin') {
-      const mongoose = require('mongoose');
-      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return sendError(res, 400, 'Invalid authenticated user identity');
     }
 
     if (!questionId) return sendError(res, 400, 'Question ID is required');
@@ -768,9 +763,8 @@ exports.retakeTest = async (req, res, next) => {
     const { testId } = req.params;
     let userId = req.user.userId;
 
-    if (req.user.role === 'admin' || userId === 'admin') {
-      const mongoose = require('mongoose');
-      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return sendError(res, 400, 'Invalid authenticated user identity');
     }
 
     // 1. Fetch the test metadata
@@ -840,6 +834,11 @@ exports.retakeTest = async (req, res, next) => {
 
     // 6. Fetch questions matching the testId
     const rawQuestions = await QuestionModel.find({ testId }).lean();
+    
+    if (!rawQuestions || rawQuestions.length === 0) {
+      return sendError(res, 400, 'This test currently has no questions available.');
+    }
+    
     const orderedQuestions = await processAttemptQuestions(test, attemptToReturn, rawQuestions);
     const sanitizedQuestions = orderedQuestions.map(q => {
       const { correctAnswer, correctAnswers, explanation, createdAt, updatedAt, __v, ...safeQuestion } = q;
@@ -875,9 +874,8 @@ exports.getTestResult = async (req, res, next) => {
     const { attemptId } = req.params;
     let userId = req.user.userId;
 
-    if (req.user.role === 'admin' || userId === 'admin') {
-       const mongoose = require('mongoose');
-       userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+       return sendError(res, 400, 'Invalid authenticated user identity');
     }
 
     const attempt = await TestAttempt.findOne({ attemptId, userId });

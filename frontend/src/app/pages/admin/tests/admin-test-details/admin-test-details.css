@@ -11,7 +11,7 @@
   background: transparent;
   border: none;
   color: var(--text-muted);
-  font-weight: 500;
+  font-weight: var(--font-medium);
   cursor: pointer;
   padding: 0;
   transition: color 0.2s;
@@ -35,7 +35,7 @@
   cursor: pointer;
   padding: 0.5rem 1rem;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: var(--font-medium);
   border-radius: 4px;
   transition: all 0.2s;
 }
@@ -66,7 +66,7 @@
 
 .header-top h1 {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   margin: 0;
   color: var(--text-primary);
 }
@@ -132,7 +132,7 @@
 
 .detail-row strong {
   color: var(--text-primary);
-  font-weight: 500;
+  font-weight: var(--font-medium);
   text-align: right;
   max-width: 60%;
   overflow: hidden;
@@ -152,7 +152,7 @@
   min-width: 100px;
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
-  font-weight: 500;
+  font-weight: var(--font-medium);
   cursor: pointer;
   border: none;
 }
@@ -181,7 +181,7 @@
   padding: 0.35rem 1rem;
   border-radius: 9999px;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   text-transform: uppercase;
   letter-spacing: 0.025em;
 }
@@ -195,7 +195,7 @@
 /* Meta Grid */
 .test-meta-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -215,7 +215,7 @@
 
 .meta-value {
   font-size: 1.125rem;
-  font-weight: 500;
+  font-weight: var(--font-medium);
   color: var(--text-primary);
 }
 
@@ -250,7 +250,7 @@
 
 .stat-num {
   font-size: 1.75rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   color: var(--text-primary);
   margin-bottom: 0.25rem;
 }
@@ -267,7 +267,7 @@
 /* Questions Section */
 .questions-section h2 {
   font-size: 1.5rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   margin-bottom: 1.5rem;
   color: var(--text-primary);
 }
@@ -296,7 +296,7 @@
 }
 
 .q-number {
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-secondary);
 }
 
@@ -328,7 +328,7 @@
 }
 
 .opt-key {
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-muted);
 }
 
@@ -349,7 +349,7 @@
 }
 
 .answer-key {
-  font-weight: 700;
+  font-weight: var(--font-bold);
   background: var(--preorbit-accent);
   color: white;
   padding: 0.25rem 0.5rem;

@@ -153,18 +153,32 @@ const createApplication = async (req, res) => {
       notes          = '',
     } = req.body;
 
-    // Required
     if (!companyName || !String(companyName).trim()) {
       return sendError(res, 400, 'Company name is required.');
     }
+    if (String(companyName).trim().length > 150) {
+      return sendError(res, 400, 'Company name is too long.');
+    }
     if (!jobTitle || !String(jobTitle).trim()) {
       return sendError(res, 400, 'Job title is required.');
+    }
+    if (String(jobTitle).trim().length > 150) {
+      return sendError(res, 400, 'Job title is too long.');
     }
     if (!VALID_STATUSES.includes(status)) {
       return sendError(res, 400, `Invalid status. Allowed: ${VALID_STATUSES.join(', ')}`);
     }
     if (applicationUrl && !isValidUrl(applicationUrl)) {
       return sendError(res, 400, 'Application URL must start with http:// or https://');
+    }
+    if (applicationUrl && String(applicationUrl).length > 500) {
+      return sendError(res, 400, 'Application URL is too long.');
+    }
+    if (location && String(location).trim().length > 150) {
+      return sendError(res, 400, 'Location is too long.');
+    }
+    if (notes && String(notes).trim().length > 2000) {
+      return sendError(res, 400, 'Notes are too long (max 2000 characters).');
     }
 
     let parsedAppDate = null;
@@ -231,14 +245,29 @@ const updateApplication = async (req, res) => {
     if (companyName !== undefined && !String(companyName).trim()) {
       return sendError(res, 400, 'Company name cannot be empty.');
     }
+    if (companyName !== undefined && String(companyName).trim().length > 150) {
+      return sendError(res, 400, 'Company name is too long.');
+    }
     if (jobTitle !== undefined && !String(jobTitle).trim()) {
       return sendError(res, 400, 'Job title cannot be empty.');
+    }
+    if (jobTitle !== undefined && String(jobTitle).trim().length > 150) {
+      return sendError(res, 400, 'Job title is too long.');
     }
     if (status !== undefined && !VALID_STATUSES.includes(status)) {
       return sendError(res, 400, `Invalid status. Allowed: ${VALID_STATUSES.join(', ')}`);
     }
     if (applicationUrl !== undefined && applicationUrl && !isValidUrl(applicationUrl)) {
       return sendError(res, 400, 'Application URL must start with http:// or https://');
+    }
+    if (applicationUrl !== undefined && applicationUrl && String(applicationUrl).length > 500) {
+      return sendError(res, 400, 'Application URL is too long.');
+    }
+    if (location !== undefined && String(location).trim().length > 150) {
+      return sendError(res, 400, 'Location is too long.');
+    }
+    if (notes !== undefined && String(notes).trim().length > 2000) {
+      return sendError(res, 400, 'Notes are too long (max 2000 characters).');
     }
     if (applicationDate !== undefined && applicationDate && !isValidDate(applicationDate)) {
       return sendError(res, 400, 'Application date is invalid.');

@@ -47,7 +47,7 @@
 
 .header-text h1 {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   margin: 0 0 0.25rem 0;
   color: var(--text-primary, #111827);
 }
@@ -91,7 +91,7 @@
 
 .chapters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: 1.5rem;
 }
 
@@ -122,7 +122,7 @@
 
 .chapter-number {
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   color: var(--text-secondary, #9ca3af);
   letter-spacing: 0.05em;
 }
@@ -132,7 +132,7 @@
   align-items: center;
   gap: 0.375rem;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   padding: 0.25rem 0.625rem;
   border-radius: 9999px;
   letter-spacing: 0.02em;
@@ -174,7 +174,7 @@
 
 .chapter-content h2 {
   font-size: 1.125rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-primary, #111827);
   margin: 0 0 0.25rem 0;
 }
@@ -197,7 +197,7 @@
 
 .open-text {
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--primary, #10b981);
 }
 
@@ -242,7 +242,7 @@
 
 .empty-state h2 {
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-primary, #111827);
   margin: 0 0 0.5rem 0;
 }
@@ -341,14 +341,14 @@
   align-items: center;
   gap: 0.25rem;
   font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--preorbit-success, #10b981);
-  background: rgba(16, 185, 129, 0.12);
+  font-weight: var(--font-semibold);
+  color: #fff;
+  background: var(--preorbit-success, #10b981);
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
 }
 
 .theory-badge i {
   font-size: 0.85rem;
-  color: var(--preorbit-success, #10b981);
+  color: #fff;
 }

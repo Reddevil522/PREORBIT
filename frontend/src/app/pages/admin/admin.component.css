@@ -17,7 +17,7 @@
 .admin-header h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   color: var(--text-primary);
 }
 
@@ -91,7 +91,7 @@
 }
 
 .text {
-  font-weight: 500;
+  font-weight: var(--font-medium);
   color: var(--text-primary);
 }
 
@@ -104,7 +104,7 @@
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   text-transform: uppercase;
   background: rgba(255,255,255,0.1);
 }
@@ -157,7 +157,7 @@
   border: none;
   padding: 0.75rem 2rem;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -182,7 +182,7 @@
   border: 1px solid var(--border-default);
   padding: 0.75rem 2rem;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -237,7 +237,7 @@
 /* Preview Grid */
 .preview-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
   gap: 1rem;
 }
 
@@ -267,7 +267,7 @@
 
 .preview-item .value {
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: #10b981;
 }
 
@@ -295,7 +295,7 @@
 }
 
 .q-number {
-  font-weight: 700;
+  font-weight: var(--font-bold);
   font-size: 1.1rem;
 }
 
@@ -328,7 +328,7 @@
 }
 
 .opt-key {
-  font-weight: 700;
+  font-weight: var(--font-bold);
   margin-right: 1rem;
   min-width: 24px;
   height: 24px;
@@ -350,7 +350,7 @@
 
 .correct-indicator {
   color: #10b981;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   font-size: 0.85rem;
   margin-left: 1rem;
 }
@@ -464,14 +464,14 @@
 .stat-value {
   display: block;
   font-size: 2.5rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   color: #10b981;
   margin-bottom: 0.5rem;
 }
 
 .stat-label {
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: var(--font-medium);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   opacity: 0.8;

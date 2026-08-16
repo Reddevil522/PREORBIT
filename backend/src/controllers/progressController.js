@@ -8,11 +8,6 @@ exports.getProgress = async (req, res) => {
   try {
     let authenticatedUserId = req.user.userId || req.user.id || req.user._id;
 
-    // Existing application's intended admin behavior
-    if (req.user.role === 'admin' || authenticatedUserId === 'admin') {
-       authenticatedUserId = '000000000000000000000000';
-    }
-
     if (!mongoose.Types.ObjectId.isValid(authenticatedUserId)) {
       return res.status(400).json({ success: false, message: 'Invalid authenticated user identity' });
     }
@@ -301,10 +296,6 @@ exports.getProgress = async (req, res) => {
 exports.markTheoryCompleted = async (req, res) => {
   try {
     let authenticatedUserId = req.user.userId || req.user.id || req.user._id;
-
-    if (req.user.role === 'admin' || authenticatedUserId === 'admin') {
-       authenticatedUserId = '000000000000000000000000';
-    }
 
     if (!mongoose.Types.ObjectId.isValid(authenticatedUserId)) {
        return res.status(400).json({ success: false, message: 'Invalid authenticated user identity' });

@@ -33,7 +33,7 @@
   background: var(--surface, #ffffff);
   color: var(--text-primary, #111827);
   text-decoration: none;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   font-size: 0.875rem;
   border: 1px solid var(--border, #e5e7eb);
   transition: all 0.2s ease;
@@ -68,7 +68,7 @@
 
 .header-text h1 {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   margin: 0 0 0.25rem 0;
   color: var(--text-primary, #111827);
 }
@@ -114,7 +114,7 @@
 
 .chapters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: 1.5rem;
 }
 
@@ -145,7 +145,7 @@
 
 .chapter-number {
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-secondary, #6b7280);
   letter-spacing: 0.05em;
 }
@@ -155,7 +155,7 @@
   align-items: center;
   gap: 0.375rem;
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   padding: 0.25rem 0.625rem;
   border-radius: 9999px;
 }
@@ -202,7 +202,7 @@
 
 .chapter-content h2 {
   font-size: 1.125rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   margin: 0 0 0.25rem 0;
   color: var(--text-primary, #111827);
   white-space: nowrap;
@@ -228,7 +228,7 @@
 
 .open-text {
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-primary, #111827);
   transition: color 0.2s ease;
 }
@@ -275,7 +275,7 @@
 
 .empty-state h2 {
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-primary, #111827);
   margin: 0 0 0.5rem 0;
 }
@@ -372,14 +372,14 @@
   align-items: center;
   gap: 0.25rem;
   font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--preorbit-success, #10b981);
-  background: rgba(16, 185, 129, 0.12);
+  font-weight: var(--font-semibold);
+  color: #fff;
+  background: var(--preorbit-success, #10b981);
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
 }
 
 .theory-badge i {
   font-size: 0.85rem;
-  color: var(--preorbit-success, #10b981);
+  color: #fff;
 }

@@ -47,7 +47,7 @@
 
 .header-text h1 {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   margin: 0 0 0.25rem 0;
   color: var(--text-primary, #111827);
 }
@@ -67,7 +67,7 @@
   color: #3b82f6;
   border-radius: 12px;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   font-size: 0.9375rem;
   transition: all 0.2s ease;
 }
@@ -139,7 +139,7 @@
 
 .chapter-info h2 {
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   color: var(--text-primary, #111827);
   margin: 0 0 0.25rem 0;
 }
@@ -152,7 +152,7 @@
 
 .tests-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: 1.5rem;
 }
 
@@ -165,7 +165,7 @@
   border-radius: 12px;
   border: 1px dashed var(--border, #d1d5db);
   color: var(--text-secondary, #6b7280);
-  font-weight: 500;
+  font-weight: var(--font-medium);
 }
 
 .no-tests-state i {
@@ -196,7 +196,7 @@
 
 .empty-state h2 {
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-primary, #111827);
   margin: 0 0 0.5rem 0;
 }
@@ -318,7 +318,7 @@
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -347,7 +347,7 @@
 
 .theory-stat.completed {
   color: #10b981;
-  font-weight: 500;
+  font-weight: var(--font-medium);
 }
 
 :host-context(html.dark) .stat-badge.not-started {

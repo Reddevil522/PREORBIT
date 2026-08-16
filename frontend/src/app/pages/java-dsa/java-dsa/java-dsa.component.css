@@ -25,7 +25,7 @@
 
 .header-text h1 {
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   margin: 0 0 0.25rem 0;
   color: var(--text-primary, #111827);
 }
@@ -38,7 +38,7 @@
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: 1.5rem;
 }
 
@@ -88,6 +88,7 @@
 }
 
 .card-action {
+  margin-top: auto;
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -100,6 +101,7 @@
 }
 
 .feature-card:hover .card-action {
+  margin-top: auto;
   background: var(--primary, #10b981);
   color: white;
   transform: translateX(4px);
@@ -107,7 +109,7 @@
 
 .card-content h2 {
   font-size: 1.125rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   margin: 0 0 0.375rem 0;
   color: var(--text-primary, #111827);
 }
@@ -148,13 +150,13 @@
 
 .progress-title {
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-primary, #111827);
 }
 
 .progress-stats {
   font-size: 0.8125rem;
-  font-weight: 500;
+  font-weight: var(--font-medium);
   color: var(--text-secondary, #6b7280);
 }
 
@@ -185,13 +187,13 @@
 
 .stat-value {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   color: var(--text-primary, #111827);
 }
 
 .stat-label {
   font-size: 0.8125rem;
-  font-weight: 500;
+  font-weight: var(--font-medium);
   color: var(--text-secondary, #6b7280);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -230,6 +232,7 @@
 }
 
 :host-context(html.dark) .card-footer {
+  margin-top: auto;
   border-color: var(--border, #374151);
 }
 
@@ -239,6 +242,7 @@
 }
 
 :host-context(html.dark) .card-action {
+  margin-top: auto;
   color: var(--text-secondary, #9ca3af);
 }
 

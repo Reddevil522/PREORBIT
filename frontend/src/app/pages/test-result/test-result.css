@@ -69,7 +69,7 @@
   background: rgba(16, 185, 129, 0.15);
   color: #10b981;
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   border-radius: 20px;
   letter-spacing: 1px;
   margin-bottom: 1rem;
@@ -78,7 +78,7 @@
 .result-header h2 {
   font-size: 2rem;
   margin-bottom: 0.5rem;
-  font-weight: 700;
+  font-weight: var(--font-bold);
   color: var(--text-primary);
 }
 
@@ -99,13 +99,13 @@
 
 .marks {
   font-size: 1.75rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-primary);
 }
 
 .percentage {
   font-size: 3.5rem;
-  font-weight: 800;
+  font-weight: var(--font-extrabold);
   background: linear-gradient(to right, #38bdf8, #818cf8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -123,7 +123,7 @@
 .btn {
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 1rem;
@@ -153,7 +153,7 @@
 /* Statistics Grid */
 .result-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: 1.5rem;
   margin-bottom: 3rem;
 }
@@ -185,7 +185,7 @@
 }
 
 .stat-item .val {
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   font-size: 1.1rem;
 }
 
@@ -225,7 +225,7 @@
   color: var(--text-primary);
   padding: 0.25rem 0.75rem;
   border-radius: 6px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   font-size: 0.9rem;
 }
 
@@ -233,7 +233,7 @@
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   font-size: 0.9rem;
   padding: 0.25rem 0.75rem;
   border-radius: 6px;
@@ -256,7 +256,7 @@
 
 .q-marks {
   margin-left: auto;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-secondary);
 }
 
@@ -304,7 +304,7 @@
 }
 
 .opt-key {
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   margin-right: 1rem;
   color: var(--preorbit-primary);
   display: flex;

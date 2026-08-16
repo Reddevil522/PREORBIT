@@ -12,6 +12,8 @@
 const express  = require('express');
 const cors     = require('cors');
 const dotenv   = require('dotenv');
+const helmet   = require('helmet');
+const rateLimit = require('express-rate-limit');
 
 const path = require('path');
 dotenv.config({ path: path.join(__dirname, '../.env') });
@@ -42,10 +44,66 @@ const placementRoutes  = require('./routes/placementRoutes');
 const app  = express();
 const PORT = process.env.PORT || 5000;
 
-// ── Middleware ──────────────────────────────────────────────
-app.use(cors());
+if (process.env.TRUST_PROXY === 'true') {
+  app.set('trust proxy', 1);
+}
+
+// ── Security Middleware ─────────────────────────────────────
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com", "data:"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"]
+    }
+  },
+  hsts: process.env.NODE_ENV === 'production' ? { maxAge: 31536000, includeSubDomains: true } : false,
+  frameguard: { action: 'deny' },
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  noSniff: true
+}));
+
+const allowedOrigins = process.env.NODE_ENV === 'production' 
+  ? [process.env.FRONTEND_URL || 'https://preorbit.app']
+  : ['http://localhost:4200'];
+
+app.use(cors({
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json({ limit: '5mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+// ── Rate Limiting ───────────────────────────────────────────
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 1000,
+  message: { success: false, message: 'Too many requests from this IP, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 50,
+  message: { success: false, message: 'Too many authentication attempts, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api', globalLimiter);
+app.use('/api/auth', authLimiter);
 
 // ── API Routes ──────────────────────────────────────────────
 app.use('/api',        healthRouter);
@@ -75,6 +133,14 @@ app.use(errorHandler);
 // ── Step 2 & 3: Connect DB then start server ─────────────────
 const startServer = async () => {
   try {
+    // Required Secret Checks
+    if (process.env.NODE_ENV === 'production') {
+      if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'secret' || process.env.JWT_SECRET === 'development' || process.env.JWT_SECRET === '123456') {
+        console.error('\n❌ CRITICAL: Insecure or missing JWT_SECRET in production. Server refused to start.');
+        process.exit(1);
+      }
+    }
+
     // Connect to MongoDB first
     await connectDatabase();
 

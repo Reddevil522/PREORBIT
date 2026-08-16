@@ -55,12 +55,17 @@ const errorHandler = (err, req, res, next) => {
     }
   }
 
-  res.status(statusCode).json({
+  const responsePayload = {
     success: false,
-    message,
-    devErrorDetails: err.stack,
-    devErrObj: err
-  });
+    message
+  };
+
+  if (process.env.NODE_ENV !== 'production') {
+    responsePayload.devErrorDetails = err.stack;
+    responsePayload.devErrObj = err;
+  }
+
+  res.status(statusCode).json(responsePayload);
 };
 
 module.exports = errorHandler;

@@ -11,7 +11,7 @@
 
 .notes-list__title {
   font-size: var(--text-3xl);
-  font-weight: 700;
+  font-weight: var(--font-bold);
   color: var(--text-primary);
   margin-bottom: var(--space-2);
   letter-spacing: -0.02em;
@@ -79,7 +79,7 @@
 
 .chapter-card__title {
   font-size: var(--text-base);
-  font-weight: 600;
+  font-weight: var(--font-semibold);
   color: var(--text-primary);
   margin: 0;
 }

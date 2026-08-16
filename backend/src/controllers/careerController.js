@@ -102,14 +102,29 @@ const createCareerLink = async (req, res) => {
     if (!companyName || !String(companyName).trim()) {
       return sendError(res, 400, 'Company name is required.');
     }
+    if (String(companyName).trim().length > 150) {
+      return sendError(res, 400, 'Company name is too long.');
+    }
     if (!jobTitle || !String(jobTitle).trim()) {
       return sendError(res, 400, 'Job title is required.');
+    }
+    if (String(jobTitle).trim().length > 150) {
+      return sendError(res, 400, 'Job title is too long.');
     }
     if (!url || !String(url).trim()) {
       return sendError(res, 400, 'URL is required.');
     }
     if (!isValidUrl(url)) {
       return sendError(res, 400, 'URL must start with http:// or https://');
+    }
+    if (String(url).trim().length > 500) {
+      return sendError(res, 400, 'URL is too long.');
+    }
+    if (location && String(location).trim().length > 150) {
+      return sendError(res, 400, 'Location is too long.');
+    }
+    if (notes && String(notes).trim().length > 1000) {
+      return sendError(res, 400, 'Notes are too long (max 1000 characters).');
     }
     if (!CAREER_STATUSES.includes(status)) {
       return sendError(res, 400, `Invalid career status. Allowed: ${CAREER_STATUSES.join(', ')}`);
@@ -154,12 +169,25 @@ const updateCareerLink = async (req, res) => {
     if (companyName !== undefined && !String(companyName).trim()) {
       return sendError(res, 400, 'Company name cannot be empty.');
     }
+    if (companyName !== undefined && String(companyName).trim().length > 150) {
+      return sendError(res, 400, 'Company name is too long.');
+    }
     if (jobTitle !== undefined && !String(jobTitle).trim()) {
       return sendError(res, 400, 'Job title cannot be empty.');
+    }
+    if (jobTitle !== undefined && String(jobTitle).trim().length > 150) {
+      return sendError(res, 400, 'Job title is too long.');
     }
     if (url !== undefined) {
       if (!String(url).trim()) return sendError(res, 400, 'URL cannot be empty.');
       if (!isValidUrl(url))    return sendError(res, 400, 'URL must start with http:// or https://');
+      if (String(url).trim().length > 500) return sendError(res, 400, 'URL is too long.');
+    }
+    if (location !== undefined && String(location).trim().length > 150) {
+      return sendError(res, 400, 'Location is too long.');
+    }
+    if (notes !== undefined && String(notes).trim().length > 1000) {
+      return sendError(res, 400, 'Notes are too long (max 1000 characters).');
     }
     if (status !== undefined && !CAREER_STATUSES.includes(status)) {
       return sendError(res, 400, `Invalid career status. Allowed: ${CAREER_STATUSES.join(', ')}`);

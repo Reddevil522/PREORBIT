@@ -62,11 +62,11 @@ exports.getImportHistory = async (req, res, next) => {
     const skip = (page - 1) * limit;
 
     const filter = {};
-    if (req.query.module) filter.module = req.query.module;
-    if (req.query.subject) filter.subject = req.query.subject;
-    if (req.query.chapterSlug) filter.chapterSlug = req.query.chapterSlug;
-    if (req.query.testId) filter.testId = req.query.testId;
-    if (req.query.status) filter.status = req.query.status;
+    if (req.query.module) filter.module = String(req.query.module);
+    if (req.query.subject) filter.subject = String(req.query.subject);
+    if (req.query.chapterSlug) filter.chapterSlug = String(req.query.chapterSlug);
+    if (req.query.testId) filter.testId = String(req.query.testId);
+    if (req.query.status) filter.status = String(req.query.status);
 
     const [imports, total] = await Promise.all([
       ImportHistory.find(filter)
