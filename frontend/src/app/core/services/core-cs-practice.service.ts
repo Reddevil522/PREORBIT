@@ -25,7 +25,7 @@ export class CoreCsPracticeService {
       `${environment.apiUrl}/tests?module=core-cs&subject=${subjectSlug}`
     ).pipe(
       map(response => {
-        const dbTests = response.data.filter((t: any) => t.chapterSlug === chapterSlug);
+        const dbTests = response.data.filter((t: any) => t.chapterSlug && t.chapterSlug.toLowerCase() === chapterSlug.toLowerCase());
         const tests: TestMetadata[] = [];
         let maxTestNumber = 0;
         
@@ -66,23 +66,7 @@ export class CoreCsPracticeService {
         // Sort the database tests by their testNumber
         tests.sort((a, b) => (a.testNumber || 0) - (b.testNumber || 0));
 
-        // 2. Ensure at least 5 tests are displayed per chapter minimum (padding with locked tests)
-        let padIndex = tests.length + 1;
-        while (tests.length < 5) {
-          tests.push({
-            id: `core-cs-${subjectSlug}-${chapterSlug}-test-${padIndex}`,
-            testNumber: padIndex,
-            title: padIndex === 5 ? `Test 5+` : `Test ${padIndex}`,
-            subject: subjectSlug,
-            chapterSlug: chapterSlug,
-            totalQuestions: 25,
-            multipleChoiceCount: 5,
-            mcqCount: 20,
-            totalMarks: 25,
-            status: 'not-available'
-          });
-          padIndex++;
-        }
+        // Removed hardcoded minimum tests padding logic
         
         return tests;
       })

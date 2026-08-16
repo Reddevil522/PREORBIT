@@ -6,7 +6,7 @@
   <div class="card-header">
     <div class="test-icon" [class.not-ready]="test.status === 'not-available' || test.status === 'locked'">
       <i class="ph" [ngClass]="{
-        'ph-exam': test.status === 'available',
+        'ph-file-text': test.status === 'available',
         'ph-lock-key': test.status === 'locked' || test.status === 'not-available',
         'ph-check-circle': test.status === 'completed'
       }"></i>

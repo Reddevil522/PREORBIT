@@ -54,12 +54,27 @@
         </div>
       </div>
 
-      <div class="tests-grid">
+      <div class="tests-grid" *ngIf="!loading() && !error() && (testsByChapter().get(chapter.slug) || []).length > 0">
         <app-test-card 
           *ngFor="let test of testsByChapter().get(chapter.slug) || []" 
           [test]="test" 
           routePrefix="/java-dsa/tests">
         </app-test-card>
+      </div>
+
+      <div class="loading-state" *ngIf="loading()" style="padding: 1rem; text-align: center; color: var(--text-secondary);">
+        <i class="ph ph-spinner ph-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+        <p>Loading tests...</p>
+      </div>
+
+      <div class="empty-tests-state" *ngIf="!loading() && !error() && (testsByChapter().get(chapter.slug) || []).length === 0">
+        <i class="ph ph-file-text"></i>
+        <p>Tests are being prepared for this chapter.</p>
+      </div>
+
+      <div class="empty-tests-state error-state" *ngIf="!loading() && error()">
+        <i class="ph ph-warning-circle" style="color: var(--danger-color);"></i>
+        <p>Unable to load tests. Please try again.</p>
       </div>
 
     </div>

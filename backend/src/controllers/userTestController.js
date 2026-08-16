@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const PracticeTest = require('../models/PracticeTest');
 const TestAttempt = require('../models/TestAttempt');
 const { sendSuccess, sendError } = require('../utils/response');

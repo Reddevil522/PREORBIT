@@ -32,7 +32,7 @@ export class AptitudePracticeService {
       `${environment.apiUrl}/tests?module=aptitude&subject=${subject}`
     ).pipe(
       map(response => {
-        const dbTests = response.data.filter((t: any) => t.chapterSlug === chapterSlug);
+        const dbTests = response.data.filter((t: any) => t.chapterSlug && t.chapterSlug.toLowerCase() === chapterSlug.toLowerCase());
         const tests: TestMetadata[] = [];
         let maxTestNumber = 0;
         
@@ -73,22 +73,7 @@ export class AptitudePracticeService {
         // Sort the database tests by their testNumber
         tests.sort((a, b) => (a.testNumber || 0) - (b.testNumber || 0));
 
-        // 2. Ensure at least 4 tests are displayed per chapter minimum (padding with locked tests)
-        let padIndex = tests.length + 1;
-        while (tests.length < 4) {
-          tests.push({
-            id: `${chapterSlug}-test-${padIndex}`,
-            section: 'aptitude',
-            subject: subject,
-            chapterSlug: chapterSlug,
-            testNumber: padIndex,
-            title: `Test ${padIndex}`,
-            totalQuestions: 15,
-            totalMarks: 15,
-            status: 'not-available'
-          });
-          padIndex++;
-        }
+        // Removed hardcoded minimum tests padding logic
         
         return tests;
       })

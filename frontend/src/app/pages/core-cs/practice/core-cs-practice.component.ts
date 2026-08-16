@@ -19,9 +19,38 @@ export class CoreCsPracticeComponent implements OnInit {
   subject = signal<CoreCsSubject | null>(null);
   searchQuery = signal('');
   testsMap = signal<{ [chapterSlug: string]: TestMetadata[] }>({});
+  loadingMap = signal<{ [chapterSlug: string]: boolean }>({});
+  errorMap = signal<{ [chapterSlug: string]: boolean }>({});
   
   progressData: any;
 
+  retryChapter(subjectSlug: string, chapter: CoreCsChapter) {
+    const lMap = { ...this.loadingMap() };
+    const eMap = { ...this.errorMap() };
+    lMap[chapter.slug] = true;
+    eMap[chapter.slug] = false;
+    this.loadingMap.set(lMap);
+    this.errorMap.set(eMap);
+    this.practiceService.getChapterTests(subjectSlug, chapter.slug).subscribe({
+      next: (tests) => {
+        const tMap = { ...this.testsMap() };
+        tMap[chapter.slug] = tests;
+        this.testsMap.set(tMap);
+        const newLMap = { ...this.loadingMap() };
+        newLMap[chapter.slug] = false;
+        this.loadingMap.set(newLMap);
+      },
+      error: (err) => {
+        console.error(err);
+        const newEMap = { ...this.errorMap() };
+        newEMap[chapter.slug] = true;
+        this.errorMap.set(newEMap);
+        const newLMap = { ...this.loadingMap() };
+        newLMap[chapter.slug] = false;
+        this.loadingMap.set(newLMap);
+      }
+    });
+  }
   filteredChapters = computed(() => {
     const currentSubject = this.subject();
     if (!currentSubject) return [];
@@ -62,13 +91,32 @@ export class CoreCsPracticeComponent implements OnInit {
   }
 
   private loadTestsForChapters(subjectSlug: string, chapters: CoreCsChapter[]) {
-    const map: { [chapterSlug: string]: TestMetadata[] } = {};
+    const tMap: { [chapterSlug: string]: TestMetadata[] } = {};
+    const lMap: { [chapterSlug: string]: boolean } = {};
+    const eMap: { [chapterSlug: string]: boolean } = {};
     
-    // Simulate parallel loading of tests for all chapters
     chapters.forEach(chapter => {
-      this.practiceService.getChapterTests(subjectSlug, chapter.slug).subscribe(tests => {
-        map[chapter.slug] = tests;
-        this.testsMap.set({ ...map }); // trigger signal update
+      lMap[chapter.slug] = true;
+      eMap[chapter.slug] = false;
+    });
+    this.loadingMap.set({ ...lMap });
+    this.errorMap.set({ ...eMap });
+
+    chapters.forEach(chapter => {
+      this.practiceService.getChapterTests(subjectSlug, chapter.slug).subscribe({
+        next: (tests) => {
+          tMap[chapter.slug] = tests;
+          this.testsMap.set({ ...tMap });
+          lMap[chapter.slug] = false;
+          this.loadingMap.set({ ...lMap });
+        },
+        error: (err) => {
+          console.error(err);
+          eMap[chapter.slug] = true;
+          this.errorMap.set({ ...eMap });
+          lMap[chapter.slug] = false;
+          this.loadingMap.set({ ...lMap });
+        }
       });
     });
   }

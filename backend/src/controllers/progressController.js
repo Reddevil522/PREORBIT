@@ -11,20 +11,20 @@ exports.getProgress = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(authenticatedUserId)) {
       return res.status(400).json({ success: false, message: 'Invalid authenticated user identity' });
     }
-    
+
     const userId = authenticatedUserId;
     console.log(`[PROGRESS-AUTH] authenticatedUserId: ${userId}`);
 
     // 1. Fetch all submitted test attempts for this user
-    const attempts = await TestAttempt.find({ 
-      userId, 
-      status: 'submitted' 
+    const attempts = await TestAttempt.find({
+      userId,
+      status: 'submitted'
     }).sort({ submittedAt: 1 }).lean();
     console.log(`[PROGRESS-DB] attemptUserId: ${userId}, submittedAttemptsCount: ${attempts.length}`);
 
     // 2. Fetch theory completions
     const theoryCompletions = await TheoryCompletion.find({ userId }).lean();
-    const completedChapters = new Set(theoryCompletions.map(tc => tc.chapterSlug));
+    const completedChapters = new Set(theoryCompletions.map(tc => (tc.chapterSlug || '').toLowerCase()));
 
     // 3. Fetch all active practice tests (available or locked) to establish curriculum
     const practiceTests = await PracticeTest.find({
@@ -46,7 +46,7 @@ exports.getProgress = async (req, res) => {
 
     attempts.forEach(attempt => {
       const tId = attempt.testId;
-      
+
       if (!testStats.has(tId)) {
         testStats.set(tId, {
           testId: tId,
@@ -60,7 +60,7 @@ exports.getProgress = async (req, res) => {
 
       const stat = testStats.get(tId);
       stat.attempts++;
-      
+
       const obtained = attempt.evaluation?.obtainedMarks || 0;
       const max = attempt.evaluation?.maximumMarks || 0;
       const perc = attempt.evaluation?.percentage || 0;
@@ -69,7 +69,7 @@ exports.getProgress = async (req, res) => {
         stat.bestScore = obtained;
         stat.bestPercentage = perc;
       }
-      
+
       stat.latestScore = obtained;
       stat.latestPercentage = perc;
 
@@ -91,7 +91,7 @@ exports.getProgress = async (req, res) => {
     const accuracy = totalQuestionsAttempted > 0 ? (totalCorrect / totalQuestionsAttempted) * 100 : 0;
 
     // --- HIERARCHICAL PROGRESS CALCULATION ---
-    
+
     // Initialize structures
     const chaptersMap = new Map();
     const subjectsMap = new Map(); // key: subject_module
@@ -99,7 +99,7 @@ exports.getProgress = async (req, res) => {
 
     // Group tests by chapter
     practiceTests.forEach(t => {
-      const chapSlug = t.chapterSlug;
+      const chapSlug = (t.chapterSlug || '').toLowerCase();
       if (!chaptersMap.has(chapSlug)) {
         chaptersMap.set(chapSlug, {
           chapterSlug: chapSlug,
@@ -116,14 +116,14 @@ exports.getProgress = async (req, res) => {
     // Also include chapters that have theory completed but no tests configured yet
     completedChapters.forEach(chapSlug => {
       if (!chaptersMap.has(chapSlug)) {
-         chaptersMap.set(chapSlug, {
-            chapterSlug: chapSlug,
-            chapterName: chapSlug, // Fallback if no test gives a better name
-            module: 'unknown',
-            subject: 'unknown',
-            testsConfigured: [],
-            theoryCompleted: true
-         });
+        chaptersMap.set(chapSlug, {
+          chapterSlug: chapSlug,
+          chapterName: chapSlug, // Fallback if no test gives a better name
+          module: 'unknown',
+          subject: 'unknown',
+          testsConfigured: [],
+          theoryCompleted: true
+        });
       }
     });
 
@@ -135,7 +135,7 @@ exports.getProgress = async (req, res) => {
     chaptersMap.forEach(chap => {
       const theoryCompleted = chap.theoryCompleted;
       const totalConfiguredTests = chap.testsConfigured.length;
-      
+
       let chapterUniqueCompletedTests = 0;
       chap.testsConfigured.forEach(tId => {
         if (testStats.has(tId)) {
@@ -146,14 +146,21 @@ exports.getProgress = async (req, res) => {
       // Unit formula: theory=1 unit, each test=1 unit
       const completedUnits = (theoryCompleted ? 1 : 0) + chapterUniqueCompletedTests;
       const totalUnits = 1 + totalConfiguredTests; // theory is always configured as 1 unit
-      
-      const progress = totalUnits > 0 ? (completedUnits / totalUnits) * 100 : 0;
-      
+
+      let progress = totalUnits > 0 ? (completedUnits / totalUnits) * 100 : 0;
+
+      // Do NOT make: theoryCompleted = true automatically equal: progress = 100
+      if (totalConfiguredTests === 0) {
+        progress = 0;
+      }
+
       let status = 'NOT_STARTED';
-      if (completedUnits === totalUnits && totalUnits > 0) {
-        status = 'COMPLETED';
-      } else if (completedUnits > 0) {
+      if (chapterUniqueCompletedTests === 0) {
+        status = 'NOT_STARTED';
+      } else if (chapterUniqueCompletedTests > 0 && chapterUniqueCompletedTests < totalConfiguredTests) {
         status = 'IN_PROGRESS';
+      } else if (chapterUniqueCompletedTests === totalConfiguredTests && totalConfiguredTests > 0) {
+        status = 'COMPLETED';
       }
 
       const chapterData = {
@@ -204,14 +211,14 @@ exports.getProgress = async (req, res) => {
         });
       }
       const m = modulesMap.get(mod);
-      
+
       // Calculate subject progress
       sub.progress = sub.totalUnits > 0 ? (sub.completedUnits / sub.totalUnits) * 100 : 0;
       m.subjects.push(sub);
 
       m.completedUnits += sub.completedUnits;
       m.totalUnits += sub.totalUnits;
-      
+
       // Calculate legacy UI fields for backward compatibility
       sub.chapters.forEach(chap => {
         m.testsCompleted = (m.testsCompleted || 0) + chap.tests.completed;
@@ -226,13 +233,13 @@ exports.getProgress = async (req, res) => {
       // Ensure legacy fields default to 0 if no tests configured
       m.testsCompleted = m.testsCompleted || 0;
       m.totalTests = m.totalTests || 0;
-      
+
       modulesOutput.push(m);
-      
+
       // We exclude "unknown" modules from overall configured units to not skew data
       if (m.module !== 'unknown') {
-         overallCompletedUnits += m.completedUnits;
-         overallTotalUnits += m.totalUnits;
+        overallCompletedUnits += m.completedUnits;
+        overallTotalUnits += m.totalUnits;
       }
     });
 
@@ -298,15 +305,17 @@ exports.markTheoryCompleted = async (req, res) => {
     let authenticatedUserId = req.user.userId || req.user.id || req.user._id;
 
     if (!mongoose.Types.ObjectId.isValid(authenticatedUserId)) {
-       return res.status(400).json({ success: false, message: 'Invalid authenticated user identity' });
+      return res.status(400).json({ success: false, message: 'Invalid authenticated user identity' });
     }
-    
+
     const userId = authenticatedUserId;
-    const { chapterSlug } = req.params;
+    let { chapterSlug } = req.params;
 
     if (!chapterSlug) {
       return res.status(400).json({ success: false, message: 'chapterSlug is required' });
     }
+
+    chapterSlug = chapterSlug.toLowerCase();
 
     const completed = await TheoryCompletion.findOneAndUpdate(
       { userId, chapterSlug },

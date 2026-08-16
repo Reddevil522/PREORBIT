@@ -62,7 +62,7 @@
         </div>
       </div>
 
-      <div class="tests-grid" *ngIf="getTestsForChapter(chapter.slug).length > 0; else emptyTests">
+      <div class="tests-grid" *ngIf="!loadingMap()[chapter.slug] && !errorMap()[chapter.slug] && getTestsForChapter(chapter.slug).length > 0">
         <app-test-card 
           *ngFor="let test of getTestsForChapter(chapter.slug)" 
           [test]="test"
@@ -70,12 +70,21 @@
         ></app-test-card>
       </div>
 
-      <ng-template #emptyTests>
-        <div class="empty-tests-state">
-          <i class="ph ph-cone"></i>
-          <p>Tests are being prepared for this chapter.</p>
-        </div>
-      </ng-template>
+      <div class="loading-state" *ngIf="loadingMap()[chapter.slug]" style="padding: 1rem; text-align: center; color: var(--text-secondary);">
+        <i class="ph ph-spinner ph-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+        <p>Loading tests...</p>
+      </div>
+
+      <div class="empty-tests-state" *ngIf="!loadingMap()[chapter.slug] && !errorMap()[chapter.slug] && getTestsForChapter(chapter.slug).length === 0">
+        <i class="ph ph-file-text"></i>
+        <p>Tests are being prepared for this chapter.</p>
+      </div>
+
+      <div class="empty-tests-state error-state" *ngIf="!loadingMap()[chapter.slug] && errorMap()[chapter.slug]">
+        <i class="ph ph-warning-circle" style="color: var(--danger-color);"></i>
+        <p>Unable to load tests. Please try again.</p>
+        <button class="retry-btn" (click)="retryChapter(subject()!.slug, chapter)" style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer;">Retry</button>
+      </div>
     </div>
   </div>
 
