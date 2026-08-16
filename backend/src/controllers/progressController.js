@@ -8,10 +8,14 @@ exports.getProgress = async (req, res) => {
   try {
     let authenticatedUserId = req.user.userId || req.user.id || req.user._id;
 
-    if (!mongoose.Types.ObjectId.isValid(authenticatedUserId)) {
-      return res.status(400).json({ success: false, message: 'Invalid authenticated user identity' });
+    // Admin users do not have student progress — return empty gracefully
+    if (req.user.role === 'admin' || !mongoose.Types.ObjectId.isValid(authenticatedUserId)) {
+      return res.status(200).json({ success: true, data: {
+        overall: { progress: 0, completedUnits: 0, totalUnits: 0, testsAttempted: 0, testsCompleted: 0, bestScore: 0, bestScorePercentage: 0, latestScore: 0, latestScorePercentage: 0, averageScore: 0, averageScorePercentage: 0, accuracy: 0, timeSpentMs: 0, theoryCompletedCount: 0 },
+        modules: [], subjects: [], chapters: [], tests: [], recentTests: []
+      }});
     }
-
+    
     const userId = authenticatedUserId;
     console.log(`[PROGRESS-AUTH] authenticatedUserId: ${userId}`);
 

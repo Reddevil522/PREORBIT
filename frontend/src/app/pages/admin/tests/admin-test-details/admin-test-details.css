@@ -325,6 +325,22 @@
   border-radius: 0.5rem;
   display: flex;
   gap: 0.75rem;
+  transition: all 0.15s ease;
+}
+
+.option-item.is-correct {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: #10b981;
+}
+
+.option-item.is-correct .opt-key {
+  color: #10b981;
+  font-weight: var(--font-bold);
+}
+
+.option-item.is-correct .opt-text {
+  color: var(--text-primary);
+  font-weight: var(--font-medium);
 }
 
 .opt-key {
@@ -400,4 +416,46 @@
 .top-actions {
   display: flex;
   align-items: center;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--preorbit-primary, #6366f1);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover:not(:disabled) {
+  filter: brightness(0.9);
+}
+
+.btn-primary.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.dash__input {
+  background: var(--bg-surface, #ffffff);
+  color: var(--text-primary, #111827);
+  border: 1px solid var(--border-default, #e5e7eb);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+:host-context(html.dark) .dash__input {
+  background: var(--bg-surface, #1f2937);
+  color: var(--text-primary, #f9fafb);
+  border-color: var(--border-default, #374151);
+}
+
+.dash__input:focus {
+  border-color: var(--preorbit-accent, #8b5cf6);
 }

@@ -157,7 +157,7 @@
 
       <div class="action-buttons right-align mt-6">
         <button class="btn-secondary" [disabled]="isImporting" (click)="cancel()">Cancel</button>
-        <button class="btn-success" [disabled]="isImporting" (click)="confirmImport()">
+        <button class="btn-primary" [disabled]="isImporting" (click)="confirmImport()">
           <i class="ph" [ngClass]="isImporting ? 'ph-spinner ph-spin' : 'ph-check-circle'"></i>
           {{ isImporting ? 'Importing...' : (isReplace ? 'Confirm Replace' : 'Confirm Import') }}
         </button>

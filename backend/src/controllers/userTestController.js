@@ -92,8 +92,9 @@ exports.getAvailableTests = async (req, res, next) => {
     const { module, subject } = req.query;
     let userId = req.user.userId;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return sendError(res, 400, 'Invalid authenticated user identity');
+    // Admin users do not have student progress — return empty gracefully
+    if (req.user.role === 'admin' || !mongoose.Types.ObjectId.isValid(userId)) {
+      return sendSuccess(res, 200, 'No student data for admin', { tests: [], chapterGroups: [] });
     }
 
     const query = { status: { $in: ['available', 'locked'] } };
@@ -181,8 +182,8 @@ exports.getTestSummary = async (req, res, next) => {
     const { module, subject } = req.query;
     let userId = req.user.userId;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return sendError(res, 400, 'Invalid authenticated user identity');
+    if (req.user.role === 'admin' || !mongoose.Types.ObjectId.isValid(userId)) {
+      return sendSuccess(res, 200, 'No student data for admin', { available: 0, completed: 0, total: 0 });
     }
 
     const query = {};

@@ -161,8 +161,8 @@
 }
 
 .status-not-started {
-  background: var(--surface-hover, #f3f4f6);
-  color: var(--text-secondary, #6b7280);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
 }
 
 .status-progress {

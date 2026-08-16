@@ -108,8 +108,10 @@
           <p class="q-text">{{ q.question }}</p>
           
           <div class="q-options">
-            <div class="option-item" *ngFor="let opt of q.options">
-              <span class="opt-key">{{ opt.key }})</span> 
+            <div class="option-item"
+              *ngFor="let opt of q.options"
+              [ngClass]="{ 'is-correct': opt.key === q.correctAnswer || (q.correctAnswers && q.correctAnswers.includes(opt.key)) }">
+              <span class="opt-key">{{ opt.key }})</span>
               <span class="opt-text">{{ opt.text }}</span>
             </div>
           </div>
