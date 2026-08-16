@@ -126,6 +126,14 @@ app.use('/api/core-cs/sql/questions', sqlQuestionRoutes);
 app.use('/api/admin/import', importRoutes);
 app.use('/api/admin/tests', adminTestRoutes);
 
+// ── Root Health Route (For Render) ──────────────────────────
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "PREORBIT API is running"
+  });
+});
+
 // ── 404 + Error Handlers (must be LAST) ─────────────────────
 app.use(notFound);
 app.use(errorHandler);
@@ -145,7 +153,7 @@ const startServer = async () => {
     await connectDatabase();
 
     // Only start Express after DB is ready
-    app.listen(PORT, () => {
+    app.listen(PORT, "0.0.0.0", () => {
       console.log(`\n🚀 PREORBIT API is running`);
       console.log(`   → http://localhost:${PORT}`);
       console.log(`   → Health: http://localhost:${PORT}/api/health\n`);
