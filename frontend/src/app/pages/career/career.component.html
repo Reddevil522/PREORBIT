@@ -1,0 +1,456 @@
+<!-- PREORBIT — Career Page v2 -->
+
+<div class="career-container">
+
+  <!-- ═══ HEADER ══════════════════════════════════════════════ -->
+  <div class="career-header">
+    <div class="career-header__text">
+      <h1 class="career-header__title">
+        <i class="ph ph-briefcase"></i> Career
+      </h1>
+      <p class="career-header__subtitle">Save and manage job opportunities.</p>
+    </div>
+    <button id="career-add-btn" class="career-btn career-btn--primary" (click)="openCreate()">
+      <i class="ph ph-plus"></i> Add Opportunity
+    </button>
+  </div>
+
+  <!-- ═══ SUMMARY STRIP ════════════════════════════════════════ -->
+  <div *ngIf="!isLoading() && !error()" class="career-summary">
+    <div class="career-summary__card"
+         [class.career-summary__card--active]="statusFilter() === 'All'"
+         (click)="statusFilter.set('All')">
+      <span class="career-summary__val">{{ allLinks().length }}</span>
+      <span class="career-summary__lbl">Total</span>
+    </div>
+    <div class="career-summary__card career-summary__card--saved"
+         [class.career-summary__card--active]="statusFilter() === 'Saved'"
+         (click)="statusFilter.set('Saved')">
+      <span class="career-summary__val">{{ countByStatus()['Saved'] }}</span>
+      <span class="career-summary__lbl">Saved</span>
+    </div>
+    <div class="career-summary__card career-summary__card--interested"
+         [class.career-summary__card--active]="statusFilter() === 'Interested'"
+         (click)="statusFilter.set('Interested')">
+      <span class="career-summary__val">{{ countByStatus()['Interested'] }}</span>
+      <span class="career-summary__lbl">Interested</span>
+    </div>
+    <div class="career-summary__card career-summary__card--applied"
+         [class.career-summary__card--active]="statusFilter() === 'Applied'"
+         (click)="statusFilter.set('Applied')">
+      <span class="career-summary__val">{{ countByStatus()['Applied'] }}</span>
+      <span class="career-summary__lbl">Applied</span>
+    </div>
+    <div class="career-summary__card career-summary__card--archived"
+         [class.career-summary__card--active]="statusFilter() === 'Archived'"
+         (click)="statusFilter.set('Archived')">
+      <span class="career-summary__val">{{ countByStatus()['Archived'] }}</span>
+      <span class="career-summary__lbl">Archived</span>
+    </div>
+  </div>
+
+  <!-- ═══ FILTERS ══════════════════════════════════════════════ -->
+  <div *ngIf="!isLoading() && !error()" class="career-filters">
+    <!-- Search -->
+    <div class="career-filters__search-wrap">
+      <i class="ph ph-magnifying-glass career-filters__search-icon"></i>
+      <input
+        id="career-search-input"
+        type="text"
+        class="career-filters__search"
+        placeholder="Search company, role, location…"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        autocomplete="off" />
+    </div>
+
+    <!-- Status -->
+    <select
+      id="career-status-filter"
+      class="career-filters__select"
+      [ngModel]="statusFilter()"
+      (ngModelChange)="statusFilter.set($event)">
+      <option value="All">All Statuses</option>
+      <option *ngFor="let s of allStatuses" [value]="s">{{ s }}</option>
+    </select>
+
+    <!-- Category -->
+    <select
+      id="career-cat-filter"
+      class="career-filters__select"
+      [ngModel]="categoryFilter()"
+      (ngModelChange)="categoryFilter.set($event)">
+      <option value="All">All Categories</option>
+      <option *ngFor="let c of allCategories" [value]="c">{{ c }}</option>
+    </select>
+
+    <!-- Sort -->
+    <select
+      id="career-sort"
+      class="career-filters__select"
+      [ngModel]="sortBy()"
+      (ngModelChange)="sortBy.set($event)">
+      <option *ngFor="let s of sortOptions" [value]="s.value">{{ s.label }}</option>
+    </select>
+
+    <!-- Clear -->
+    <button *ngIf="hasActiveFilters()" class="career-filters__clear" (click)="clearFilters()">
+      <i class="ph ph-x"></i> Clear
+    </button>
+  </div>
+
+  <!-- ═══ RESULTS COUNT ══════════════════════════════════════════ -->
+  <div *ngIf="!isLoading() && !error() && allLinks().length > 0" class="career-count">
+    <span *ngIf="hasActiveFilters()">
+      {{ filteredLinks().length }} of {{ allLinks().length }} opportunities
+    </span>
+    <span *ngIf="!hasActiveFilters()">
+      {{ allLinks().length }} opportunit{{ allLinks().length !== 1 ? 'ies' : 'y' }}
+    </span>
+  </div>
+
+  <!-- ═══ LOADING ══════════════════════════════════════════════ -->
+  <div *ngIf="isLoading()" class="career-state">
+    <div class="career-spinner"></div>
+    <p>Loading career links…</p>
+  </div>
+
+  <!-- ═══ ERROR ════════════════════════════════════════════════ -->
+  <div *ngIf="!isLoading() && error()" class="career-state career-state--error">
+    <i class="ph ph-warning-circle"></i>
+    <p>{{ error() }}</p>
+    <button class="career-btn career-btn--ghost" (click)="loadLinks()">
+      <i class="ph ph-arrow-clockwise"></i> Retry
+    </button>
+  </div>
+
+  <!-- ═══ EMPTY — no links at all ══════════════════════════════ -->
+  <div *ngIf="!isLoading() && !error() && allLinks().length === 0" class="career-state">
+    <i class="ph ph-briefcase career-state__icon"></i>
+    <h3 class="career-state__title">No career opportunities saved yet</h3>
+    <p class="career-state__desc">Add company job links to track your applications.</p>
+    <button class="career-btn career-btn--primary" (click)="openCreate()">
+      <i class="ph ph-plus"></i> Add Opportunity
+    </button>
+  </div>
+
+  <!-- ═══ EMPTY — filter empty ═════════════════════════════════ -->
+  <div *ngIf="!isLoading() && !error() && allLinks().length > 0 && filteredLinks().length === 0" class="career-state">
+    <i class="ph ph-magnifying-glass career-state__icon"></i>
+    <h3 class="career-state__title">No matching opportunities found</h3>
+    <p class="career-state__desc">Try adjusting your search or filters.</p>
+    <button class="career-btn career-btn--ghost" (click)="clearFilters()">
+      <i class="ph ph-funnel-simple-x"></i> Clear Filters
+    </button>
+  </div>
+
+  <!-- ═══ CAREER CARDS ═══════════════════════════════════════════ -->
+  <div *ngIf="!isLoading() && !error() && filteredLinks().length > 0" class="career-grid">
+
+    <div
+      *ngFor="let link of filteredLinks()"
+      class="career-card"
+      [id]="'career-card-' + link._id"
+      [class.career-card--archived]="link.status === 'Archived'">
+
+      <!-- Card header -->
+      <div class="career-card__header">
+        <div class="career-card__company-wrap">
+          <div class="career-card__company-icon">
+            <i class="ph ph-buildings"></i>
+          </div>
+          <div class="career-card__title-group">
+            <h3 class="career-card__company">{{ link.companyName }}</h3>
+            <p class="career-card__job">{{ link.jobTitle }}</p>
+          </div>
+        </div>
+        <!-- Status + Category badges -->
+        <div class="career-card__badges">
+          <span class="career-badge" [ngClass]="getStatusCss(link.status)">{{ link.status }}</span>
+          <span class="career-badge career-badge--cat">{{ link.category }}</span>
+        </div>
+      </div>
+
+      <!-- Meta row -->
+      <div class="career-card__meta">
+        <span *ngIf="link.location" class="career-card__meta-item">
+          <i class="ph ph-map-pin"></i> {{ link.location }}
+        </span>
+        <span class="career-card__meta-item">
+          <i class="ph ph-calendar-blank"></i> {{ link.createdAt | date:'dd MMM y' }}
+        </span>
+      </div>
+
+      <!-- Notes -->
+      <div *ngIf="link.notes" class="career-card__notes">
+        <i class="ph ph-note"></i>
+        <span>{{ link.notes }}</span>
+      </div>
+
+      <!-- Actions -->
+      <div class="career-card__actions">
+        <!-- Open link -->
+        <button class="career-btn career-btn--sm career-btn--open" (click)="openLink(link.url)" title="Open job link">
+          <i class="ph ph-arrow-square-out"></i> Open
+        </button>
+
+        <!-- Track Application — only for non-archived, non-applied -->
+        <button
+          *ngIf="link.status !== 'Archived'"
+          class="career-btn career-btn--sm career-btn--track"
+          (click)="openTrackModal(link)"
+          title="Track as Placement Application">
+          <i class="ph ph-target"></i>
+          {{ link.status === 'Applied' ? 'Tracked' : 'Track Application' }}
+        </button>
+
+        <!-- Mark Interested -->
+        <button
+          *ngIf="link.status === 'Saved'"
+          class="career-btn career-btn--sm career-btn--ghost"
+          (click)="quickStatusUpdate(link, 'Interested')"
+          title="Mark as Interested">
+          <i class="ph ph-star"></i>
+        </button>
+
+        <!-- Unarchive -->
+        <button
+          *ngIf="link.status === 'Archived'"
+          class="career-btn career-btn--sm career-btn--ghost"
+          (click)="quickStatusUpdate(link, 'Saved')"
+          title="Restore">
+          <i class="ph ph-arrow-counter-clockwise"></i> Restore
+        </button>
+
+        <!-- Edit -->
+        <button class="career-btn career-btn--sm career-btn--ghost" (click)="openEdit(link)" title="Edit">
+          <i class="ph ph-pencil-simple"></i>
+        </button>
+
+        <!-- Archive (only if not already archived) -->
+        <button
+          *ngIf="link.status !== 'Archived'"
+          class="career-btn career-btn--sm career-btn--ghost"
+          (click)="quickStatusUpdate(link, 'Archived')"
+          title="Archive">
+          <i class="ph ph-archive"></i>
+        </button>
+
+        <!-- Delete -->
+        <button
+          class="career-btn career-btn--sm career-btn--danger-ghost"
+          (click)="confirmDelete(link._id)"
+          title="Delete">
+          <i class="ph ph-trash"></i>
+        </button>
+      </div>
+
+      <!-- Inline delete confirm -->
+      <div *ngIf="deletingId() === link._id" class="career-card__confirm-delete">
+        <span>Delete this link? Associated placement applications will remain.</span>
+        <div class="career-card__confirm-actions">
+          <button class="career-btn career-btn--xs career-btn--ghost" (click)="cancelDelete()">Cancel</button>
+          <button class="career-btn career-btn--xs career-btn--danger" (click)="executeDelete(link._id)">
+            <i class="ph ph-trash"></i> Delete
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ FORM MODAL ════════════════════════════════════════════════ -->
+<div *ngIf="showForm()" class="career-modal-overlay" (click)="cancelForm()">
+  <div class="career-modal career-modal--form" (click)="$event.stopPropagation()">
+
+    <div class="career-modal__header">
+      <h2 class="career-modal__title">
+        {{ formMode() === 'create' ? 'Add Opportunity' : 'Edit Opportunity' }}
+      </h2>
+      <button class="career-modal__close" (click)="cancelForm()" aria-label="Close">
+        <i class="ph ph-x"></i>
+      </button>
+    </div>
+
+    <div *ngIf="formError()" class="career-form-error">
+      <i class="ph ph-warning"></i> {{ formError() }}
+    </div>
+
+    <div class="career-form">
+
+      <div class="career-form__row career-form__row--2">
+        <div class="career-form__group">
+          <label class="career-form__label" for="f-company">Company Name <span class="career-form__required">*</span></label>
+          <input id="f-company" class="career-form__input" type="text"
+            placeholder="e.g. Microsoft" [(ngModel)]="form.companyName" maxlength="200" autocomplete="off" />
+        </div>
+        <div class="career-form__group">
+          <label class="career-form__label" for="f-jobtitle">Job Title <span class="career-form__required">*</span></label>
+          <input id="f-jobtitle" class="career-form__input" type="text"
+            placeholder="e.g. Software Engineer" [(ngModel)]="form.jobTitle" maxlength="200" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="career-form__group">
+        <label class="career-form__label" for="f-url">Job URL <span class="career-form__required">*</span></label>
+        <input id="f-url" class="career-form__input" type="url"
+          placeholder="https://careers.company.com/…" [(ngModel)]="form.url" autocomplete="off" />
+      </div>
+
+      <div class="career-form__row career-form__row--2">
+        <div class="career-form__group">
+          <label class="career-form__label" for="f-status">Status</label>
+          <select id="f-status" class="career-form__select" [(ngModel)]="form.status">
+            <option *ngFor="let s of allStatuses" [value]="s">{{ s }}</option>
+          </select>
+        </div>
+        <div class="career-form__group">
+          <label class="career-form__label" for="f-cat">Category</label>
+          <select id="f-cat" class="career-form__select" [(ngModel)]="form.category">
+            <option *ngFor="let c of allCategories" [value]="c">{{ c }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="career-form__group">
+        <label class="career-form__label" for="f-location">Location <span class="career-form__optional">(optional)</span></label>
+        <input id="f-location" class="career-form__input" type="text"
+          placeholder="e.g. Bangalore, Remote" [(ngModel)]="form.location" maxlength="200" autocomplete="off" />
+      </div>
+
+      <div class="career-form__group">
+        <label class="career-form__label" for="f-notes">Notes <span class="career-form__optional">(optional)</span></label>
+        <textarea id="f-notes" class="career-form__textarea" rows="3"
+          placeholder="e.g. referral available, good package…" [(ngModel)]="form.notes" maxlength="2000"></textarea>
+      </div>
+
+    </div>
+
+    <div class="career-modal__actions">
+      <button class="career-btn career-btn--ghost" (click)="cancelForm()">Cancel</button>
+      <button id="career-save-btn" class="career-btn career-btn--primary" (click)="saveForm()" [disabled]="isSaving()">
+        <span *ngIf="isSaving()" class="career-btn-spinner"></span>
+        {{ isSaving() ? 'Saving…' : (formMode() === 'create' ? 'Save' : 'Update') }}
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ TRACK APPLICATION MODAL ═══════════════════════════════════ -->
+<div *ngIf="trackingLink()" class="career-modal-overlay" (click)="cancelTrack()">
+  <div class="career-modal career-modal--track" (click)="$event.stopPropagation()">
+
+    <div class="career-modal__header">
+      <div>
+        <h2 class="career-modal__title">Track Application</h2>
+        <p class="career-modal__sub">{{ trackingLink()?.companyName }} — {{ trackingLink()?.jobTitle }}</p>
+      </div>
+      <button class="career-modal__close" (click)="cancelTrack()" aria-label="Close">
+        <i class="ph ph-x"></i>
+      </button>
+    </div>
+
+    <!-- Already tracked result -->
+    <div *ngIf="trackResult()" class="career-track-result">
+      <div *ngIf="trackResult()!.alreadyTracked" class="career-track-result--exists">
+        <i class="ph ph-check-circle"></i>
+        <div>
+          <p class="career-track-result__msg">Application already tracked!</p>
+          <p class="career-track-result__sub">Status: <strong>{{ trackResult()!.applicationStatus }}</strong></p>
+        </div>
+        <button class="career-btn career-btn--primary" (click)="goToPlacement()">
+          View in Placement Tracker <i class="ph ph-arrow-right"></i>
+        </button>
+      </div>
+      <div *ngIf="!trackResult()!.alreadyTracked" class="career-track-result--success">
+        <i class="ph ph-check-circle"></i>
+        <div>
+          <p class="career-track-result__msg">Application tracked successfully!</p>
+          <p class="career-track-result__sub">Career link updated to <strong>Applied</strong>.</p>
+        </div>
+        <div class="career-track-result__actions">
+          <button class="career-btn career-btn--ghost" (click)="cancelTrack()">Close</button>
+          <button class="career-btn career-btn--primary" (click)="goToPlacement()">
+            View Placement <i class="ph ph-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Track form (shown before result) -->
+    <div *ngIf="!trackResult()" class="career-form">
+
+      <p class="career-track-info">
+        <i class="ph ph-info"></i>
+        Review and confirm details. The application will be created in your Placement Tracker.
+      </p>
+
+      <div *ngIf="trackError()" class="career-form-error">
+        <i class="ph ph-warning"></i> {{ trackError() }}
+      </div>
+
+      <div class="career-form__row career-form__row--2">
+        <div class="career-form__group">
+          <label class="career-form__label" for="tr-company">Company</label>
+          <input id="tr-company" class="career-form__input" type="text" [(ngModel)]="trackForm.companyName" />
+        </div>
+        <div class="career-form__group">
+          <label class="career-form__label" for="tr-role">Role</label>
+          <input id="tr-role" class="career-form__input" type="text" [(ngModel)]="trackForm.jobTitle" />
+        </div>
+      </div>
+
+      <div class="career-form__group">
+        <label class="career-form__label" for="tr-url">Application URL</label>
+        <input id="tr-url" class="career-form__input" type="url" [(ngModel)]="trackForm.applicationUrl" />
+      </div>
+
+      <div class="career-form__row career-form__row--2">
+        <div class="career-form__group">
+          <label class="career-form__label" for="tr-date">Application Date</label>
+          <input id="tr-date" class="career-form__input" type="date" [(ngModel)]="trackForm.applicationDate" />
+        </div>
+        <div class="career-form__group">
+          <label class="career-form__label" for="tr-loc">Location</label>
+          <input id="tr-loc" class="career-form__input" type="text" [(ngModel)]="trackForm.location" />
+        </div>
+      </div>
+
+      <div class="career-form__group">
+        <label class="career-form__label" for="tr-notes">Notes (optional)</label>
+        <textarea id="tr-notes" class="career-form__textarea" rows="2" [(ngModel)]="trackForm.notes"></textarea>
+      </div>
+
+    </div>
+
+    <div *ngIf="!trackResult()" class="career-modal__actions">
+      <button class="career-btn career-btn--ghost" (click)="cancelTrack()">Cancel</button>
+      <button id="career-track-confirm-btn" class="career-btn career-btn--primary"
+        (click)="confirmTrack()" [disabled]="isTracking()">
+        <span *ngIf="isTracking()" class="career-btn-spinner"></span>
+        {{ isTracking() ? 'Creating…' : 'Confirm & Track' }}
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ DELETE CONFIRM MODAL ═══════════════════════════════════════ -->
+<div *ngIf="deletingId() && !filteredLinks().find(l => l._id === deletingId())" class="career-modal-overlay" (click)="cancelDelete()">
+  <div class="career-modal" (click)="$event.stopPropagation()">
+    <div class="career-modal__icon career-modal__icon--danger">
+      <i class="ph ph-trash"></i>
+    </div>
+    <h2 class="career-modal__title">Delete Career Link?</h2>
+    <p class="career-modal__desc">This action cannot be undone. Associated placement applications will remain.</p>
+    <div class="career-modal__actions">
+      <button class="career-btn career-btn--ghost" (click)="cancelDelete()">Cancel</button>
+      <button id="career-delete-confirm-btn" class="career-btn career-btn--danger" (click)="executeDelete(deletingId()!)">
+        <i class="ph ph-trash"></i> Delete
+      </button>
+    </div>
+  </div>
+</div>

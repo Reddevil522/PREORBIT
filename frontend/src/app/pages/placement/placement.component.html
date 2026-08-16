@@ -1,0 +1,494 @@
+<div class="pt-page">
+
+  <!-- ═══ HEADER ═══════════════════════════════════════════════ -->
+  <header class="pt-header">
+    <div>
+      <h1 class="pt-header__title">Placement Tracker</h1>
+      <p class="pt-header__sub">Track your job applications and follow-ups</p>
+    </div>
+    <button id="pt-add-btn" class="pt-btn pt-btn--primary" (click)="openCreate()">
+      <i class="ph ph-plus"></i> Add Application
+    </button>
+  </header>
+
+  <!-- ═══ ANALYTICS STRIP ═══════════════════════════════════════ -->
+  <section class="pt-analytics">
+
+    <!-- Loading -->
+    <div *ngIf="analyticsLoading()" class="pt-analytics__loading">
+      <i class="ph ph-spinner ph-spin"></i> Loading analytics…
+    </div>
+
+    <!-- Error (partial failure) -->
+    <div *ngIf="!analyticsLoading() && analyticsError()" class="pt-analytics__error">
+      <i class="ph ph-warning-circle"></i> {{ analyticsError() }}
+    </div>
+
+    <!-- Stat cards -->
+    <div *ngIf="!analyticsLoading() && !analyticsError() && analytics() as an" class="pt-analytics__grid">
+
+      <div class="pt-an-card">
+        <span class="pt-an-val">{{ an.total }}</span>
+        <span class="pt-an-lbl">Total</span>
+      </div>
+      <div class="pt-an-card pt-an-card--active">
+        <span class="pt-an-val">{{ an.active }}</span>
+        <span class="pt-an-lbl">Active</span>
+      </div>
+      <div class="pt-an-card pt-an-card--test">
+        <span class="pt-an-val">{{ an.test }}</span>
+        <span class="pt-an-lbl">Test</span>
+      </div>
+      <div class="pt-an-card pt-an-card--interview">
+        <span class="pt-an-val">{{ an.interview }}</span>
+        <span class="pt-an-lbl">Interviews</span>
+      </div>
+      <div class="pt-an-card pt-an-card--selected">
+        <span class="pt-an-val">{{ an.selected }}</span>
+        <span class="pt-an-lbl">Selected</span>
+      </div>
+      <div class="pt-an-card pt-an-card--rejected">
+        <span class="pt-an-val">{{ an.rejected }}</span>
+        <span class="pt-an-lbl">Rejected</span>
+      </div>
+      <div class="pt-an-card pt-an-card--followup">
+        <span class="pt-an-val">{{ an.followUpsDue }}</span>
+        <span class="pt-an-lbl">Follow-ups Due</span>
+      </div>
+      <div class="pt-an-card pt-an-card--rate">
+        <span class="pt-an-val">{{ an.successRate !== null ? an.successRate + '%' : 'N/A' }}</span>
+        <span class="pt-an-lbl">Success Rate</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══ FOLLOW-UPS STRIP ══════════════════════════════════════ -->
+  <section *ngIf="upcomingFollowUps().length > 0 || overdueFollowUps().length > 0" class="pt-followups">
+    <h2 class="pt-followups__title"><i class="ph ph-calendar-check"></i> Follow-ups</h2>
+
+    <!-- Overdue -->
+    <div *ngIf="overdueFollowUps().length > 0" class="pt-followup-list pt-followup-list--overdue">
+      <div *ngFor="let app of overdueFollowUps()" class="pt-followup-item" (click)="openDetail(app)">
+        <i class="ph ph-warning-octagon"></i>
+        <div>
+          <span class="pt-followup-company">{{ app.companyName }}</span>
+          <span class="pt-followup-date">Follow-up overdue — {{ app.followUpDate | date:'dd MMM y' }}</span>
+        </div>
+        <span class="pt-badge" [ngClass]="getStatusMeta(app.status).css">{{ app.status }}</span>
+      </div>
+    </div>
+
+    <!-- Upcoming -->
+    <div *ngIf="upcomingFollowUps().length > 0" class="pt-followup-list">
+      <div *ngFor="let app of upcomingFollowUps()" class="pt-followup-item" (click)="openDetail(app)">
+        <i class="ph ph-calendar-blank"></i>
+        <div>
+          <span class="pt-followup-company">{{ app.companyName }}</span>
+          <span class="pt-followup-date">Follow up on {{ app.followUpDate | date:'dd MMM y' }}</span>
+        </div>
+        <span class="pt-badge" [ngClass]="getStatusMeta(app.status).css">{{ app.status }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PIPELINE ════════════════════════════════════════════════ -->
+  <section class="pt-pipeline">
+    <div class="pt-pipeline__stages">
+      <div
+        *ngFor="let stage of pipelineStatuses"
+        class="pt-pipeline__stage"
+        [class.pt-pipeline__stage--active]="statusFilter() === stage"
+        (click)="setStatusFilter(stage)">
+        <span class="pt-pipeline__stage-label">{{ stage }}</span>
+        <span class="pt-pipeline__stage-count">
+          {{ filteredApps().filter(a => a.status === stage).length }}
+        </span>
+      </div>
+      <div class="pt-pipeline__divider"></div>
+      <div
+        class="pt-pipeline__stage pt-pipeline__stage--rejected"
+        [class.pt-pipeline__stage--active]="statusFilter() === 'Rejected'"
+        (click)="setStatusFilter('Rejected')">
+        <span class="pt-pipeline__stage-label">Rejected</span>
+        <span class="pt-pipeline__stage-count">
+          {{ filteredApps().filter(a => a.status === 'Rejected').length }}
+        </span>
+      </div>
+      <div
+        class="pt-pipeline__stage pt-pipeline__stage--withdrawn"
+        [class.pt-pipeline__stage--active]="statusFilter() === 'Withdrawn'"
+        (click)="setStatusFilter('Withdrawn')">
+        <span class="pt-pipeline__stage-label">Withdrawn</span>
+        <span class="pt-pipeline__stage-count">
+          {{ filteredApps().filter(a => a.status === 'Withdrawn').length }}
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FILTERS ════════════════════════════════════════════════ -->
+  <section class="pt-filters">
+    <!-- Search -->
+    <div class="pt-filters__search-wrap">
+      <i class="ph ph-magnifying-glass pt-filters__search-icon"></i>
+      <input
+        id="pt-search"
+        type="text"
+        class="pt-filters__search"
+        placeholder="Search company, role, location…"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)" />
+    </div>
+
+    <!-- Status filter -->
+    <select
+      id="pt-status-filter"
+      class="pt-filters__select"
+      [ngModel]="statusFilter()"
+      (ngModelChange)="statusFilter.set($event)">
+      <option value="All">All Statuses</option>
+      <option *ngFor="let s of allStatuses" [value]="s">{{ s }}</option>
+    </select>
+
+    <!-- Date filter -->
+    <select
+      id="pt-date-filter"
+      class="pt-filters__select"
+      [ngModel]="dateRange()"
+      (ngModelChange)="setDateRange($event)">
+      <option *ngFor="let d of dateRanges" [value]="d.value">{{ d.label }}</option>
+    </select>
+
+    <!-- Sort -->
+    <select
+      id="pt-sort"
+      class="pt-filters__select"
+      [ngModel]="sortBy()"
+      (ngModelChange)="setSort($event)">
+      <option *ngFor="let s of sortOptions" [value]="s.value">{{ s.label }}</option>
+    </select>
+
+    <!-- Clear -->
+    <button
+      *ngIf="hasActiveFilters()"
+      class="pt-filters__clear"
+      (click)="clearFilters()"
+      title="Clear all filters">
+      <i class="ph ph-x"></i> Clear
+    </button>
+  </section>
+
+  <!-- ═══ RESULTS COUNT ══════════════════════════════════════════ -->
+  <div *ngIf="!isLoading() && !error()" class="pt-results-count">
+    <span *ngIf="hasActiveFilters()">
+      {{ filteredApps().length }} of {{ allApps().length }} applications
+    </span>
+    <span *ngIf="!hasActiveFilters()">
+      {{ allApps().length }} application{{ allApps().length !== 1 ? 's' : '' }}
+    </span>
+  </div>
+
+  <!-- ═══ LOADING ════════════════════════════════════════════════ -->
+  <div *ngIf="isLoading()" class="pt-state pt-state--loading">
+    <i class="ph ph-spinner ph-spin"></i>
+    <p>Loading your applications…</p>
+  </div>
+
+  <!-- ═══ ERROR ══════════════════════════════════════════════════ -->
+  <div *ngIf="!isLoading() && error()" class="pt-state pt-state--error">
+    <i class="ph ph-warning-circle"></i>
+    <p>{{ error() }}</p>
+    <button class="pt-btn pt-btn--secondary" (click)="loadApplications()">Try Again</button>
+  </div>
+
+  <!-- ═══ EMPTY ══════════════════════════════════════════════════ -->
+  <div *ngIf="!isLoading() && !error() && filteredApps().length === 0" class="pt-state pt-state--empty">
+    <i class="ph ph-target"></i>
+    <ng-container *ngIf="hasActiveFilters(); else noAppsYet">
+      <p>No applications match your filters.</p>
+      <button class="pt-btn pt-btn--secondary" (click)="clearFilters()">Clear Filters</button>
+    </ng-container>
+    <ng-template #noAppsYet>
+      <p>No placement applications yet.</p>
+      <button class="pt-btn pt-btn--primary" (click)="openCreate()">
+        <i class="ph ph-plus"></i> Add Your First Application
+      </button>
+    </ng-template>
+  </div>
+
+  <!-- ═══ APPLICATION LIST ═══════════════════════════════════════ -->
+  <div *ngIf="!isLoading() && !error() && filteredApps().length > 0" class="pt-list">
+
+    <div
+      *ngFor="let app of filteredApps()"
+      class="pt-card"
+      [class.pt-card--overdue]="isFollowUpOverdue(app)">
+
+      <!-- Card top -->
+      <div class="pt-card__top" (click)="openDetail(app)">
+        <div class="pt-card__icon"><i class="ph ph-buildings"></i></div>
+        <div class="pt-card__info">
+          <h3 class="pt-card__company">{{ app.companyName }}</h3>
+          <span class="pt-card__role">{{ app.jobTitle }}</span>
+        </div>
+        <span class="pt-badge pt-badge--sm" [ngClass]="getStatusMeta(app.status).css">
+          {{ app.status }}
+        </span>
+      </div>
+
+      <!-- Card meta row -->
+      <div class="pt-card__meta">
+        <span *ngIf="app.location" class="pt-card__meta-item">
+          <i class="ph ph-map-pin"></i> {{ app.location }}
+        </span>
+        <span *ngIf="app.applicationDate" class="pt-card__meta-item">
+          <i class="ph ph-calendar"></i> {{ app.applicationDate | date:'dd MMM y' }}
+        </span>
+        <span *ngIf="app.followUpDate && isFollowUpOverdue(app)" class="pt-card__meta-item pt-card__meta-item--overdue">
+          <i class="ph ph-warning-octagon"></i> Follow-up overdue
+        </span>
+        <span *ngIf="app.followUpDate && !isFollowUpOverdue(app) && !isTerminal(app.status)" class="pt-card__meta-item pt-card__meta-item--followup">
+          <i class="ph ph-calendar-check"></i> Follow up {{ app.followUpDate | date:'dd MMM' }}
+        </span>
+      </div>
+
+      <!-- Card actions -->
+      <div class="pt-card__actions">
+        <button class="pt-card__action" (click)="openDetail(app)" title="View Details">
+          <i class="ph ph-eye"></i> Details
+        </button>
+        <button class="pt-card__action" (click)="openEdit(app)" title="Edit">
+          <i class="ph ph-pencil-simple"></i> Edit
+        </button>
+        <button
+          *ngIf="app.applicationUrl"
+          class="pt-card__action"
+          (click)="openLink(app.applicationUrl)"
+          title="Open Link">
+          <i class="ph ph-arrow-square-out"></i>
+        </button>
+        <button
+          class="pt-card__action pt-card__action--delete"
+          (click)="confirmDelete(app._id)"
+          title="Delete">
+          <i class="ph ph-trash"></i>
+        </button>
+      </div>
+
+      <!-- Delete confirm inline -->
+      <div *ngIf="deletingId() === app._id" class="pt-card__confirm-delete">
+        <span>Delete this application?</span>
+        <button class="pt-btn-xs pt-btn-xs--danger" (click)="executeDelete(app._id)">
+          <i class="ph ph-trash"></i> Delete
+        </button>
+        <button class="pt-btn-xs" (click)="cancelDelete()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ FORM MODAL ═════════════════════════════════════════════ -->
+  <div *ngIf="showForm()" class="pt-overlay" (click)="cancelForm()">
+    <div class="pt-modal" (click)="$event.stopPropagation()">
+
+      <div class="pt-modal__header">
+        <h2 class="pt-modal__title">
+          {{ formMode() === 'create' ? 'Add Application' : 'Edit Application' }}
+        </h2>
+        <button class="pt-modal__close" (click)="cancelForm()" aria-label="Close">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+
+      <form class="pt-form" (ngSubmit)="saveForm()">
+
+        <div class="pt-form__row pt-form__row--2">
+          <div class="pt-form__field">
+            <label class="pt-form__label" for="pt-company">Company Name <span class="pt-required">*</span></label>
+            <input id="pt-company" type="text" class="pt-form__input"
+              placeholder="e.g. Microsoft" [(ngModel)]="form.companyName" name="companyName" required />
+          </div>
+          <div class="pt-form__field">
+            <label class="pt-form__label" for="pt-role">Job Title <span class="pt-required">*</span></label>
+            <input id="pt-role" type="text" class="pt-form__input"
+              placeholder="e.g. Software Engineer" [(ngModel)]="form.jobTitle" name="jobTitle" required />
+          </div>
+        </div>
+
+        <div class="pt-form__row pt-form__row--2">
+          <div class="pt-form__field">
+            <label class="pt-form__label" for="pt-status">Status <span class="pt-required">*</span></label>
+            <select id="pt-status" class="pt-form__select" [(ngModel)]="form.status" name="status">
+              <option *ngFor="let s of allStatuses" [value]="s">{{ s }}</option>
+            </select>
+          </div>
+          <div class="pt-form__field">
+            <label class="pt-form__label" for="pt-location">Location</label>
+            <input id="pt-location" type="text" class="pt-form__input"
+              placeholder="e.g. Bangalore, Remote" [(ngModel)]="form.location" name="location" />
+          </div>
+        </div>
+
+        <div class="pt-form__field">
+          <label class="pt-form__label" for="pt-url">Application URL</label>
+          <input id="pt-url" type="url" class="pt-form__input"
+            placeholder="https://careers.company.com/…" [(ngModel)]="form.applicationUrl" name="applicationUrl" />
+        </div>
+
+        <div class="pt-form__row pt-form__row--2">
+          <div class="pt-form__field">
+            <label class="pt-form__label" for="pt-app-date">Application Date</label>
+            <input id="pt-app-date" type="date" class="pt-form__input"
+              [(ngModel)]="form.applicationDate" name="applicationDate" />
+          </div>
+          <div class="pt-form__field">
+            <label class="pt-form__label" for="pt-followup">Follow-up Date</label>
+            <input id="pt-followup" type="date" class="pt-form__input"
+              [(ngModel)]="form.followUpDate" name="followUpDate" />
+          </div>
+        </div>
+
+        <div class="pt-form__field">
+          <label class="pt-form__label" for="pt-notes">Notes</label>
+          <textarea id="pt-notes" class="pt-form__textarea" rows="3"
+            placeholder="Optional notes…" [(ngModel)]="form.notes" name="notes"></textarea>
+        </div>
+
+        <div *ngIf="formError()" class="pt-form__error">
+          <i class="ph ph-warning-circle"></i> {{ formError() }}
+        </div>
+
+        <div class="pt-modal__footer">
+          <button type="button" class="pt-btn pt-btn--secondary" (click)="cancelForm()">Cancel</button>
+          <button type="submit" class="pt-btn pt-btn--primary" [disabled]="isSaving()">
+            <i *ngIf="isSaving()" class="ph ph-spinner ph-spin"></i>
+            {{ isSaving() ? 'Saving…' : (formMode() === 'create' ? 'Add Application' : 'Save Changes') }}
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══ DETAIL MODAL ══════════════════════════════════════════ -->
+  <div *ngIf="detailApp() as app" class="pt-overlay" (click)="closeDetail()">
+    <div class="pt-modal pt-modal--detail" (click)="$event.stopPropagation()">
+
+      <div class="pt-modal__header">
+        <div>
+          <h2 class="pt-modal__title">{{ app.companyName }}</h2>
+          <p class="pt-modal__sub">{{ app.jobTitle }}</p>
+        </div>
+        <button class="pt-modal__close" (click)="closeDetail()" aria-label="Close">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+
+      <div class="pt-detail">
+
+        <!-- Status badge + pipeline indicator -->
+        <div class="pt-detail__status-row">
+          <span class="pt-badge pt-badge--lg" [ngClass]="getStatusMeta(app.status).css">
+            {{ app.status }}
+          </span>
+          <span *ngIf="isTerminal(app.status)" class="pt-detail__terminal-badge">
+            Terminal
+          </span>
+          <span *ngIf="isFollowUpOverdue(app)" class="pt-detail__overdue-badge">
+            <i class="ph ph-warning-octagon"></i> Follow-up overdue
+          </span>
+        </div>
+
+        <!-- Pipeline track (for non-terminal) -->
+        <div *ngIf="!isTerminal(app.status)" class="pt-pipeline-track">
+          <div
+            *ngFor="let stage of pipelineStatuses; let i = index"
+            class="pt-pipeline-track__step"
+            [class.pt-pipeline-track__step--done]="getPipelineIndex(app.status) > i"
+            [class.pt-pipeline-track__step--current]="app.status === stage"
+            [title]="stage">
+            <div class="pt-pipeline-track__dot"></div>
+            <span class="pt-pipeline-track__label">{{ stage }}</span>
+          </div>
+        </div>
+
+        <!-- Info grid -->
+        <div class="pt-detail__grid">
+          <div *ngIf="app.location" class="pt-detail__item">
+            <i class="ph ph-map-pin"></i>
+            <div><span class="pt-detail__item-label">Location</span><span class="pt-detail__item-val">{{ app.location }}</span></div>
+          </div>
+          <div *ngIf="app.applicationDate" class="pt-detail__item">
+            <i class="ph ph-calendar"></i>
+            <div><span class="pt-detail__item-label">Applied On</span><span class="pt-detail__item-val">{{ app.applicationDate | date:'dd MMM y' }}</span></div>
+          </div>
+          <div *ngIf="app.followUpDate" class="pt-detail__item">
+            <i class="ph ph-calendar-check"></i>
+            <div>
+              <span class="pt-detail__item-label">Follow-up Date</span>
+              <span class="pt-detail__item-val" [class.pt-detail__item-val--overdue]="isFollowUpOverdue(app)">
+                {{ app.followUpDate | date:'dd MMM y' }}
+                <span *ngIf="isFollowUpOverdue(app)"> (Overdue)</span>
+              </span>
+            </div>
+          </div>
+          <div class="pt-detail__item">
+            <i class="ph ph-clock"></i>
+            <div><span class="pt-detail__item-label">Added</span><span class="pt-detail__item-val">{{ app.createdAt | date:'dd MMM y' }}</span></div>
+          </div>
+          <div *ngIf="app.applicationUrl" class="pt-detail__item">
+            <i class="ph ph-link"></i>
+            <div>
+              <span class="pt-detail__item-label">Application Link</span>
+              <button class="pt-link-btn" (click)="openLink(app.applicationUrl)">
+                Open Link <i class="ph ph-arrow-square-out"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div *ngIf="app.notes" class="pt-detail__notes">
+          <p class="pt-detail__notes-label"><i class="ph ph-note"></i> Notes</p>
+          <p class="pt-detail__notes-text">{{ app.notes }}</p>
+        </div>
+
+        <!-- Status Timeline -->
+        <div class="pt-timeline">
+          <h3 class="pt-timeline__title"><i class="ph ph-clock-countdown"></i> Status History</h3>
+
+          <div *ngIf="!app.statusHistory || app.statusHistory.length === 0" class="pt-timeline__empty">
+            No history recorded for this application.
+          </div>
+
+          <div *ngIf="app.statusHistory && app.statusHistory.length > 0" class="pt-timeline__list">
+            <div
+              *ngFor="let entry of getHistoryDesc(app); let last = last"
+              class="pt-timeline__entry"
+              [class.pt-timeline__entry--current]="last">
+              <div class="pt-timeline__dot" [ngClass]="getStatusMeta(entry.status).css"></div>
+              <div class="pt-timeline__content">
+                <span class="pt-badge pt-badge--sm" [ngClass]="getStatusMeta(entry.status).css">
+                  {{ entry.status }}
+                </span>
+                <span class="pt-timeline__date">{{ entry.changedAt | date:'dd MMM y, h:mm a' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-modal__footer">
+        <button class="pt-btn pt-btn--secondary" (click)="openEdit(app)">
+          <i class="ph ph-pencil-simple"></i> Edit
+        </button>
+        <button class="pt-btn pt-btn--danger" (click)="closeDetail(); confirmDelete(app._id)">
+          <i class="ph ph-trash"></i> Delete
+        </button>
+        <button class="pt-btn pt-btn--primary" (click)="closeDetail()">Close</button>
+      </div>
+    </div>
+  </div>
+
+</div>

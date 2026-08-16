@@ -18,6 +18,210 @@
     <p>{{ error() }}</p>
   </div>
 
+  <!-- ═══════════════════════════════════════════════════════════
+       CAREER & PLACEMENT SECTION
+       Independent from progress — partial failure is isolated.
+  ═══════════════════════════════════════════════════════════ -->
+
+  <!-- Career & Placement Loading -->
+  <section *ngIf="cpLoading()" class="dash__section">
+    <h2 class="dash__section-label">Career &amp; Placement</h2>
+    <div class="dash__state dash__state--loading">
+      <i class="ph ph-spinner ph-spin"></i>
+      <p>Loading career &amp; placement data…</p>
+    </div>
+  </section>
+
+  <!-- Career & Placement Error -->
+  <section *ngIf="!cpLoading() && cpError()" class="dash__section">
+    <h2 class="dash__section-label">Career &amp; Placement</h2>
+    <div class="dash__state dash__state--error">
+      <i class="ph ph-warning-circle"></i>
+      <p>{{ cpError() }}</p>
+    </div>
+  </section>
+
+  <!-- Career & Placement Loaded -->
+  <section *ngIf="!cpLoading() && !cpError()" class="dash__section">
+    <h2 class="dash__section-label">Career &amp; Placement</h2>
+
+    <!-- ── Overview Stats Row ── -->
+    <div class="dash__cp-overview">
+
+      <!-- Saved Career Links -->
+      <div class="dash__cp-stat">
+        <div class="dash__cp-stat-icon dash__cp-stat-icon--career">
+          <i class="ph ph-briefcase"></i>
+        </div>
+        <div>
+          <span class="dash__cp-stat-val">{{ careerSummary()?.savedLinks ?? 0 }}</span>
+          <span class="dash__cp-stat-label">Saved Career Links</span>
+        </div>
+      </div>
+
+      <!-- Total Applications -->
+      <div class="dash__cp-stat">
+        <div class="dash__cp-stat-icon dash__cp-stat-icon--total">
+          <i class="ph ph-target"></i>
+        </div>
+        <div>
+          <span class="dash__cp-stat-val">{{ placementSummary()?.totalApplications ?? 0 }}</span>
+          <span class="dash__cp-stat-label">Applications</span>
+        </div>
+      </div>
+
+      <!-- In Progress -->
+      <div class="dash__cp-stat">
+        <div class="dash__cp-stat-icon dash__cp-stat-icon--progress">
+          <i class="ph ph-arrows-clockwise"></i>
+        </div>
+        <div>
+          <span class="dash__cp-stat-val dash__cp-stat-val--progress">{{ placementSummary()?.inProgress ?? 0 }}</span>
+          <span class="dash__cp-stat-label">In Progress</span>
+        </div>
+      </div>
+
+      <!-- Selected -->
+      <div class="dash__cp-stat">
+        <div class="dash__cp-stat-icon dash__cp-stat-icon--selected">
+          <i class="ph ph-check-circle"></i>
+        </div>
+        <div>
+          <span class="dash__cp-stat-val dash__cp-stat-val--selected">{{ placementSummary()?.selected ?? 0 }}</span>
+          <span class="dash__cp-stat-label">Selected</span>
+        </div>
+      </div>
+
+      <!-- Rejected -->
+      <div class="dash__cp-stat">
+        <div class="dash__cp-stat-icon dash__cp-stat-icon--rejected">
+          <i class="ph ph-x-circle"></i>
+        </div>
+        <div>
+          <span class="dash__cp-stat-val dash__cp-stat-val--rejected">{{ placementSummary()?.rejected ?? 0 }}</span>
+          <span class="dash__cp-stat-label">Rejected</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Status Breakdown ── -->
+    <div *ngIf="placementSummary() && placementSummary()!.totalApplications > 0" class="dash__cp-breakdown">
+      <div class="dash__cp-breakdown-row">
+        <span class="dash__cp-breakdown-label">Applied</span>
+        <span class="dash__cp-breakdown-val">{{ placementSummary()!.applied }}</span>
+      </div>
+      <div class="dash__cp-breakdown-row">
+        <span class="dash__cp-breakdown-label">Test</span>
+        <span class="dash__cp-breakdown-val">{{ placementSummary()!.test }}</span>
+      </div>
+      <div class="dash__cp-breakdown-row">
+        <span class="dash__cp-breakdown-label">Interview</span>
+        <span class="dash__cp-breakdown-val">{{ placementSummary()!.interview }}</span>
+      </div>
+      <div class="dash__cp-breakdown-row">
+        <span class="dash__cp-breakdown-label">Technical Round</span>
+        <span class="dash__cp-breakdown-val">{{ placementSummary()!.technicalRound }}</span>
+      </div>
+      <div class="dash__cp-breakdown-row">
+        <span class="dash__cp-breakdown-label">HR Round</span>
+        <span class="dash__cp-breakdown-val">{{ placementSummary()!.hrRound }}</span>
+      </div>
+      <div class="dash__cp-breakdown-row">
+        <span class="dash__cp-breakdown-label">Withdrawn</span>
+        <span class="dash__cp-breakdown-val">{{ placementSummary()!.withdrawn }}</span>
+      </div>
+      <div class="dash__cp-breakdown-row">
+        <span class="dash__cp-breakdown-label">Saved</span>
+        <span class="dash__cp-breakdown-val">{{ placementSummary()!.saved }}</span>
+      </div>
+    </div>
+
+    <!-- ── Recent Placement Applications ── -->
+    <div class="dash__cp-subsection">
+      <div class="dash__cp-subsection-header">
+        <h3 class="dash__cp-subsection-title">Recent Applications</h3>
+        <a routerLink="/placement" class="dash__cp-view-all">View All <i class="ph ph-arrow-right"></i></a>
+      </div>
+
+      <!-- Empty -->
+      <div *ngIf="!placementSummary() || placementSummary()!.recentApplications.length === 0" class="dash__cp-empty">
+        <i class="ph ph-target"></i>
+        <p>No placement applications yet.</p>
+        <button class="dash__cp-action-btn" (click)="goToPlacement()">
+          <i class="ph ph-plus"></i> Track Placement
+        </button>
+      </div>
+
+      <!-- Applications list -->
+      <div *ngIf="placementSummary() && placementSummary()!.recentApplications.length > 0" class="dash__cp-app-list">
+        <div
+          *ngFor="let app of placementSummary()!.recentApplications"
+          class="dash__cp-app-item"
+          (click)="goToPlacement()"
+          title="View in Placement Tracker">
+          <div class="dash__cp-app-company-wrap">
+            <div class="dash__cp-app-icon"><i class="ph ph-buildings"></i></div>
+            <div>
+              <span class="dash__cp-app-company">{{ app.companyName }}</span>
+              <span class="dash__cp-app-role">{{ app.jobTitle }}</span>
+            </div>
+          </div>
+          <div class="dash__cp-app-right">
+            <span class="dash__placement-badge" [ngClass]="getStatusClass(app.status)">{{ app.status }}</span>
+            <span class="dash__cp-app-date" *ngIf="app.applicationDate">
+              {{ app.applicationDate | date: 'dd MMM' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Recent Career Links ── -->
+    <div class="dash__cp-subsection">
+      <div class="dash__cp-subsection-header">
+        <h3 class="dash__cp-subsection-title">Recent Career Links</h3>
+        <a routerLink="/career" class="dash__cp-view-all">View All <i class="ph ph-arrow-right"></i></a>
+      </div>
+
+      <!-- Empty -->
+      <div *ngIf="!careerSummary() || careerSummary()!.recentLinks.length === 0" class="dash__cp-empty">
+        <i class="ph ph-briefcase"></i>
+        <p>No career links saved yet.</p>
+        <button class="dash__cp-action-btn" (click)="goToCareer()">
+          <i class="ph ph-plus"></i> Save Career Link
+        </button>
+      </div>
+
+      <!-- Career links list -->
+      <div *ngIf="careerSummary() && careerSummary()!.recentLinks.length > 0" class="dash__cp-link-list">
+        <div
+          *ngFor="let link of careerSummary()!.recentLinks"
+          class="dash__cp-link-item">
+          <div class="dash__cp-app-icon"><i class="ph ph-link"></i></div>
+          <div class="dash__cp-link-info">
+            <span class="dash__cp-app-company">{{ link.companyName }}</span>
+            <span class="dash__cp-app-role">{{ link.jobTitle }}</span>
+          </div>
+          <span class="dash__cp-link-date">{{ link.createdAt | date: 'dd MMM' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Quick Actions ── -->
+    <div class="dash__cp-actions">
+      <button class="dash__cp-action-btn dash__cp-action-btn--career" (click)="goToCareer()">
+        <i class="ph ph-briefcase"></i>
+        Career Links
+      </button>
+      <button class="dash__cp-action-btn dash__cp-action-btn--placement" (click)="goToPlacement()">
+        <i class="ph ph-target"></i>
+        Placement Tracker
+      </button>
+    </div>
+
+  </section>
+
   <ng-container *ngIf="progressData() as prog">
     
     <!-- Top Statistics -->

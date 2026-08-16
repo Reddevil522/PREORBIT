@@ -65,6 +65,26 @@ export const routes: Routes = [
         title: 'Dashboard — PREORBIT',
       },
 
+      // ── Career ──────────────────────────────────────────────────
+      {
+        path: 'career',
+        loadComponent: () =>
+          import('./pages/career/career.component').then(
+            (m) => m.CareerComponent
+          ),
+        title: 'Career — PREORBIT',
+      },
+
+      // ── Placement Tracker ────────────────────────────────────
+      {
+        path: 'placement',
+        loadComponent: () =>
+          import('./pages/placement/placement.component').then(
+            (m) => m.PlacementComponent
+          ),
+        title: 'Placement Tracker — PREORBIT',
+      },
+
       // ── Java DSA ────────────────────────────────────────
       {
         path: 'java-dsa',

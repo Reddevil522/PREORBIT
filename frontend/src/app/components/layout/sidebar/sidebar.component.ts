@@ -99,10 +99,12 @@ export class SidebarComponent implements OnInit {
   // ── Navigation items ──────────────────────────────────────
   protected readonly navItems = computed(() => {
     const items: NavItem[] = [
-      { label: 'Dashboard', route: '/dashboard', icon: 'ph ph-gauge'         },
-      { label: 'Java DSA',  route: '/java-dsa',  icon: 'ph ph-code'          },
-      { label: 'Aptitude',  route: '/aptitude',  icon: 'ph ph-brain'         },
-      { label: 'Core CS',   route: '/core-cs',   icon: 'ph ph-cpu' },
+      { label: 'Dashboard', route: '/dashboard', icon: 'ph ph-gauge'      },
+      { label: 'Career',    route: '/career',    icon: 'ph ph-briefcase'  },
+      { label: 'Placement', route: '/placement', icon: 'ph ph-target'     },
+      { label: 'Java DSA',  route: '/java-dsa',  icon: 'ph ph-code'       },
+      { label: 'Aptitude',  route: '/aptitude',  icon: 'ph ph-brain'      },
+      { label: 'Core CS',   route: '/core-cs',   icon: 'ph ph-cpu'        },
     ];
     
     if (this.auth.isAdmin()) {
