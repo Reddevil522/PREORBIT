@@ -397,3 +397,7 @@
   .stat-box { border: none; }
   .test-meta-grid { grid-template-columns: 1fr; }
 }
+.top-actions {
+  display: flex;
+  align-items: center;
+}

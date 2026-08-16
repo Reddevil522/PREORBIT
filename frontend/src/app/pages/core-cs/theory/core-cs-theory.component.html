@@ -45,16 +45,16 @@
       <div class="card-header">
         <div class="chapter-number">{{ (chapter.order < 10 ? '0' : '') + chapter.order }}</div>
         <div class="chapter-status" [ngClass]="{
-          'status-completed': isChapterCompleted(chapter.slug),
-          'status-progress': isChapterInProgress(chapter.slug),
-          'status-not-started': !isChapterCompleted(chapter.slug) && !isChapterInProgress(chapter.slug)
+          'status-completed': getChapterStatus(chapter.slug) === 'COMPLETED',
+          'status-progress': getChapterStatus(chapter.slug) === 'IN_PROGRESS',
+          'status-not-started': getChapterStatus(chapter.slug) === 'NOT_STARTED'
         }">
           <i class="ph" [ngClass]="{
-            'ph-check-circle': isChapterCompleted(chapter.slug),
-            'ph-clock-countdown': isChapterInProgress(chapter.slug),
-            'ph-circle': !isChapterCompleted(chapter.slug) && !isChapterInProgress(chapter.slug)
+            'ph-check-circle': getChapterStatus(chapter.slug) === 'COMPLETED',
+            'ph-clock-countdown': getChapterStatus(chapter.slug) === 'IN_PROGRESS',
+            'ph-circle': getChapterStatus(chapter.slug) === 'NOT_STARTED'
           }"></i>
-          {{ isChapterCompleted(chapter.slug) ? 'Completed' : (isChapterInProgress(chapter.slug) ? 'In Progress' : 'Not Started') }}
+          {{ getChapterStatus(chapter.slug) === 'COMPLETED' ? 'Completed' : (getChapterStatus(chapter.slug) === 'IN_PROGRESS' ? 'In Progress' : 'Not Started') }}
         </div>
       </div>
       
@@ -65,6 +65,9 @@
         <div class="chapter-content">
           <h2>{{ chapter.title }}</h2>
           <p>{{ chapter.description }}</p>
+          <div class="theory-status" *ngIf="isTheoryCompleted(chapter.slug) && getChapterStatus(chapter.slug) === 'IN_PROGRESS'">
+            <span class="theory-badge"><i class="ph ph-check"></i> Theory Completed</span>
+          </div>
         </div>
       </div>
 

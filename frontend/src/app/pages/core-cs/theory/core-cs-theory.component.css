@@ -1,4 +1,4 @@
-:host {
+﻿:host {
   display: block;
 }
 
@@ -408,4 +408,24 @@
   .chapters-grid {
     grid-template-columns: 1fr;
   }
+}
+.theory-status {
+  margin-top: 0.5rem;
+}
+
+.theory-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--preorbit-success, #10b981);
+  background: rgba(16, 185, 129, 0.12);
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.theory-badge i {
+  font-size: 0.85rem;
+  color: var(--preorbit-success, #10b981);
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TestEngineService, TestMetadata, SanitizedQuestion, TestOption } from '../../core/services/test-engine.service';
+import { ProgressService } from '../../core/services/progress.service';
 import { Title } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
@@ -18,6 +19,7 @@ export class TestEngine implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private testEngineService = inject(TestEngineService);
+  private progressService = inject(ProgressService);
   private titleService = inject(Title);
   private cdr = inject(ChangeDetectorRef);
 
@@ -309,6 +311,7 @@ export class TestEngine implements OnInit {
           console.log('[SUBMIT] Success');
           this.attemptStatus = 'submitted';
           this.status = 'submitted';
+          this.progressService.refreshProgress();
           this.router.navigate(['/test-result', this.attemptId]);
         } else {
           console.error('[SUBMIT] Failed response', res);

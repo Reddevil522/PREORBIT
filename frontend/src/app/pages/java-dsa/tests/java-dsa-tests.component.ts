@@ -1,4 +1,4 @@
-import { Component, computed, signal, OnInit } from '@angular/core';
+import { Component, computed, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +7,7 @@ import { javaDsaChapters, javaDsaTests, JavaDsaChapter } from '../../../config/j
 import { TestMetadata } from '../../../core/models/test.model';
 import { TestCardComponent } from '../../../shared/components/test-card/test-card.component';
 import { environment } from '../../../../environments/environment';
+import { ProgressService } from '../../../core/services/progress.service';
 
 @Component({
   selector: 'app-java-dsa-tests',
@@ -19,6 +20,9 @@ export class JavaDsaTestsComponent implements OnInit {
   chapters = signal<JavaDsaChapter[]>(javaDsaChapters);
   allTests = signal<TestMetadata[]>(javaDsaTests);
   searchQuery = signal<string>('');
+
+  private progressService = inject(ProgressService);
+  progressData = this.progressService.progressData;
 
   filteredChapters = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
@@ -47,6 +51,8 @@ export class JavaDsaTestsComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit() {
+    this.progressService.getProgress().subscribe();
+
     this.http.get<{success: boolean, data: any[]}>(`${environment.apiUrl}/tests?module=java-dsa`).subscribe({
       next: (res) => {
         if (res.success && res.data) {
@@ -55,6 +61,15 @@ export class JavaDsaTestsComponent implements OnInit {
           const updatedTests = this.allTests().map(staticTest => {
             const dbTest = dbTests.find((t: any) => t.testId === staticTest.id || (t.chapterSlug === staticTest.chapterSlug && t.testNumber === staticTest.testNumber));
             if (dbTest) {
+              let calculatedStatus: 'not-available' | 'available' | 'completed' | 'locked' = 'locked';
+              if (dbTest.isCompleted) {
+                calculatedStatus = 'completed';
+              } else if (dbTest.isLocked) {
+                calculatedStatus = 'locked';
+              } else {
+                calculatedStatus = (dbTest.status === 'available' && dbTest.isAvailable) ? 'available' : 'locked';
+              }
+
               return {
                 ...staticTest,
                 id: dbTest.testId,
@@ -63,7 +78,7 @@ export class JavaDsaTestsComponent implements OnInit {
                 multipleChoiceCount: dbTest.multipleChoiceCount || 5,
                 mcqCount: dbTest.mcqCount || 20,
                 totalMarks: dbTest.totalMarks || 25,
-                status: (dbTest.status === 'available' && dbTest.isAvailable) ? 'available' : 'locked'
+                status: calculatedStatus
               } as TestMetadata;
             }
             return staticTest;
@@ -73,5 +88,11 @@ export class JavaDsaTestsComponent implements OnInit {
       },
       error: (err) => console.error('Failed to load java-dsa tests', err)
     });
+  }
+
+  getChapterProgress(chapterSlug: string) {
+    const data = this.progressData();
+    if (!data) return null;
+    return data.chapters.find((c: any) => c.chapterSlug === chapterSlug);
   }
 }

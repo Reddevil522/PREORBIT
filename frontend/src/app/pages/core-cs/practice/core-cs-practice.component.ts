@@ -4,6 +4,7 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { coreCsSubjects, CoreCsSubject, CoreCsChapter } from '../../../config/core-cs.config';
 import { CoreCsPracticeService } from '../../../core/services/core-cs-practice.service';
+import { ProgressService } from '../../../core/services/progress.service';
 import { TestCardComponent } from '../../../shared/components/test-card/test-card.component';
 import { TestMetadata } from '../../../core/models/test.model';
 
@@ -18,6 +19,8 @@ export class CoreCsPracticeComponent implements OnInit {
   subject = signal<CoreCsSubject | null>(null);
   searchQuery = signal('');
   testsMap = signal<{ [chapterSlug: string]: TestMetadata[] }>({});
+  
+  progressData: any;
 
   filteredChapters = computed(() => {
     const currentSubject = this.subject();
@@ -34,10 +37,16 @@ export class CoreCsPracticeComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private practiceService: CoreCsPracticeService
-  ) {}
+    private practiceService: CoreCsPracticeService,
+    private progressService: ProgressService
+  ) {
+    this.progressData = this.progressService.progressData;
+  }
 
   ngOnInit() {
+    // Ensure we fetch progress if not already fetched
+    this.progressService.getProgress().subscribe();
+
     this.route.paramMap.subscribe(params => {
       const subjectSlug = params.get('subject');
       if (subjectSlug) {
@@ -66,5 +75,11 @@ export class CoreCsPracticeComponent implements OnInit {
 
   getTestsForChapter(chapterSlug: string): TestMetadata[] {
     return this.testsMap()[chapterSlug] || [];
+  }
+
+  getChapterProgress(chapterSlug: string) {
+    const data = this.progressData();
+    if (!data) return null;
+    return data.chapters.find((c: any) => c.chapterSlug === chapterSlug);
   }
 }

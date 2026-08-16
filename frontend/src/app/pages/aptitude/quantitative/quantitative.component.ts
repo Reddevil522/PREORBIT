@@ -1,8 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { quantitativeChapters, quantitativeTests } from '../../../config/aptitude.config';
 import { TestEngineService } from '../../../core/services/test-engine.service';
+import { ProgressService } from '../../../core/services/progress.service';
 
 @Component({
   selector: 'app-quantitative',
@@ -12,6 +13,8 @@ import { TestEngineService } from '../../../core/services/test-engine.service';
   styleUrl: './quantitative.component.css'
 })
 export class QuantitativeComponent implements OnInit {
+  private progressService = inject(ProgressService);
+
   totalChapters = quantitativeChapters.length;
 
   completedTheoryCount = signal<number>(0);
@@ -37,13 +40,20 @@ export class QuantitativeComponent implements OnInit {
   }
 
   calculateTheoryProgress() {
-    let completed = 0;
-    for (const chapter of quantitativeChapters) {
-      if (localStorage.getItem(`completed_theory_${chapter.slug}`) === 'true') {
-        completed++;
-      }
-    }
-    this.completedTheoryCount.set(completed);
+    this.progressService.getProgress().subscribe({
+      next: (res: any) => {
+        const completedSlugs = new Set(
+          res.data.chapters.filter((c: any) => c.theoryCompleted).map((c: any) => c.chapterSlug)
+        );
+        let completed = 0;
+        for (const chapter of quantitativeChapters) {
+          if (completedSlugs.has(chapter.slug)) {
+            completed++;
+          }
+        }
+        this.completedTheoryCount.set(completed);
+      },
+      error: () => this.completedTheoryCount.set(0)
+    });
   }
 }
-

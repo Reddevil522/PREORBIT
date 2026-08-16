@@ -1,8 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { cnChapters, cnTests } from '../../../config/core-cs.config';
 import { TestEngineService } from '../../../core/services/test-engine.service';
+import { ProgressService } from '../../../core/services/progress.service';
 
 @Component({
   selector: 'app-computer-networks',
@@ -12,6 +13,8 @@ import { TestEngineService } from '../../../core/services/test-engine.service';
   styleUrl: './computer-networks.component.css'
 })
 export class ComputerNetworksComponent implements OnInit {
+  private progressService = inject(ProgressService);
+
   totalChapters = cnChapters.length;
 
   completedTheoryCount = signal<number>(0);
@@ -37,13 +40,20 @@ export class ComputerNetworksComponent implements OnInit {
   }
 
   calculateTheoryProgress() {
-    let completed = 0;
-    for (const chapter of cnChapters) {
-      if (localStorage.getItem(`completed_theory_${chapter.slug}`) === 'true') {
-        completed++;
-      }
-    }
-    this.completedTheoryCount.set(completed);
+    this.progressService.getProgress().subscribe({
+      next: (res) => {
+        const completedSlugs = new Set(
+          res.data.chapters.filter((c: any) => c.theoryCompleted).map((c: any) => c.chapterSlug)
+        );
+        let completed = 0;
+        for (const chapter of cnChapters) {
+          if (completedSlugs.has(chapter.slug)) {
+            completed++;
+          }
+        }
+        this.completedTheoryCount.set(completed);
+      },
+      error: () => this.completedTheoryCount.set(0)
+    });
   }
 }
-

@@ -9,7 +9,14 @@
 
   <div class="upload-card glass-panel" *ngIf="!previewSummary && !importSuccess">
     <h2>Upload Questions (JSON)</h2>
-    <p class="subtitle">Select a .json file containing the questions metadata and content to preview it.</p>
+    
+    <div class="alert warning-alert" *ngIf="isReplace" style="margin-bottom: var(--space-4);">
+      <i class="ph ph-warning"></i>
+      <strong>Replace Mode Active:</strong> Existing questions for this test will be permanently deleted and replaced with the uploaded JSON.
+    </div>
+
+    <p class="subtitle" *ngIf="!expectedTestId">Select a .json file containing the questions metadata and content to preview it.</p>
+    <p class="subtitle" *ngIf="expectedTestId">Uploading questions for: <strong>{{ expectedChapterSlug }} / {{ expectedTestId }}</strong></p>
 
     <div class="file-upload-wrapper">
       <input type="file" id="jsonUpload" accept=".json,application/json" (change)="onFileSelected($event)" class="file-input" />
@@ -137,13 +144,22 @@
         <div class="detail-row"><span>Chapter:</span> <strong>{{ previewSummary?.chapterSlug }}</strong></div>
         <div class="detail-row"><span>Test ID:</span> <strong>{{ previewSummary?.testId }}</strong></div>
         <div class="detail-row"><span>Questions:</span> <strong>{{ previewSummary?.totalQuestions }}</strong></div>
-        <div class="detail-row"><span>Total Marks:</span> <strong>{{ previewSummary?.totalMarks }}</strong></div>
+        <div class="preview-item">
+          <span class="label">Questions Found</span>
+          <span class="value badge count-badge">{{ previewSummary.questionCount }}</span>
+        </div>
+      </div>
+      
+      <div class="alert warning-alert" *ngIf="isReplace" style="margin-top: var(--space-4);">
+        <i class="ph ph-warning"></i>
+        <strong>Warning:</strong> Importing will delete the previous questions for this test.
       </div>
 
-      <div class="action-buttons right-align">
-        <button class="btn-secondary" [disabled]="isImporting" (click)="cancelImport()">Cancel</button>
-        <button class="btn-primary" [disabled]="isImporting" (click)="confirmImport()">
-          {{ isImporting ? 'Importing...' : 'Confirm Import' }}
+      <div class="action-buttons right-align mt-6">
+        <button class="btn-secondary" [disabled]="isImporting" (click)="cancel()">Cancel</button>
+        <button class="btn-success" [disabled]="isImporting" (click)="confirmImport()">
+          <i class="ph" [ngClass]="isImporting ? 'ph-spinner ph-spin' : 'ph-check-circle'"></i>
+          {{ isImporting ? 'Importing...' : (isReplace ? 'Confirm Replace' : 'Confirm Import') }}
         </button>
       </div>
     </div>
@@ -189,6 +205,7 @@
 
     <div class="action-buttons center-align mt-6">
       <button class="btn-primary" (click)="cancel()">Upload Another</button>
+      <a class="btn-secondary" style="text-decoration: none;" *ngIf="expectedTestId" [routerLink]="['/admin/tests', expectedTestId]">Back to Test Details</a>
     </div>
   </div>
 </div>

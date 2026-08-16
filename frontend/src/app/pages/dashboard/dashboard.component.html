@@ -1,60 +1,174 @@
-<!-- PREORBIT — Dashboard Page (Prompt 9 — polished) -->
-
 <div class="dash">
 
   <!-- Page header -->
   <header class="dash__header">
     <div class="dash__header-text">
       <h1 class="dash__title">Dashboard</h1>
-      <p class="dash__subtitle">Welcome back — your study platform is ready.</p>
+      <p class="dash__subtitle">Welcome back, {{ authService.currentUser()?.name || 'Student' }}!</p>
     </div>
   </header>
 
-  <!-- Navigation cards -->
-  <section class="dash__section" aria-label="Study sections">
-    <h2 class="dash__section-label">Study Sections</h2>
-    <div class="dash__grid">
-
-      <a routerLink="/java-dsa" class="dash__card dash__card--java" aria-label="Go to Java DSA">
-        <div class="dash__card-icon">
-          <i class="ph ph-code" aria-hidden="true"></i>
-        </div>
-        <div class="dash__card-body">
-          <span class="dash__card-title">Java DSA</span>
-          <span class="dash__card-desc">Data structures &amp; algorithms</span>
-        </div>
-        <i class="ph ph-arrow-right dash__card-arrow" aria-hidden="true"></i>
-      </a>
-
-      <a routerLink="/aptitude" class="dash__card dash__card--apt" aria-label="Go to Aptitude">
-        <div class="dash__card-icon">
-          <i class="ph ph-brain" aria-hidden="true"></i>
-        </div>
-        <div class="dash__card-body">
-          <span class="dash__card-title">Aptitude</span>
-          <span class="dash__card-desc">Quantitative &amp; reasoning</span>
-        </div>
-        <i class="ph ph-arrow-right dash__card-arrow" aria-hidden="true"></i>
-      </a>
-
-      <a routerLink="/core-cs" class="dash__card dash__card--cs" aria-label="Go to Core CS">
-        <div class="dash__card-icon">
-          <i class="ph ph-cpu" aria-hidden="true"></i>
-        </div>
-        <div class="dash__card-body">
-          <span class="dash__card-title">Core CS</span>
-          <span class="dash__card-desc">OS, Networks, DBMS &amp; more</span>
-        </div>
-        <i class="ph ph-arrow-right dash__card-arrow" aria-hidden="true"></i>
-      </a>
-
-    </div>
-  </section>
-
-  <!-- Status banner -->
-  <div class="dash__status">
-    <i class="ph ph-rocket-launch" aria-hidden="true"></i>
-    <span>Dashboard content and progress tracking coming soon.</span>
+  <div *ngIf="isLoading()" class="dash__state dash__state--loading">
+    <i class="ph ph-spinner ph-spin"></i>
+    <p>Loading your progress...</p>
   </div>
+
+  <div *ngIf="error()" class="dash__state dash__state--error">
+    <i class="ph ph-warning-circle"></i>
+    <p>{{ error() }}</p>
+  </div>
+
+  <ng-container *ngIf="progressData() as prog">
+    
+    <!-- Top Statistics -->
+    <section class="dash__section">
+      <h2 class="dash__section-label">Study Statistics</h2>
+      <div class="dash__stats-grid">
+        <div class="dash__stat-card">
+          <div class="dash__stat-val">{{ prog.overall.testsAttempted }}</div>
+          <div class="dash__stat-label">Tests Attempted</div>
+        </div>
+        <div class="dash__stat-card">
+          <div class="dash__stat-val">{{ prog.overall.testsCompleted }}</div>
+          <div class="dash__stat-label">Tests Completed</div>
+        </div>
+        <div class="dash__stat-card">
+          <div class="dash__stat-val">{{ prog.overall.theoryCompletedCount }}</div>
+          <div class="dash__stat-label">Theory Completed</div>
+        </div>
+        <div class="dash__stat-card">
+          <div class="dash__stat-val">{{ prog.overall.bestScorePercentage | number:'1.0-0' }}%</div>
+          <div class="dash__stat-label">Best Score</div>
+        </div>
+        <div class="dash__stat-card">
+          <div class="dash__stat-val">{{ prog.overall.latestScorePercentage | number:'1.0-0' }}%</div>
+          <div class="dash__stat-label">Latest Score</div>
+        </div>
+        <div class="dash__stat-card">
+          <div class="dash__stat-val">{{ prog.overall.averageScorePercentage | number:'1.0-0' }}%</div>
+          <div class="dash__stat-label">Average Score</div>
+        </div>
+        <div class="dash__stat-card">
+          <div class="dash__stat-val">{{ prog.overall.accuracy | number:'1.0-0' }}%</div>
+          <div class="dash__stat-label">Accuracy</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter Summary -->
+    <section class="dash__section">
+      <h2 class="dash__section-label">Chapter Summary</h2>
+      
+      <!-- Continue Learning Banner -->
+      <div *ngIf="continueLearningTarget() as target; else startLearning" class="dash__continue-banner">
+        <div class="dash__continue-info">
+          <span class="dash__continue-label">Continue Learning</span>
+          <h3 class="dash__continue-title">{{ target.title }}</h3>
+          <span class="dash__continue-meta">{{ target.moduleLabel }} <span *ngIf="target.subject">• {{ target.subject }}</span></span>
+        </div>
+        <a [routerLink]="target.route" class="dash__btn dash__btn--primary">Continue</a>
+      </div>
+      <ng-template #startLearning>
+        <div class="dash__continue-banner">
+          <div class="dash__continue-info">
+            <span class="dash__continue-label">Start Learning</span>
+            <h3 class="dash__continue-title">Begin your journey</h3>
+            <span class="dash__continue-meta">Choose a module to start studying</span>
+          </div>
+          <a routerLink="/java-dsa" class="dash__btn dash__btn--primary">Start Learning</a>
+        </div>
+      </ng-template>
+
+      <div class="dash__chapter-summary">
+        <div class="dash__summary-box dash__summary-box--completed">
+          <i class="ph ph-check-circle"></i>
+          <div>
+            <span class="dash__summary-val">{{ completedChapters() }}</span>
+            <span class="dash__summary-label">Completed Chapters</span>
+          </div>
+        </div>
+        <div class="dash__summary-box dash__summary-box--inprogress">
+          <i class="ph ph-spinner-gap"></i>
+          <div>
+            <span class="dash__summary-val">{{ inProgressChapters() }}</span>
+            <span class="dash__summary-label">In Progress Chapters</span>
+          </div>
+        </div>
+        <div class="dash__summary-box dash__summary-box--pending">
+          <i class="ph ph-hourglass-high"></i>
+          <div>
+            <span class="dash__summary-val">{{ pendingChapters() }}</span>
+            <span class="dash__summary-label">Pending Chapters</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Module Navigation & Progress -->
+    <section class="dash__section">
+      <h2 class="dash__section-label">Module Progress</h2>
+      <div class="dash__grid">
+        
+        <ng-container *ngFor="let m of prog.modules">
+          <!-- We only display the known modules -->
+          <a *ngIf="m.module !== 'unknown'" [routerLink]="'/' + m.module" class="dash__card dash__card--module">
+            <div class="dash__card-header">
+              <div class="dash__card-icon">
+                <i class="ph" [ngClass]="{
+                  'ph-code': m.module === 'java-dsa',
+                  'ph-brain': m.module === 'aptitude',
+                  'ph-cpu': m.module === 'core-cs'
+                }"></i>
+              </div>
+              <div class="dash__card-body">
+                <span class="dash__card-title">
+                  {{ m.module === 'java-dsa' ? 'Java DSA' : (m.module === 'aptitude' ? 'Aptitude' : 'Core CS') }}
+                </span>
+                <span class="dash__card-desc">{{ m.testsCompleted }} / {{ m.totalTests }} tests completed</span>
+              </div>
+            </div>
+            
+            <div class="dash__progress-wrapper">
+              <div class="dash__progress-bar">
+                <div class="dash__progress-fill" [style.width.%]="m.progress"></div>
+              </div>
+              <span class="dash__progress-text">{{ m.progress | number:'1.0-0' }}%</span>
+            </div>
+          </a>
+        </ng-container>
+
+      </div>
+    </section>
+
+    <!-- Recent Tests -->
+    <section class="dash__section">
+      <h2 class="dash__section-label">Recent Tests</h2>
+      
+      <div *ngIf="!prog.recentTests || prog.recentTests.length === 0" class="dash__empty">
+        <i class="ph ph-file-dashed"></i>
+        <p>No tests attempted yet.</p>
+        <a routerLink="/java-dsa" class="dash__btn dash__btn--primary" style="margin-top: var(--space-3)">Start a Test</a>
+      </div>
+
+      <div *ngIf="prog.recentTests && prog.recentTests.length > 0" class="dash__recent-list">
+        <a *ngFor="let t of prog.recentTests" [routerLink]="['/test-result', t.attemptId]" class="dash__recent-item dash__recent-item--clickable">
+          <div class="dash__recent-info">
+            <h3 class="dash__recent-title">{{ t.testName }}</h3>
+            <span class="dash__recent-meta">{{ t.subject }} • {{ t.chapterSlug }}</span>
+          </div>
+          <div class="dash__recent-score">
+            <span class="dash__recent-marks">{{ t.score }} / {{ t.maxScore }}</span>
+            <span class="dash__recent-perc" [ngClass]="{'dash__recent-perc--pass': t.percentage >= 60, 'dash__recent-perc--fail': t.percentage < 60}">
+              {{ t.percentage | number:'1.0-0' }}%
+            </span>
+          </div>
+          <div class="dash__recent-date">
+            {{ t.date | date:'MMM d, y' }}
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </ng-container>
 
 </div>

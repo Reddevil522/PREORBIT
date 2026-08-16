@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { NotesService } from '../../../core/services/notes.service';
 import { Notes } from '../../../core/models/notes.model';
 import { notesPaths } from '../../../config/notes-paths';
+import { ProgressService } from '../../../core/services/progress.service';
 
 @Component({
   selector: 'app-notes-viewer',
@@ -16,6 +17,7 @@ export class NotesViewerComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private notesService = inject(NotesService);
+  private progressService = inject(ProgressService);
 
   notes = signal<Notes | null>(null);
   isLoading = signal<boolean>(true);
@@ -89,15 +91,33 @@ export class NotesViewerComponent implements OnInit {
   }
 
   private checkCompletion(chapter: string) {
-    const completed = localStorage.getItem(`completed_theory_${chapter}`);
-    this.isCompleted.set(completed === 'true');
+    this.progressService.getProgress().subscribe({
+      next: () => {
+        const data = this.progressService.progressData();
+        if (!data) {
+          this.isCompleted.set(false);
+          return;
+        }
+        const ch = data.chapters.find((c: any) => c.chapterSlug === chapter);
+        if (ch && ch.theoryCompleted) {
+          this.isCompleted.set(true);
+        } else {
+          this.isCompleted.set(false);
+        }
+      },
+      error: () => this.isCompleted.set(false)
+    });
   }
 
   markCompleted() {
     const chapter = this.notes()?.slug;
     if (chapter) {
-      localStorage.setItem(`completed_theory_${chapter}`, 'true');
-      this.isCompleted.set(true);
+      this.progressService.markTheoryCompleted(chapter).subscribe({
+        next: () => {
+          this.isCompleted.set(true);
+        },
+        error: (err) => console.error('Failed to save theory progress:', err)
+      });
     }
   }
 }

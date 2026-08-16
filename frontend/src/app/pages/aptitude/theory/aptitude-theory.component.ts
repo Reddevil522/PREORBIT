@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { quantitativeChapters, logicalReasoningChapters, AptitudeChapter } from '../../../config/aptitude.config';
+import { ProgressService } from '../../../core/services/progress.service';
 
 export interface AptitudeChapterWithStatus extends AptitudeChapter {
-  status: 'Not Started' | 'In Progress' | 'Completed';
 }
 
 @Component({
@@ -17,11 +17,14 @@ export interface AptitudeChapterWithStatus extends AptitudeChapter {
 })
 export class AptitudeTheoryComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private progressService = inject(ProgressService);
 
   subject = signal<string>('');
   title = signal<string>('');
-  chapters = signal<AptitudeChapterWithStatus[]>([]);
+  chapters = signal<AptitudeChapter[]>([]);
   searchQuery = signal<string>('');
+  isLoading = signal<boolean>(false);
+  progressData = this.progressService.progressData;
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -37,24 +40,26 @@ export class AptitudeTheoryComponent implements OnInit {
         this.title.set('Logical Reasoning Theory');
         baseChapters = logicalReasoningChapters;
       }
-
-      const enriched: AptitudeChapterWithStatus[] = baseChapters.map(chapter => {
-        let status: 'Not Started' | 'In Progress' | 'Completed' = 'Not Started';
-        
-        const isCompleted = localStorage.getItem(`completed_theory_${chapter.slug}`) === 'true';
-        const isOpened = localStorage.getItem(`opened_theory_${chapter.slug}`) === 'true';
-        
-        if (isCompleted) {
-          status = 'Completed';
-        } else if (isOpened) {
-          status = 'In Progress';
-        }
-
-        return { ...chapter, status };
-      });
-      
-      this.chapters.set(enriched);
+      this.chapters.set(baseChapters);
     });
+    this.progressService.getProgress().subscribe();
+  }
+
+  getChapterProgress(chapterSlug: string) {
+    const data = this.progressData();
+    if (!data) return null;
+    return data.chapters.find((c: any) => c.chapterSlug === chapterSlug);
+  }
+
+  getChapterStatus(chapterSlug: string): string {
+    const prog = this.getChapterProgress(chapterSlug);
+    if (!prog) return 'NOT_STARTED';
+    return prog.status;
+  }
+
+  isTheoryCompleted(chapterSlug: string): boolean {
+    const prog = this.getChapterProgress(chapterSlug);
+    return prog ? prog.theoryCompleted : false;
   }
 
   filteredChapters = computed(() => {
@@ -68,10 +73,8 @@ export class AptitudeTheoryComponent implements OnInit {
     );
   });
 
-  onChapterClick(chapter: AptitudeChapterWithStatus) {
-    if (chapter.status === 'Not Started') {
-      localStorage.setItem(`opened_theory_${chapter.slug}`, 'true');
-      chapter.status = 'In Progress';
-    }
+  onChapterClick(chapter: AptitudeChapter) {
+    // Left empty since progress state is updated automatically when theory completes.
   }
 }
+

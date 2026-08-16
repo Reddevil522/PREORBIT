@@ -34,6 +34,7 @@ const sqlQuestionRoutes = require('./routes/core-cs/sqlRoutes');
 const importRoutes = require('./routes/admin/importRoutes');
 const adminTestRoutes = require('./routes/admin/testRoutes');
 const testRoutes = require('./routes/testRoutes');
+const progressRoutes = require('./routes/progressRoutes');
 
 // ── Create Express app ───────────────────────────────────────
 const app  = express();
@@ -49,6 +50,7 @@ app.use('/api',        healthRouter);
 app.use('/api/auth',   authRouter);
 app.use('/api/admin',  adminRouter);
 app.use('/api/tests',  testRoutes);
+app.use('/api/progress', progressRoutes);
 
 app.use('/api/java-dsa/questions', javaDSAQuestionRoutes);
 app.use('/api/aptitude/questions', aptitudeQuestionRoutes);

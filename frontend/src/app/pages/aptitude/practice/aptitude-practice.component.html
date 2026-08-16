@@ -42,6 +42,22 @@
             <p>{{ chapter.description }}</p>
           </div>
         </div>
+        <div class="chapter-progress-stats" *ngIf="getChapterProgress(chapter.slug) as prog">
+          <div class="stat-badge" [ngClass]="prog.status.toLowerCase().replace('_', '-')">
+            {{ prog.status.replace('_', ' ') }}
+          </div>
+          <div class="stat-detail">
+            <span class="theory-stat" [class.completed]="prog.theoryCompleted">
+              Theory: {{ prog.theoryCompleted ? 'Completed' : 'Pending' }}
+            </span>
+            <span class="tests-stat">
+              Tests: {{ prog.tests.completed }} / {{ prog.tests.total }}
+            </span>
+            <span class="progress-stat">
+              Progress: {{ prog.progress | number:'1.0-0' }}%
+            </span>
+          </div>
+        </div>
       </div>
       
       <div class="tests-grid" *ngIf="testsByChapter().get(chapter.slug) as tests; else noTests">

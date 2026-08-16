@@ -1,0 +1,195 @@
+.dash {
+  padding: var(--space-4) var(--space-5);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dash__header {
+  margin-bottom: var(--space-5);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--space-4);
+}
+
+.dash__title {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  color: var(--text-heading);
+  margin: 0 0 var(--space-2) 0;
+}
+
+.dash__subtitle {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+.dash__section {
+  margin-bottom: var(--space-6);
+}
+
+.dash__section-label {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text-heading);
+  margin-bottom: var(--space-4);
+}
+
+.dash__stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+}
+
+.dash__stat-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dash__stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.dash__stat-card--primary {
+  border-left: 4px solid var(--preorbit-primary);
+}
+.dash__stat-card--success {
+  border-left: 4px solid var(--preorbit-success);
+}
+.dash__stat-card--warning {
+  border-left: 4px solid var(--preorbit-warning);
+}
+.dash__stat-card--accent {
+  border-left: 4px solid var(--preorbit-accent);
+}
+
+.dash__stat-val {
+  font-size: var(--text-3xl);
+  font-weight: 800;
+  color: var(--text-heading);
+  margin-bottom: var(--space-1);
+}
+
+.dash__stat-label {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.dash__actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.dash__action-card {
+  display: flex;
+  align-items: center;
+  padding: var(--space-4);
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.dash__action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--preorbit-primary);
+}
+
+.dash__action-card i {
+  font-size: 2rem;
+  color: var(--preorbit-primary);
+  margin-right: var(--space-4);
+  background-color: var(--preorbit-primary-faint);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+}
+
+.dash__action-content h3 {
+  margin: 0 0 var(--space-1) 0;
+  font-size: var(--text-md);
+  color: var(--text-heading);
+}
+
+.dash__action-content p {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.dash__empty, .dash__state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6) 0;
+  text-align: center;
+  color: var(--text-muted);
+  background-color: var(--bg-card);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.dash__empty i, .dash__state i {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-3);
+  color: var(--text-muted);
+}
+
+.dash__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.dash__btn--primary {
+  background-color: var(--preorbit-primary);
+  color: var(--text-on-brand, white);
+  border: none;
+}
+
+.dash__btn--primary:hover {
+  background-color: var(--preorbit-primary-dark);
+}
+
+.dash__btn--outline {
+  background-color: transparent;
+  color: var(--text-heading);
+  border: 1px solid var(--border-color);
+}
+
+.dash__btn--outline:hover {
+  background-color: var(--bg-body);
+}
+
+/* State Specific */
+.dash__state--error i {
+  color: var(--preorbit-danger);
+}
+.dash__state--error p {
+  color: var(--preorbit-danger);
+}
+
+@media (max-width: 768px) {
+  .dash {
+    padding: var(--space-3);
+  }
+}

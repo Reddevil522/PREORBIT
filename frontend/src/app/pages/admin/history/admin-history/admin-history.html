@@ -1,0 +1,101 @@
+<div class="dash">
+  <header class="dash__header">
+    <div class="dash__header-text">
+      <h1 class="dash__title">Upload History</h1>
+      <p class="dash__subtitle">View all JSON import records</p>
+    </div>
+    <div class="dash__header-actions">
+      <a routerLink="/admin/dashboard" class="dash__btn dash__btn--outline">Back to Dashboard</a>
+      <a routerLink="/admin/upload" class="dash__btn dash__btn--primary">Upload JSON</a>
+    </div>
+  </header>
+
+  <div class="card" style="margin-bottom: var(--space-4);">
+    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 200px;">
+        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.25rem;">Module</label>
+        <select class="dash__input" [(ngModel)]="filterModule" (change)="applyFilters()">
+          <option value="">All Modules</option>
+          <option value="core-cs">Core CS</option>
+          <option value="aptitude">Aptitude</option>
+          <option value="java-dsa">Java DSA</option>
+        </select>
+      </div>
+      <div style="flex: 1; min-width: 200px;">
+        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.25rem;">Test ID</label>
+        <input type="text" class="dash__input" [(ngModel)]="filterTestId" (keyup.enter)="applyFilters()" placeholder="Search by Test ID">
+      </div>
+      <div style="flex: 1; min-width: 200px;">
+        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.25rem;">Status</label>
+        <select class="dash__input" [(ngModel)]="filterStatus" (change)="applyFilters()">
+          <option value="">All Statuses</option>
+          <option value="SUCCESS">Success</option>
+          <option value="REPLACED">Replaced</option>
+          <option value="FAILED">Failed</option>
+        </select>
+      </div>
+      <div style="display: flex; align-items: flex-end; gap: var(--space-2);">
+        <button class="dash__btn dash__btn--primary" (click)="applyFilters()">Filter</button>
+        <button class="dash__btn dash__btn--outline" (click)="resetFilters()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading()" class="dash__state dash__state--loading">
+    <i class="ph ph-spinner ph-spin"></i>
+    <p>Loading history...</p>
+  </div>
+
+  <div *ngIf="error()" class="dash__state dash__state--error">
+    <i class="ph ph-warning-circle"></i>
+    <p>{{ error() }}</p>
+    <button class="dash__btn dash__btn--outline" (click)="loadHistory(currentPage)" style="margin-top: var(--space-3)">Retry</button>
+  </div>
+
+  <ng-container *ngIf="!isLoading() && !error()">
+    <div class="card" style="overflow-x: auto;">
+      <table class="dash__table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Module</th>
+            <th>Subject / Chapter</th>
+            <th>Test</th>
+            <th>Questions</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="historyList().length === 0">
+            <td colspan="6" style="text-align: center; padding: var(--space-4);">No JSON imports yet.</td>
+          </tr>
+          <tr *ngFor="let upload of historyList()">
+            <td>{{ upload.createdAt | date:'short' }}</td>
+            <td>{{ upload.module | titlecase }}</td>
+            <td>
+              {{ upload.subject | titlecase }}<ng-container *ngIf="upload.subject"> / </ng-container>{{ upload.chapterSlug | titlecase }}
+            </td>
+            <td>
+              <a [routerLink]="['/admin/tests', upload.testId]" style="color: var(--primary); font-weight: 500;">
+                {{ upload.testName || upload.testId }}
+              </a>
+            </td>
+            <td>{{ upload.questionCount }}</td>
+            <td>
+              <span class="badge" [ngClass]="{'badge-success': upload.status === 'SUCCESS' || upload.status === 'REPLACED', 'badge-danger': upload.status === 'FAILED'}">
+                {{ upload.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-controls" *ngIf="totalPages > 1" style="display: flex; justify-content: center; align-items: center; gap: var(--space-3); margin-top: var(--space-4);">
+      <button class="dash__btn dash__btn--outline" [disabled]="currentPage === 1" (click)="prevPage()">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button class="dash__btn dash__btn--outline" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
+    </div>
+  </ng-container>
+</div>

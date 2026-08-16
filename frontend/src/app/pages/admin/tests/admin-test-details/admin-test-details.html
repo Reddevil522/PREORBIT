@@ -3,9 +3,14 @@
     <button class="back-btn" (click)="goBack()">
       &larr; Back to Tests
     </button>
-    <button class="btn-danger btn-sm" *ngIf="!loading && !error && test" (click)="openDeleteModal()">
-      Delete Test
-    </button>
+    <div class="top-actions">
+      <a class="btn-primary btn-sm" style="margin-right: var(--space-3); text-decoration: none;" *ngIf="!loading && !error && test" [routerLink]="['/admin/upload']" [queryParams]="{ testId: test.testId, chapterSlug: test.chapterSlug }">
+        {{ test.questionCount === 0 ? 'Upload Questions' : 'Replace Questions' }}
+      </a>
+      <button class="btn-danger btn-sm" *ngIf="!loading && !error && test" (click)="openDeleteModal()">
+        Delete Test
+      </button>
+    </div>
   </div>
 
   <div class="loading-state" *ngIf="loading && !test">
@@ -76,11 +81,23 @@
 
     <!-- Question List -->
     <div class="questions-section">
-      <h2>Question List ({{ questions.length }})</h2>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); flex-wrap: wrap; gap: var(--space-3);">
+        <h2 style="margin: 0;">Question List ({{ questions.length }})</h2>
+        <div style="flex: 1; max-width: 300px;">
+          <input type="text" class="dash__input" [(ngModel)]="searchQuery" (input)="onSearchChange()" placeholder="Search questions..." style="width: 100%; padding: var(--space-2); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="filteredQuestions.length === 0" style="text-align: center; padding: var(--space-6) 0; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border-color); color: var(--text-muted); margin-top: var(--space-4);">
+        <i class="ph ph-file-dashed" style="font-size: 2.5rem; margin-bottom: var(--space-3);"></i>
+        <h3>No Questions</h3>
+        <p>This test currently has no questions matching your criteria.</p>
+        <a class="btn-primary" *ngIf="questions.length === 0" style="margin-top: var(--space-3); text-decoration: none; display: inline-block;" [routerLink]="['/admin/upload']" [queryParams]="{ testId: test.testId, chapterSlug: test.chapterSlug }">Upload JSON</a>
+      </div>
       
-      <div class="question-card" *ngFor="let q of questions; let i = index; trackBy: trackByQuestionId">
+      <div class="question-card" *ngFor="let q of paginatedQuestions; let i = index; trackBy: trackByQuestionId">
         <div class="q-header">
-          <span class="q-number">Question {{ i + 1 }}</span>
+          <span class="q-number">Question {{ (currentPage - 1) * pageSize + i + 1 }}</span>
           <div class="q-tags">
             <span class="badge type-badge">{{ q.questionType }}</span>
             <span class="badge marks-badge">{{ q.marks || 1 }} Mark(s)</span>
@@ -110,6 +127,13 @@
             <p>{{ q.explanation }}</p>
           </div>
         </div>
+      </div>
+
+      <!-- Pagination Controls -->
+      <div class="pagination-controls" *ngIf="totalPages > 1" style="display: flex; justify-content: center; align-items: center; gap: var(--space-3); margin-top: var(--space-4);">
+        <button class="btn-secondary btn-sm" [disabled]="currentPage === 1" (click)="prevPage()">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button class="btn-secondary btn-sm" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
       </div>
     </div>
   </ng-container>

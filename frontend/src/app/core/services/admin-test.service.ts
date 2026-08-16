@@ -47,11 +47,42 @@ export interface AdminTestDetailsResponse {
   };
 }
 
+export interface ImportHistory {
+  _id: string;
+  module: string;
+  subject?: string;
+  section?: string;
+  chapterSlug: string;
+  testId: string;
+  testName: string;
+  questionCount: number;
+  importedCount: number;
+  rejectedCount: number;
+  duplicateCount: number;
+  status: string;
+  createdAt: string;
+}
+
+export interface AdminHistoryResponse {
+  success: boolean;
+  message: string;
+  data: {
+    imports: ImportHistory[];
+    pagination: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AdminTestService {
   private apiUrl = `${environment.apiUrl}/admin/tests`;
+  private importUrl = `${environment.apiUrl}/admin/import`;
 
   // ── Dual-layer cache ───────────────────────────────────────────
   // Layer 1 (in-memory): lives for the app session — instant on route change.
@@ -159,5 +190,27 @@ export class AdminTestService {
 
   updateTestAvailability(id: string, isAvailable: boolean): Observable<any> {
     return this.http.patch<any>(`${this.apiUrl}/${id}/availability`, { isAvailable });
+  }
+
+  getImportHistory(
+    page: number = 1,
+    limit: number = 20,
+    module: string = '',
+    subject: string = '',
+    chapterSlug: string = '',
+    testId: string = '',
+    status: string = ''
+  ): Observable<AdminHistoryResponse> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('limit', limit.toString());
+
+    if (module) params = params.set('module', module);
+    if (subject) params = params.set('subject', subject);
+    if (chapterSlug) params = params.set('chapterSlug', chapterSlug);
+    if (testId) params = params.set('testId', testId);
+    if (status) params = params.set('status', status);
+
+    return this.http.get<AdminHistoryResponse>(`${this.importUrl}/history`, { params });
   }
 }

@@ -7,6 +7,7 @@ const CNQuestion = require('../../models/core-cs/CNQuestion');
 const SQLQuestion = require('../../models/core-cs/SQLQuestion');
 const TestStatusService = require('./TestStatusService');
 const PracticeTest = require('../../models/PracticeTest');
+const ImportHistory = require('../../models/admin/ImportHistory');
 
 const mongoose = require('mongoose');
 
@@ -16,7 +17,7 @@ function normalizeQuestionKey(questionText, moduleName, subject, chapterSlug, te
 }
 
 class QuestionImportService {
-  async validateUpload(jsonObj) {
+  async validateUpload(jsonObj, isReplace = false) {
     console.log('[VALIDATION] JSON parsing started'); // Log for testing
     console.log('[VALIDATION] JSON parsing completed'); // Log for testing
     console.log('[VALIDATION] Metadata validation started');
@@ -192,7 +193,7 @@ class QuestionImportService {
 
       const [testExists, existingQuestions] = await Promise.all(dbChecks);
 
-      if (testExists) {
+      if (testExists && !isReplace) {
         errors.push({ questionNumber: 'Metadata', field: 'testId', message: `Test ID already exists.` });
       }
 
@@ -200,7 +201,7 @@ class QuestionImportService {
         // Compare found questions with inMemoryKeys
         existingQuestions.forEach(eq => {
            const dbKey = normalizeQuestionKey(eq.question, moduleName, subject, chapterSlug, testId);
-           if (inMemoryKeys.has(dbKey)) {
+           if (inMemoryKeys.has(dbKey) && !isReplace) {
               errors.push({ questionNumber: 'Database', field: 'question', message: `Question already exists in database: "${eq.question.substring(0, 30)}..."` });
            }
         });
@@ -234,8 +235,8 @@ class QuestionImportService {
     return result;
   }
 
-  async importValidatedQuestions(jsonObj) {
-    const validationResult = await this.validateUpload(jsonObj);
+  async importValidatedQuestions(jsonObj, isReplace = false) {
+    const validationResult = await this.validateUpload(jsonObj, isReplace);
     
     if (!validationResult.valid) {
       const firstError = validationResult.errors[0];
@@ -251,6 +252,14 @@ class QuestionImportService {
       ...(summary.module === 'aptitude' ? { section: summary.subject } : {})
     }));
 
+    if (isReplace) {
+      const deleteQuery = { chapterSlug: summary.chapterSlug, testId: summary.testId };
+      if (summary.module === 'aptitude') {
+        deleteQuery.section = summary.subject;
+      }
+      await Model.deleteMany(deleteQuery);
+    }
+
     await Model.insertMany(docsToInsert);
 
     await TestStatusService.updateStatus({
@@ -263,6 +272,21 @@ class QuestionImportService {
       testNumber: summary.testNumber,
       chapterName: summary.chapterName
     });
+
+    await ImportHistory.create({
+      module: summary.module,
+      subject: summary.module === 'core-cs' ? summary.subject : undefined,
+      section: summary.module === 'aptitude' ? summary.subject : undefined,
+      chapterSlug: summary.chapterSlug,
+      testId: summary.testId,
+      testName: jsonObj.testName,
+      questionCount: questions.length,
+      importedCount: questions.length,
+      rejectedCount: 0,
+      duplicateCount: 0,
+      status: isReplace ? 'REPLACED' : 'SUCCESS'
+    });
+
     return summary;
   }
 }

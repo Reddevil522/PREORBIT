@@ -1,8 +1,9 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { coreCsSubjects, CoreCsSubject, CoreCsChapter } from '../../../config/core-cs.config';
+import { ProgressService } from '../../../core/services/progress.service';
 
 @Component({
   selector: 'app-core-cs-theory',
@@ -12,8 +13,12 @@ import { coreCsSubjects, CoreCsSubject, CoreCsChapter } from '../../../config/co
   styleUrl: './core-cs-theory.component.css'
 })
 export class CoreCsTheoryComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private progressService = inject(ProgressService);
+
   subject = signal<CoreCsSubject | null>(null);
   searchQuery = signal('');
+  progressData = this.progressService.progressData;
 
   filteredChapters = computed(() => {
     const currentSubject = this.subject();
@@ -28,9 +33,8 @@ export class CoreCsTheoryComponent implements OnInit {
     );
   });
 
-  constructor(private route: ActivatedRoute) {}
-
   ngOnInit() {
+    this.progressService.getProgress().subscribe();
     this.route.paramMap.subscribe(params => {
       const subjectSlug = params.get('subject');
       if (subjectSlug) {
@@ -40,11 +44,21 @@ export class CoreCsTheoryComponent implements OnInit {
     });
   }
 
-  isChapterCompleted(chapterSlug: string): boolean {
-    return localStorage.getItem(`completed_theory_core-cs/${this.subject()?.slug}/${chapterSlug}`) === 'true';
+  getChapterProgress(chapterSlug: string) {
+    const data = this.progressData();
+    if (!data) return null;
+    return data.chapters.find((c: any) => c.chapterSlug === chapterSlug);
   }
 
-  isChapterInProgress(chapterSlug: string): boolean {
-    return localStorage.getItem(`opened_theory_core-cs/${this.subject()?.slug}/${chapterSlug}`) === 'true' && !this.isChapterCompleted(chapterSlug);
+  getChapterStatus(chapterSlug: string): string {
+    const prog = this.getChapterProgress(chapterSlug);
+    if (!prog) return 'NOT_STARTED';
+    return prog.status;
+  }
+
+  isTheoryCompleted(chapterSlug: string): boolean {
+    const prog = this.getChapterProgress(chapterSlug);
+    return prog ? prog.theoryCompleted : false;
   }
 }
+

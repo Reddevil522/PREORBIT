@@ -14,6 +14,7 @@ const router         = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
 const { requireRole } = require('../middleware/roleMiddleware');
 const { sendSuccess } = require('../utils/response');
+const adminDashboardController = require('../controllers/adminDashboardController');
 
 // Apply both guards to every route in this router
 router.use(authMiddleware);
@@ -29,5 +30,9 @@ router.get('/status', (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
+// GET /api/admin/dashboard
+// Fetch overview statistics for the Admin Dashboard
+router.get('/dashboard', adminDashboardController.getDashboardStats);
 
 module.exports = router;

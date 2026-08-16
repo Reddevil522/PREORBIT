@@ -1,6 +1,6 @@
-import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { catchError, finalize } from 'rxjs/operators';
@@ -20,8 +20,13 @@ interface ValidationError {
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
-export class AdminComponent {
+export class AdminComponent implements OnInit {
   selectedFile: File | null = null;
+  
+  // Context from query parameters
+  expectedTestId: string | null = null;
+  expectedChapterSlug: string | null = null;
+  isReplace: boolean = false;
   
   // State
   isUploading = false;
@@ -44,8 +49,18 @@ export class AdminComponent {
     private http: HttpClient, 
     private cdr: ChangeDetectorRef, 
     private zone: NgZone,
-    private adminTestService: AdminTestService
+    private adminTestService: AdminTestService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
+
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      if (params['testId']) this.expectedTestId = params['testId'];
+      if (params['chapterSlug']) this.expectedChapterSlug = params['chapterSlug'];
+      if (params['isReplace'] === 'true') this.isReplace = true;
+    });
+  }
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
@@ -110,6 +125,23 @@ export class AdminComponent {
       this.zone.run(() => {
         try {
           this.parsedJson = JSON.parse(e.target?.result as string);
+          
+          // Validate context if provided
+          if (this.expectedTestId && this.parsedJson.testId !== this.expectedTestId) {
+            this.generalError = `Wrong Test: You are uploading JSON for test '${this.parsedJson.testId}', but selected test '${this.expectedTestId}'.`;
+            this.isUploading = false;
+            this.parsedJson = null;
+            this.cdr.detectChanges();
+            return;
+          }
+          if (this.expectedChapterSlug && this.parsedJson.chapterSlug !== this.expectedChapterSlug) {
+            this.generalError = `Wrong Chapter: You are uploading JSON for chapter '${this.parsedJson.chapterSlug}', but selected chapter '${this.expectedChapterSlug}'.`;
+            this.isUploading = false;
+            this.parsedJson = null;
+            this.cdr.detectChanges();
+            return;
+          }
+
           this.sendForPreview(this.parsedJson);
         } catch (err) {
           this.generalError = 'Invalid JSON format. Please check your JSON file.';
@@ -135,7 +167,10 @@ export class AdminComponent {
   private sendForPreview(jsonPayload: any) {
     console.log('[UPLOAD] Validation started');
     console.log('[UPLOAD] HTTP request sent');
-    this.http.post<any>(`${environment.apiUrl}/admin/import/preview`, jsonPayload)
+    let url = `${environment.apiUrl}/admin/import/preview`;
+    if (this.isReplace) url += '?isReplace=true';
+
+    this.http.post<any>(url, jsonPayload)
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('[UPLOAD] HTTP error', error);
@@ -223,7 +258,10 @@ export class AdminComponent {
 
   private executeImport(jsonPayload: any) {
     console.log('[IMPORT] Import started');
-    this.http.post<any>(`${environment.apiUrl}/admin/import/execute`, jsonPayload)
+    let url = `${environment.apiUrl}/admin/import/execute`;
+    if (this.isReplace) url += '?isReplace=true';
+
+    this.http.post<any>(url, jsonPayload)
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('[IMPORT] HTTP error', error);

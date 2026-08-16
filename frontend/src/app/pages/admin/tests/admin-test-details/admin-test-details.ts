@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { AdminTestService, PracticeTest } from '../../../../core/services/admin-test.service';
 
 const CACHE_KEY = 'preorbit_admin_tests_cache_v1';
@@ -8,7 +9,7 @@ const CACHE_KEY = 'preorbit_admin_tests_cache_v1';
 @Component({
   selector: 'app-admin-test-details',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './admin-test-details.html',
   styleUrls: ['./admin-test-details.css']
 })
@@ -18,6 +19,30 @@ export class AdminTestDetails implements OnInit {
   loading = true;
   error = '';
   
+  // Pagination & Search
+  searchQuery = '';
+  currentPage = 1;
+  pageSize = 10;
+
+  get filteredQuestions(): any[] {
+    if (!this.searchQuery) return this.questions;
+    const lowerQuery = this.searchQuery.toLowerCase();
+    return this.questions.filter(q => 
+      q.question.toLowerCase().includes(lowerQuery) || 
+      (q.explanation && q.explanation.toLowerCase().includes(lowerQuery))
+    );
+  }
+
+  get paginatedQuestions(): any[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    const end = start + this.pageSize;
+    return this.filteredQuestions.slice(start, end);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredQuestions.length / this.pageSize) || 1;
+  }
+
   // Deletion State
   showDeleteModal = false;
   isDeleting = false;
@@ -91,7 +116,23 @@ export class AdminTestDetails implements OnInit {
   }
 
   trackByQuestionId(index: number, question: any): string {
-    return question._id || index;
+    return question._id || index.toString();
+  }
+
+  onSearchChange() {
+    this.currentPage = 1;
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
   }
 
   goBack(): void {

@@ -208,10 +208,28 @@ export const routes: Routes = [
         path: 'admin',
         canActivate: [adminGuard],
         loadComponent: () =>
+          import('./pages/admin/dashboard/admin-dashboard.component').then(
+            (m) => m.AdminDashboardComponent
+          ),
+        title: 'Admin Dashboard — PREORBIT',
+      },
+      {
+        path: 'admin/upload',
+        canActivate: [adminGuard],
+        loadComponent: () =>
           import('./pages/admin/admin.component').then(
             (m) => m.AdminComponent
           ),
-        title: 'Admin — PREORBIT',
+        title: 'Admin Upload — PREORBIT',
+      },
+      {
+        path: 'admin/history',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./pages/admin/history/admin-history/admin-history').then(
+            (m) => m.AdminHistoryComponent
+          ),
+        title: 'Upload History — PREORBIT',
       },
       {
         path: 'admin/tests',

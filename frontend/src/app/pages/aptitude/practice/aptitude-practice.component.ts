@@ -6,6 +6,7 @@ import { AptitudeChapter } from '../../../config/aptitude.config';
 import { TestMetadata } from '../../../core/models/test.model';
 import { AptitudePracticeService } from '../../../core/services/aptitude-practice.service';
 import { TestCardComponent } from '../../../shared/components/test-card/test-card.component';
+import { ProgressService } from '../../../core/services/progress.service';
 import { forkJoin, map } from 'rxjs';
 
 @Component({
@@ -18,14 +19,19 @@ import { forkJoin, map } from 'rxjs';
 export class AptitudePracticeComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private practiceService = inject(AptitudePracticeService);
+  private progressService = inject(ProgressService);
 
   subject = signal<string>('');
   title = signal<string>('');
   chapters = signal<AptitudeChapter[]>([]);
   allTests = signal<TestMetadata[]>([]);
   searchQuery = signal<string>('');
+  
+  progressData = this.progressService.progressData;
 
   ngOnInit() {
+    this.progressService.getProgress().subscribe();
+
     this.route.paramMap.subscribe(params => {
       const subjectParam = params.get('subject') as 'quantitative' | 'logical-reasoning';
       if (!subjectParam) return;
@@ -81,4 +87,10 @@ export class AptitudePracticeComponent implements OnInit {
     });
     return map;
   });
+
+  getChapterProgress(chapterSlug: string) {
+    const data = this.progressData();
+    if (!data) return null;
+    return data.chapters.find((c: any) => c.chapterSlug === chapterSlug);
+  }
 }

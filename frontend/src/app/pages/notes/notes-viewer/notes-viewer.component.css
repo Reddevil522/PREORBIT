@@ -161,9 +161,20 @@
 }
 
 .btn-complete--done {
-  background-color: var(--primary-default);
-  color: white;
-  border-color: var(--primary-default);
+  background-color: var(--preorbit-success, #10b981);
+  color: #fff;
+  border-color: var(--preorbit-success, #10b981);
+  cursor: default;
+  opacity: 1;
+}
+
+/* Prevent browser :disabled from washing out the completed state */
+.btn-complete--done:disabled,
+.btn-complete--done[disabled] {
+  background-color: var(--preorbit-success, #10b981);
+  color: #fff;
+  border-color: var(--preorbit-success, #10b981);
+  opacity: 1;
   cursor: default;
 }
 

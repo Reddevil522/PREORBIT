@@ -1,11 +1,11 @@
-import { Component, computed, signal, OnInit } from '@angular/core';
+import { Component, computed, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { javaDsaChapters, JavaDsaChapter } from '../../../config/java-dsa.config';
+import { ProgressService } from '../../../core/services/progress.service';
 
 export interface ChapterWithStatus extends JavaDsaChapter {
-  status: 'Not Started' | 'In Progress' | 'Completed';
 }
 
 @Component({
@@ -16,46 +16,52 @@ export interface ChapterWithStatus extends JavaDsaChapter {
   styleUrl: './java-dsa-theory.component.css'
 })
 export class JavaDsaTheoryComponent implements OnInit {
-  chapters = signal<ChapterWithStatus[]>([]);
+  private progressService = inject(ProgressService);
+  
+  chapters = signal<JavaDsaChapter[]>([]);
   searchQuery = signal<string>('');
+  isLoading = signal<boolean>(false);
+  progressData = this.progressService.progressData;
 
   ngOnInit() {
     this.loadChapters();
   }
 
   loadChapters() {
-    const enriched: ChapterWithStatus[] = javaDsaChapters.map(chapter => {
-      let status: 'Not Started' | 'In Progress' | 'Completed' = 'Not Started';
-      
-      const isCompleted = localStorage.getItem(`completed_theory_${chapter.slug}`) === 'true';
-      const isOpened = localStorage.getItem(`opened_theory_${chapter.slug}`) === 'true';
-      
-      if (isCompleted) {
-        status = 'Completed';
-      } else if (isOpened) {
-        status = 'In Progress';
-      }
+    this.chapters.set(javaDsaChapters);
+    this.progressService.getProgress().subscribe();
+  }
 
-      return { ...chapter, status };
-    });
-    this.chapters.set(enriched);
+  getChapterProgress(chapterSlug: string) {
+    const data = this.progressData();
+    if (!data) return null;
+    return data.chapters.find((c: any) => c.chapterSlug === chapterSlug);
+  }
+
+  getChapterStatus(chapterSlug: string): string {
+    const prog = this.getChapterProgress(chapterSlug);
+    if (!prog) return 'NOT_STARTED';
+    return prog.status;
+  }
+
+  isTheoryCompleted(chapterSlug: string): boolean {
+    const prog = this.getChapterProgress(chapterSlug);
+    return prog ? prog.theoryCompleted : false;
   }
 
   filteredChapters = computed(() => {
     const query = this.searchQuery().toLowerCase().trim();
     const all = this.chapters();
     if (!query) return all;
-    
-    return all.filter(c => 
-      c.title.toLowerCase().includes(query) || 
+
+    return all.filter(c =>
+      c.title.toLowerCase().includes(query) ||
       c.description.toLowerCase().includes(query)
     );
   });
 
-  onChapterClick(chapter: ChapterWithStatus) {
-    if (chapter.status === 'Not Started') {
-      localStorage.setItem(`opened_theory_${chapter.slug}`, 'true');
-      chapter.status = 'In Progress';
-    }
+  onChapterClick(chapter: JavaDsaChapter) {
+    // Progress state is updated automatically when theory completes.
   }
 }
+

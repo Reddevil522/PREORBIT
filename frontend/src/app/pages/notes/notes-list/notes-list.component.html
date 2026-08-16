@@ -26,7 +26,7 @@
         </h2>
       </div>
 
-      <div class="chapter-card__status" *ngIf="chapter.isCompleted">
+      <div class="chapter-card__status" *ngIf="getChapterStatus(chapter.slug) === 'COMPLETED'">
         <i class="ph-fill ph-check-circle"></i>
       </div>
       

@@ -1,0 +1,127 @@
+<div class="dash">
+  <header class="dash__header">
+    <div class="dash__header-text">
+      <h1 class="dash__title">Admin Dashboard</h1>
+      <p class="dash__subtitle">System overview and test management</p>
+    </div>
+  </header>
+
+  <div *ngIf="isLoading()" class="dash__state dash__state--loading">
+    <i class="ph ph-spinner ph-spin"></i>
+    <p>Loading statistics...</p>
+  </div>
+
+  <div *ngIf="error()" class="dash__state dash__state--error">
+    <i class="ph ph-warning-circle"></i>
+    <p>{{ error() }}</p>
+    <button class="dash__btn dash__btn--outline" (click)="loadStats()" style="margin-top: var(--space-3)">Retry</button>
+  </div>
+
+  <ng-container *ngIf="stats() as statData">
+    
+    <!-- Configured Content -->
+    <section class="dash__section">
+      <h2 class="dash__section-label">Configured Content</h2>
+      <div class="dash__stats-grid">
+        <div class="dash__stat-card">
+          <div class="dash__stat-val">{{ statData.totalModules || 0 }}</div>
+          <div class="dash__stat-label">Total Modules</div>
+        </div>
+        <div class="dash__stat-card">
+          <div class="dash__stat-val">{{ statData.totalSubjects || 0 }}</div>
+          <div class="dash__stat-label">Total Subjects</div>
+        </div>
+        <div class="dash__stat-card">
+          <div class="dash__stat-val">{{ statData.totalChapters || 0 }}</div>
+          <div class="dash__stat-label">Total Chapters</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Test Database Overview -->
+    <section class="dash__section">
+      <h2 class="dash__section-label">Database Overview</h2>
+      <div class="dash__stats-grid">
+        <div class="dash__stat-card dash__stat-card--primary">
+          <div class="dash__stat-val">{{ statData.totalTests }}</div>
+          <div class="dash__stat-label">Total Tests</div>
+        </div>
+        <div class="dash__stat-card dash__stat-card--success">
+          <div class="dash__stat-val">{{ statData.testsWithQuestions }}</div>
+          <div class="dash__stat-label">Tests With Questions</div>
+        </div>
+        <div class="dash__stat-card dash__stat-card--warning">
+          <div class="dash__stat-val">{{ statData.testsWithoutQuestions }}</div>
+          <div class="dash__stat-label">Tests Without Questions</div>
+        </div>
+        <div class="dash__stat-card dash__stat-card--accent">
+          <div class="dash__stat-val">{{ statData.totalQuestions }}</div>
+          <div class="dash__stat-label">Total Questions</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <section class="dash__section">
+      <h2 class="dash__section-label">Quick Actions</h2>
+      <div class="dash__actions">
+        <a routerLink="/admin/tests" class="dash__action-card">
+          <i class="ph ph-list-checks"></i>
+          <div class="dash__action-content">
+            <h3>Manage Tests</h3>
+            <p>View, configure, and manage individual tests.</p>
+          </div>
+        </a>
+        <a routerLink="/admin/upload" class="dash__action-card">
+          <i class="ph ph-upload-simple"></i>
+          <div class="dash__action-content">
+            <h3>Upload Questions</h3>
+            <p>Import questions from JSON files into tests.</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Recent Uploads -->
+    <section class="dash__section">
+      <h2 class="dash__section-label">Recent Uploads</h2>
+      
+      <div *ngIf="!statData.recentUploads || statData.recentUploads.length === 0" class="dash__empty">
+        <i class="ph ph-file-dashed"></i>
+        <p>No JSON imports yet.</p>
+        <a routerLink="/admin/upload" class="dash__btn dash__btn--primary" style="margin-top: var(--space-3)">Upload JSON</a>
+      </div>
+
+      <div *ngIf="statData.recentUploads && statData.recentUploads.length > 0" class="dash__recent-list">
+        <div class="upload-item card" *ngFor="let upload of statData.recentUploads" style="margin-bottom: var(--space-3); padding: var(--space-4);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <h4 style="margin: 0; margin-bottom: var(--space-1);">{{ upload.testName || upload.testId }}</h4>
+              <p style="margin: 0; color: var(--text-muted); font-size: 0.85rem;">
+                {{ upload.module | titlecase }} 
+                <span *ngIf="upload.subject">/ {{ upload.subject | titlecase }}</span>
+                / {{ upload.chapterSlug | titlecase }}
+              </p>
+              <p style="margin: 0; margin-top: var(--space-1); font-size: 0.85rem; color: var(--text-color);">
+                <strong>{{ upload.questionCount }} Questions</strong> imported.
+              </p>
+            </div>
+            <div style="text-align: right;">
+              <span class="badge" [ngClass]="{'badge-success': upload.status === 'SUCCESS' || upload.status === 'REPLACED', 'badge-danger': upload.status === 'FAILED'}">
+                {{ upload.status }}
+              </span>
+              <p style="margin: 0; margin-top: var(--space-2); color: var(--text-muted); font-size: 0.8rem;">
+                {{ upload.createdAt | date:'short' }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: var(--space-4);">
+          <a routerLink="/admin/history" class="dash__btn dash__btn--outline">View All History</a>
+        </div>
+      </div>
+    </section>
+
+  </ng-container>
+
+</div>

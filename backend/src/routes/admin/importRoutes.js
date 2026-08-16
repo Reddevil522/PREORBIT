@@ -13,4 +13,8 @@ router.post('/preview', authMiddleware, requireRole('admin'), importController.p
 // Full re-validation and database insertion
 router.post('/execute', authMiddleware, requireRole('admin'), importController.executeImport);
 
+// GET /api/admin/import/history
+// Fetch paginated import history
+router.get('/history', authMiddleware, requireRole('admin'), importController.getImportHistory);
+
 module.exports = router;

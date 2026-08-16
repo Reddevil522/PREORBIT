@@ -2,12 +2,12 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { notesPaths } from '../../../config/notes-paths';
+import { ProgressService } from '../../../core/services/progress.service';
 
 interface ChapterMeta {
   slug: string;
   title: string;
   path: string;
-  isCompleted: boolean;
 }
 
 @Component({
@@ -19,10 +19,12 @@ interface ChapterMeta {
 })
 export class NotesListComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private progressService = inject(ProgressService);
 
   sectionTitle = signal<string>('');
   chapters = signal<ChapterMeta[]>([]);
   error = signal<string | null>(null);
+  progressData = this.progressService.progressData;
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -52,17 +54,21 @@ export class NotesListComponent implements OnInit {
       const chapterKeys = Object.keys(mapping);
       const basePath = subject ? `/${section}/${subject}/theory` : `/${section}/theory`;
 
-      const mappedChapters = chapterKeys.map(key => {
-        const completed = localStorage.getItem(`completed_theory_${key}`) === 'true';
-        return {
-          slug: key,
-          title: key.replace(/-/g, ' '),
-          path: `${basePath}/${key}`,
-          isCompleted: completed
-        };
-      });
-
+      const mappedChapters = chapterKeys.map(key => ({
+        slug: key,
+        title: key.replace(/-/g, ' '),
+        path: `${basePath}/${key}`
+      }));
       this.chapters.set(mappedChapters);
+      
+      this.progressService.getProgress().subscribe();
     });
+  }
+
+  getChapterStatus(chapterSlug: string): string {
+    const data = this.progressData();
+    if (!data) return 'NOT_STARTED';
+    const chap = data.chapters.find((c: any) => c.chapterSlug === chapterSlug);
+    return chap ? chap.status : 'NOT_STARTED';
   }
 }
