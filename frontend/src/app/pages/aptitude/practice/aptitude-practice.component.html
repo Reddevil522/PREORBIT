@@ -29,8 +29,14 @@
     </div>
   </div>
 
+  <!-- API error banner — shown when backend is unreachable but chapters are available -->
+  <div class="api-error-banner" *ngIf="apiError()">
+    <i class="ph ph-wifi-slash"></i>
+    <span>Unable to load tests — the server may be temporarily unavailable. Please try again later.</span>
+  </div>
+
   <div class="content-area" *ngIf="filteredChapters().length > 0; else emptyState">
-    
+
     <div *ngFor="let chapter of filteredChapters()" class="chapter-section">
       <div class="chapter-header">
         <div class="chapter-info">

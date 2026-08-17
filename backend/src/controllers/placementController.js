@@ -6,6 +6,8 @@
 
 const PlacementApplication = require('../models/PlacementApplication');
 const { sendSuccess, sendError } = require('../utils/response');
+const mongoose = require('mongoose');
+
 
 const VALID_STATUSES = PlacementApplication.schema.path('status').enumValues;
 
@@ -26,7 +28,11 @@ const isValidDate = (d) => {
 // ── GET /api/placement ──────────────────────────────────────
 const getApplications = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    let userId = req.user.userId;
+    if (userId === 'admin') {
+      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    }
+
 
     const applications = await PlacementApplication
       .find({ userId })
@@ -43,7 +49,13 @@ const getApplications = async (req, res) => {
 // ── GET /api/placement/summary ─────────────────────────────
 const getPlacementSummary = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    console.log(req.user);
+    let userId = req.user.userId;
+    if (userId === 'admin') {
+      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    }
+    console.log(userId);
+
 
     const [statusCounts, recentApplications] = await Promise.all([
       PlacementApplication.aggregate([
@@ -87,7 +99,12 @@ const getPlacementSummary = async (req, res) => {
 // ── GET /api/placement/analytics ───────────────────────────
 const getAnalytics = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    let userId = req.user.userId;
+    if (userId === 'admin') {
+      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    }
+
+
     const now    = new Date();
 
     const [statusCounts, followUpsDueCount] = await Promise.all([
@@ -140,7 +157,11 @@ const getAnalytics = async (req, res) => {
 // ── POST /api/placement ─────────────────────────────────────
 const createApplication = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    let userId = req.user.userId;
+    if (userId === 'admin') {
+      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    }
+
 
     const {
       companyName,
@@ -222,7 +243,12 @@ const createApplication = async (req, res) => {
 // ── PUT /api/placement/:id ──────────────────────────────────
 const updateApplication = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    let userId = req.user.userId;
+    if (userId === 'admin') {
+      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    }
+
+
     const { id }  = req.params;
 
     const existing = await PlacementApplication.findOne({ _id: id, userId });
@@ -320,7 +346,12 @@ const updateApplication = async (req, res) => {
 // ── DELETE /api/placement/:id ───────────────────────────────
 const deleteApplication = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    let userId = req.user.userId;
+    if (userId === 'admin') {
+      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    }
+
+
     const { id }  = req.params;
 
     const deleted = await PlacementApplication.findOneAndDelete({ _id: id, userId });

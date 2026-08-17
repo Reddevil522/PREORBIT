@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, map } from 'rxjs';
+import { Observable, of, map, catchError } from 'rxjs';
 import { TestMetadata } from '../models/test.model';
 import { coreCsSubjects, CoreCsSubject } from '../../config/core-cs.config';
 import { environment } from '../../../environments/environment';
@@ -69,7 +69,8 @@ export class CoreCsPracticeService {
         // Removed hardcoded minimum tests padding logic
         
         return tests;
-      })
+      }),
+      catchError(() => of([] as TestMetadata[]))
     );
   }
 

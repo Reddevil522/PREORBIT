@@ -8,6 +8,8 @@
 const CareerLink          = require('../models/CareerLink');
 const PlacementApplication = require('../models/PlacementApplication');
 const { sendSuccess, sendError } = require('../utils/response');
+const mongoose = require('mongoose');
+
 
 const CAREER_STATUSES   = CareerLink.schema.path('status').enumValues;
 const CAREER_CATEGORIES = CareerLink.schema.path('category').enumValues;
@@ -19,7 +21,11 @@ const isValidUrl = (url) => /^https?:\/\/.+/.test(url.trim());
 // ── GET /api/career ──────────────────────────────────────────
 const getCareerLinks = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    let userId = req.user.userId;
+    if (userId === 'admin') {
+      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    }
+
 
     const links = await CareerLink.find({ userId })
       .sort({ createdAt: -1 })
@@ -36,7 +42,11 @@ const getCareerLinks = async (req, res) => {
 // Aggregated counts by status + category + 3 recent (for dashboard)
 const getCareerSummary = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    let userId = req.user.userId;
+    if (userId === 'admin') {
+      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    }
+
 
     const [statusAgg, categoryAgg, recentLinks] = await Promise.all([
       CareerLink.aggregate([
@@ -87,7 +97,11 @@ const getCareerSummary = async (req, res) => {
 // ── POST /api/career ─────────────────────────────────────────
 const createCareerLink = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    let userId = req.user.userId;
+    if (userId === 'admin') {
+      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    }
+
 
     const {
       companyName,
@@ -158,7 +172,12 @@ const createCareerLink = async (req, res) => {
 // ── PUT /api/career/:id ──────────────────────────────────────
 const updateCareerLink = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    let userId = req.user.userId;
+    if (userId === 'admin') {
+      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    }
+
+
     const { id } = req.params;
 
     const existing = await CareerLink.findOne({ _id: id, userId });
@@ -220,7 +239,12 @@ const updateCareerLink = async (req, res) => {
 // IMPORTANT: only removes CareerLink — PlacementApplications linked to it remain.
 const deleteCareerLink = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    let userId = req.user.userId;
+    if (userId === 'admin') {
+      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    }
+
+
     const { id } = req.params;
 
     const deleted = await CareerLink.findOneAndDelete({ _id: id, userId });
@@ -243,7 +267,12 @@ const deleteCareerLink = async (req, res) => {
 // 3. Update CareerLink status to "Applied" ONLY on success.
 const trackApplication = async (req, res) => {
   try {
-    const userId = req.user.userId;
+    let userId = req.user.userId;
+    if (userId === 'admin') {
+      userId = new mongoose.Types.ObjectId('000000000000000000000000');
+    }
+
+
     const { id } = req.params;
 
     // Verify ownership of career link

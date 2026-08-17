@@ -7,7 +7,7 @@ import { TestMetadata } from '../../../core/models/test.model';
 import { AptitudePracticeService } from '../../../core/services/aptitude-practice.service';
 import { TestCardComponent } from '../../../shared/components/test-card/test-card.component';
 import { ProgressService } from '../../../core/services/progress.service';
-import { forkJoin, map } from 'rxjs';
+import { forkJoin, map, catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-aptitude-practice',
@@ -26,18 +26,24 @@ export class AptitudePracticeComponent implements OnInit {
   chapters = signal<AptitudeChapter[]>([]);
   allTests = signal<TestMetadata[]>([]);
   searchQuery = signal<string>('');
-  
+  apiError = signal<boolean>(false);
+  isLoadingTests = signal<boolean>(false);
+
   progressData = this.progressService.progressData;
 
   ngOnInit() {
-    this.progressService.getProgress().subscribe();
+    // Load progress data; handle network errors gracefully
+    this.progressService.getProgress().subscribe({
+      error: () => { /* Progress load failed — handled by progressData signal staying null */ }
+    });
 
     this.route.paramMap.subscribe(params => {
       const subjectParam = params.get('subject') as 'quantitative' | 'logical-reasoning';
       if (!subjectParam) return;
-      
+
       this.subject.set(subjectParam);
-      
+      this.apiError.set(false);
+
       if (subjectParam === 'quantitative') {
         this.title.set('Quantitative Aptitude Practice');
       } else if (subjectParam === 'logical-reasoning') {
@@ -46,21 +52,38 @@ export class AptitudePracticeComponent implements OnInit {
 
       this.practiceService.getPracticeChapters(subjectParam).subscribe(chapters => {
         this.chapters.set(chapters);
-        
-        // Fetch mock tests for all chapters
-        const testsObservables = chapters.map(ch => 
-          this.practiceService.getChapterTests(subjectParam, ch.slug)
+
+        if (chapters.length === 0) {
+          this.allTests.set([]);
+          return;
+        }
+
+        // Fetch tests for all chapters. Use catchError per-chapter so one failure
+        // doesn't abort the entire forkJoin — return empty array as fallback.
+        this.isLoadingTests.set(true);
+        const testsObservables = chapters.map(ch =>
+          this.practiceService.getChapterTests(subjectParam, ch.slug).pipe(
+            catchError(() => of([] as TestMetadata[]))
+          )
         );
 
-        if (testsObservables.length > 0) {
-          forkJoin(testsObservables).pipe(
-            map(results => results.flat())
-          ).subscribe(tests => {
+        forkJoin(testsObservables).pipe(
+          map(results => results.flat())
+        ).subscribe({
+          next: tests => {
             this.allTests.set(tests);
-          });
-        } else {
-          this.allTests.set([]);
-        }
+            this.isLoadingTests.set(false);
+            if (tests.length === 0) {
+              // All chapters returned empty — likely the backend is unavailable
+              this.apiError.set(true);
+            }
+          },
+          error: () => {
+            this.allTests.set([]);
+            this.isLoadingTests.set(false);
+            this.apiError.set(true);
+          }
+        });
       });
     });
   }

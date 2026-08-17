@@ -355,3 +355,22 @@
   color: #f87171;
 }
 
+/* ── API error banner ──────────────────────────────────────── */
+.api-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  margin-bottom: 1.5rem;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 10px;
+  color: #ef4444;
+  font-size: 0.9rem;
+}
+
+.api-error-banner i {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+

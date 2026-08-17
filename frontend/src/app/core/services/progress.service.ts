@@ -53,10 +53,19 @@ export class ProgressService {
     );
   }
 
-  // Helper to invalidate and refresh state in the background
+  // Helper to invalidate and refresh state in the background.
+  // Never retries automatically — callers are responsible for retry logic.
   refreshProgress(): void {
     this.getProgress().subscribe({
-      error: (err) => console.error('Failed to refresh progress', err)
+      error: (err) => {
+        // status 0 = network/CORS error (backend offline); log minimally and continue
+        // status 4xx/5xx = genuine server error; log with status for debugging
+        if (err?.status > 0) {
+          console.error(`[ProgressService] refreshProgress failed — HTTP ${err.status}`, err.message);
+        } else {
+          console.warn('[ProgressService] refreshProgress — backend unreachable (ERR_CONNECTION_REFUSED or CORS)');
+        }
+      }
     });
   }
 

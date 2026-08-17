@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, map } from 'rxjs';
+import { Observable, of, map, catchError } from 'rxjs';
 import { TestMetadata } from '../models/test.model';
 import { quantitativeChapters, logicalReasoningChapters, AptitudeChapter } from '../../config/aptitude.config';
 import { environment } from '../../../environments/environment';
@@ -28,7 +28,7 @@ export class AptitudePracticeService {
    * Retrieves the list of tests for a given chapter.
    */
   getChapterTests(subject: 'quantitative' | 'logical-reasoning', chapterSlug: string): Observable<TestMetadata[]> {
-    return this.http.get<{success: boolean, data: any[]}>(
+    return this.http.get<{success: boolean, data: any[]}>( 
       `${environment.apiUrl}/tests?module=aptitude&subject=${subject}`
     ).pipe(
       map(response => {
@@ -76,7 +76,8 @@ export class AptitudePracticeService {
         // Removed hardcoded minimum tests padding logic
         
         return tests;
-      })
+      }),
+      catchError(() => of([] as TestMetadata[]))
     );
   }
 
