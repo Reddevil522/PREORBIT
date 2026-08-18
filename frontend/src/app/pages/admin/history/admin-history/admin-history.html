@@ -5,15 +5,19 @@
       <p class="dash__subtitle">View all JSON import records</p>
     </div>
     <div class="dash__header-actions">
-      <a routerLink="/admin/dashboard" class="dash__btn dash__btn--outline">Back to Dashboard</a>
-      <a routerLink="/admin/upload" class="dash__btn dash__btn--primary">Upload JSON</a>
+      <a routerLink="/admin/dashboard" class="dash__btn dash__btn--outline">
+        <i class="ph ph-arrow-left"></i> Back to Dashboard
+      </a>
+      <a routerLink="/admin/upload" class="dash__btn dash__btn--primary">
+        <i class="ph ph-upload-simple"></i> Upload JSON
+      </a>
     </div>
   </header>
 
-  <div class="card" style="margin-bottom: var(--space-4);">
-    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
-      <div style="flex: 1; min-width: 200px;">
-        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.25rem;">Module</label>
+  <div class="card" style="margin-bottom: 1.5rem;">
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end;">
+      <div style="flex: 1; min-width: 180px;">
+        <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem;">Module</label>
         <select class="dash__input" [(ngModel)]="filterModule" (change)="applyFilters()">
           <option value="">All Modules</option>
           <option value="core-cs">Core CS</option>
@@ -21,12 +25,12 @@
           <option value="java-dsa">Java DSA</option>
         </select>
       </div>
-      <div style="flex: 1; min-width: 200px;">
-        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.25rem;">Test ID</label>
+      <div style="flex: 1; min-width: 180px;">
+        <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem;">Test ID</label>
         <input type="text" class="dash__input" [(ngModel)]="filterTestId" (keyup.enter)="applyFilters()" placeholder="Search by Test ID">
       </div>
-      <div style="flex: 1; min-width: 200px;">
-        <label style="display: block; font-size: 0.85rem; margin-bottom: 0.25rem;">Status</label>
+      <div style="flex: 1; min-width: 180px;">
+        <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem;">Status</label>
         <select class="dash__input" [(ngModel)]="filterStatus" (change)="applyFilters()">
           <option value="">All Statuses</option>
           <option value="SUCCESS">Success</option>
@@ -34,9 +38,13 @@
           <option value="FAILED">Failed</option>
         </select>
       </div>
-      <div style="display: flex; align-items: flex-end; gap: var(--space-2);">
-        <button class="dash__btn dash__btn--primary" (click)="applyFilters()">Filter</button>
-        <button class="dash__btn dash__btn--outline" (click)="resetFilters()">Reset</button>
+      <div style="display: flex; gap: 0.75rem;">
+        <button class="dash__btn dash__btn--primary" (click)="applyFilters()">
+          <i class="ph ph-funnel"></i> Filter
+        </button>
+        <button class="dash__btn dash__btn--outline" (click)="resetFilters()">
+          <i class="ph ph-arrows-counter-clockwise"></i> Reset
+        </button>
       </div>
     </div>
   </div>
@@ -49,11 +57,11 @@
   <div *ngIf="error()" class="dash__state dash__state--error">
     <i class="ph ph-warning-circle"></i>
     <p>{{ error() }}</p>
-    <button class="dash__btn dash__btn--outline" (click)="loadHistory(currentPage)" style="margin-top: var(--space-3)">Retry</button>
+    <button class="dash__btn dash__btn--outline" (click)="loadHistory(currentPage)" style="margin-top: 1rem">Retry</button>
   </div>
 
   <ng-container *ngIf="!isLoading() && !error()">
-    <div class="card" style="overflow-x: auto;">
+    <div class="card" style="overflow-x: auto; padding: 0;">
       <table class="dash__table">
         <thead>
           <tr>
@@ -67,16 +75,16 @@
         </thead>
         <tbody>
           <tr *ngIf="historyList().length === 0">
-            <td colspan="6" style="text-align: center; padding: var(--space-4);">No JSON imports yet.</td>
+            <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-secondary);">No JSON imports found.</td>
           </tr>
           <tr *ngFor="let upload of historyList()">
-            <td>{{ upload.createdAt | date:'short' }}</td>
-            <td>{{ upload.module | titlecase }}</td>
+            <td>{{ upload.createdAt | date:'medium' }}</td>
+            <td><strong style="color: var(--text-primary);">{{ upload.module | titlecase }}</strong></td>
             <td>
               {{ upload.subject | titlecase }}<ng-container *ngIf="upload.subject"> / </ng-container>{{ upload.chapterSlug | titlecase }}
             </td>
             <td>
-              <a [routerLink]="['/admin/tests', upload.testId]" style="color: var(--primary); font-weight: 500;">
+              <a [routerLink]="['/admin/tests', upload.testId]" style="color: var(--preorbit-primary-light); font-weight: 600; text-decoration: none;">
                 {{ upload.testName || upload.testId }}
               </a>
             </td>
@@ -92,9 +100,9 @@
     </div>
 
     <!-- Pagination -->
-    <div class="pagination-controls" *ngIf="totalPages > 1" style="display: flex; justify-content: center; align-items: center; gap: var(--space-3); margin-top: var(--space-4);">
+    <div class="pagination-controls" *ngIf="totalPages > 1" style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 1.5rem;">
       <button class="dash__btn dash__btn--outline" [disabled]="currentPage === 1" (click)="prevPage()">Previous</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <span style="font-weight: 600; color: var(--text-secondary);">Page {{ currentPage }} of {{ totalPages }}</span>
       <button class="dash__btn dash__btn--outline" [disabled]="currentPage === totalPages" (click)="nextPage()">Next</button>
     </div>
   </ng-container>
