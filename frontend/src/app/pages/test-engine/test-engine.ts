@@ -59,7 +59,7 @@ export class TestEngine implements OnInit {
     this.status = 'loading';
     this.testEngineService.resumeTest(testId).subscribe({
       next: (res) => {
-        if (res.success && res.data) {
+        if (res.success && res.data && (res.data as any).hasActiveAttempt !== false && (res.data as any).attemptId) {
           console.log('[ATTEMPT] Resume requested');
           console.log('[ATTEMPT] Existing attempt found');
           if (res.data.status === 'submitted') {
@@ -104,7 +104,7 @@ export class TestEngine implements OnInit {
         }
       },
       error: (err) => {
-        if (err.status === 404) {
+        if (err.status === 404 || err.status === 400) {
           // No active attempt, load instructions normally
           this.loadTest(testId);
         } else {

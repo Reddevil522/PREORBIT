@@ -29,6 +29,15 @@ function orderQuestions(questions, orderedIds) {
   return orderedIds.map(id => qMap.get(id.toString())).filter(Boolean);
 }
 
+// Helper to resolve a valid ObjectId for any authenticated user or admin preview
+function getValidUserId(reqUser) {
+  const rawId = reqUser?.userId || reqUser?.id || reqUser?._id;
+  if (mongoose.Types.ObjectId.isValid(rawId)) {
+    return rawId;
+  }
+  return new mongoose.Types.ObjectId('000000000000000000000000');
+}
+
 // Helper to handle attempt question randomization
 async function processAttemptQuestions(test, attempt, rawQuestions) {
   const expectedCount = (test.module === 'aptitude') ? 15 : 25;
@@ -275,10 +284,6 @@ exports.getTestMetadata = async (req, res, next) => {
     const { testId } = req.params;
     let userId = req.user.userId;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return sendError(res, 400, 'Invalid authenticated user identity');
-    }
-
     const test = await PracticeTest.findOne({ testId }).lean();
     if (!test) {
       return sendError(res, 404, 'Test not found');
@@ -288,9 +293,11 @@ exports.getTestMetadata = async (req, res, next) => {
       return sendError(res, 403, 'Test is currently unavailable.');
     }
 
-    const isLocked = await isTestSequentiallyLocked(test, userId);
-    if (isLocked) {
-      return sendError(res, 403, 'Complete the previous test first.');
+    if (mongoose.Types.ObjectId.isValid(userId)) {
+      const isLocked = await isTestSequentiallyLocked(test, userId);
+      if (isLocked) {
+        return sendError(res, 403, 'Complete the previous test first.');
+      }
     }
 
     return sendSuccess(res, 200, 'Test metadata retrieved', {
@@ -314,11 +321,7 @@ exports.getTestMetadata = async (req, res, next) => {
 exports.startTest = async (req, res, next) => {
   try {
     const { testId } = req.params;
-    let userId = req.user.userId;
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return sendError(res, 400, 'Invalid authenticated user identity');
-    }
+    let userId = getValidUserId(req.user);
 
     // 1. Fetch the test metadata
     const test = await PracticeTest.findOne({ testId });
@@ -421,11 +424,7 @@ exports.startTest = async (req, res, next) => {
 exports.submitTest = async (req, res, next) => {
   try {
     const { testId } = req.params;
-    let userId = req.user.userId;
-    
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return sendError(res, 400, 'Invalid authenticated user identity');
-    }
+    let userId = getValidUserId(req.user);
 
     const { attemptId, answers } = req.body;
 
@@ -611,12 +610,12 @@ exports.resumeTest = async (req, res, next) => {
     const { testId } = req.params;
     let userId = req.user.userId;
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return sendError(res, 400, 'Invalid authenticated user identity');
-    }
-
     const test = await PracticeTest.findOne({ testId });
     if (!test) return sendError(res, 404, 'Test not found');
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return sendSuccess(res, 200, 'No active attempt found', { hasActiveAttempt: false });
+    }
 
     // Find the latest attempt that belongs to the current test version
     const activeAttempt = await TestAttempt.findOne({ 
@@ -627,7 +626,7 @@ exports.resumeTest = async (req, res, next) => {
     console.log(`[ACTIVE-ATTEMPT] found: ${!!activeAttempt}, attemptId: ${activeAttempt ? activeAttempt.attemptId : 'None'}`);
     
     if (!activeAttempt) {
-      return sendError(res, 404, 'No attempt found');
+      return sendSuccess(res, 200, 'No active attempt found', { hasActiveAttempt: false });
     }
     
     console.log(`[ATTEMPT-PERSISTENCE]\nuser: ${userId}\ntestId: ${testId}\nattemptId: ${activeAttempt.attemptId}\nstatus: ${activeAttempt.status}`);
@@ -670,6 +669,7 @@ exports.resumeTest = async (req, res, next) => {
     }
 
     return sendSuccess(res, 200, 'Test resumed successfully', {
+      hasActiveAttempt: true,
       attemptId: activeAttempt.attemptId,
       status: activeAttempt.status,
       startedAt: activeAttempt.startedAt,
@@ -697,11 +697,7 @@ exports.saveAnswer = async (req, res, next) => {
   try {
     const { testId, attemptId } = req.params;
     const { questionId, selectedAnswer } = req.body;
-    let userId = req.user.userId;
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return sendError(res, 400, 'Invalid authenticated user identity');
-    }
+    let userId = getValidUserId(req.user);
 
     if (!questionId) return sendError(res, 400, 'Question ID is required');
 
@@ -758,11 +754,7 @@ exports.saveAnswer = async (req, res, next) => {
 exports.retakeTest = async (req, res, next) => {
   try {
     const { testId } = req.params;
-    let userId = req.user.userId;
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return sendError(res, 400, 'Invalid authenticated user identity');
-    }
+    let userId = getValidUserId(req.user);
 
     // 1. Fetch the test metadata
     const test = await PracticeTest.findOne({ testId });
