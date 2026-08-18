@@ -127,9 +127,50 @@ export class CoreCsPracticeComponent implements OnInit {
 
   getChapterProgress(chapterSlug: string) {
     const data = this.progressData();
-    const fallback = { theoryCompleted: false, tests: { completed: 0, total: 0, available: 0, locked: 0 }, progress: 0, status: 'NOT_STARTED' };
-    if (!data) return fallback;
-    const found = data.chapters.find((c: any) => c.chapterSlug === chapterSlug);
-    return found || fallback;
+    const loadedTests = this.getTestsForChapter(chapterSlug);
+    const completedCount = loadedTests.filter(t => t.status === 'completed').length;
+    const totalCount = loadedTests.length;
+    
+    let theoryCompleted = false;
+    if (data && data.chapters) {
+      const found = data.chapters.find((c: any) => (c.chapterSlug || '').toLowerCase() === chapterSlug.toLowerCase());
+      if (found) {
+        theoryCompleted = !!(found.theoryCompleted || found.theory?.completed);
+      }
+    }
+
+    let finalCompleted = completedCount;
+    let finalTotal = totalCount;
+
+    if (finalTotal === 0 && data && data.chapters) {
+      const found = data.chapters.find((c: any) => (c.chapterSlug || '').toLowerCase() === chapterSlug.toLowerCase());
+      if (found && found.tests) {
+        finalCompleted = found.tests.completed || 0;
+        finalTotal = found.tests.total || 0;
+      }
+    }
+
+    const totalUnits = 1 + finalTotal;
+    const completedUnits = (theoryCompleted ? 1 : 0) + finalCompleted;
+    const progress = totalUnits > 0 ? Math.round((completedUnits / totalUnits) * 100) : 0;
+
+    let status = 'NOT_STARTED';
+    if (finalTotal === 0 && !theoryCompleted) {
+      status = 'NOT_STARTED';
+    } else if (finalCompleted === finalTotal && finalTotal > 0 && theoryCompleted) {
+      status = 'COMPLETED';
+    } else if (finalCompleted > 0 || theoryCompleted) {
+      status = 'IN_PROGRESS';
+    }
+
+    return {
+      theoryCompleted,
+      tests: {
+        completed: finalCompleted,
+        total: finalTotal
+      },
+      progress,
+      status
+    };
   }
 }

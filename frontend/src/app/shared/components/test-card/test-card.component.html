@@ -35,7 +35,7 @@
   </div>
 
   <div class="card-footer">
-    <span class="action-text">{{ isReady ? 'Start Test' : 'Locked' }}</span>
-    <i class="ph" [ngClass]="isReady ? 'ph-arrow-right' : 'ph-lock'"></i>
+    <span class="action-text">{{ test.status === 'completed' ? 'Retake / View' : (isReady ? 'Start Test' : 'Locked') }}</span>
+    <i class="ph" [ngClass]="test.status === 'completed' ? 'ph-check-circle' : (isReady ? 'ph-arrow-right' : 'ph-lock')"></i>
   </div>
 </a>

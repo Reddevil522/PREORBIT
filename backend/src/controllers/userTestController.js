@@ -118,7 +118,7 @@ exports.getAvailableTests = async (req, res, next) => {
       .select('testId testName module subject section chapterSlug testNumber questionCount multipleChoiceCount mcqCount totalMarks status isAvailable createdAt')
       .sort({ chapterSlug: 1 });
 
-    const submittedAttempts = isAdmin ? [] : await TestAttempt.find({ 
+    const submittedAttempts = await TestAttempt.find({ 
       userId, 
       status: 'submitted' 
     }).select('testId submittedAt').lean();

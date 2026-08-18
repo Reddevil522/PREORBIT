@@ -3,20 +3,18 @@ const TestAttempt = require('../models/TestAttempt');
 const PracticeTest = require('../models/PracticeTest');
 const TheoryCompletion = require('../models/TheoryCompletion');
 
+function getValidUserId(reqUser) {
+  const rawId = reqUser?.userId || reqUser?.id || reqUser?._id;
+  if (mongoose.Types.ObjectId.isValid(rawId)) {
+    return rawId;
+  }
+  return new mongoose.Types.ObjectId('000000000000000000000000');
+}
+
 // GET /api/progress
 exports.getProgress = async (req, res) => {
   try {
-    let authenticatedUserId = req.user.userId || req.user.id || req.user._id;
-
-    // Admin users do not have student progress — return empty gracefully
-    if (req.user.role === 'admin' || !mongoose.Types.ObjectId.isValid(authenticatedUserId)) {
-      return res.status(200).json({ success: true, data: {
-        overall: { progress: 0, completedUnits: 0, totalUnits: 0, testsAttempted: 0, testsCompleted: 0, bestScore: 0, bestScorePercentage: 0, latestScore: 0, latestScorePercentage: 0, averageScore: 0, averageScorePercentage: 0, accuracy: 0, timeSpentMs: 0, theoryCompletedCount: 0 },
-        modules: [], subjects: [], chapters: [], tests: [], recentTests: []
-      }});
-    }
-    
-    const userId = authenticatedUserId;
+    const userId = getValidUserId(req.user);
     console.log(`[PROGRESS-AUTH] authenticatedUserId: ${userId}`);
 
     // 1. Fetch all submitted test attempts for this user
@@ -32,7 +30,10 @@ exports.getProgress = async (req, res) => {
 
     // 3. Fetch all active practice tests (available or locked) to establish curriculum
     const practiceTests = await PracticeTest.find({
-      status: { $in: ['available', 'locked'] }
+      $or: [
+        { status: { $in: ['available', 'locked'] } },
+        { isAvailable: true }
+      ]
     }).lean();
     const testMap = new Map();
     practiceTests.forEach(t => testMap.set(t.testId, t));
@@ -162,7 +163,7 @@ exports.getProgress = async (req, res) => {
           chapterUniqueCompletedTests++;
           previousCompleted = true;
         } else {
-          const adminAvailable = testObj.status === 'available' && testObj.isAvailable && (testObj.questionCount > 0);
+          const adminAvailable = (testObj.status === 'available' || testObj.isAvailable === true) && testObj.status !== 'incomplete' && testObj.status !== 'draft' && (testObj.questionCount > 0);
           if (adminAvailable && previousCompleted) {
             chapterAvailableTests++;
             previousCompleted = false;
