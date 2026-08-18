@@ -237,7 +237,7 @@ export class AdminTestList implements OnInit {
 
     filtered.forEach(t => {
       if (!groups.has(t.chapterSlug)) {
-        const requiredTests = (t.module === 'core-cs' || t.module === 'aptitude') ? 4 : 0;
+        const requiredTests = 0;
         groups.set(t.chapterSlug, {
           chapterSlug: t.chapterSlug,
           chapterName: t.chapterName || t.chapterSlug,
@@ -272,11 +272,7 @@ export class AdminTestList implements OnInit {
         return (a.testName || '').localeCompare(b.testName || '');
       });
 
-      if (c.requiredTests > 0) {
-        c.status = c.totalTests >= c.requiredTests ? 'Complete' : 'Incomplete';
-      } else {
-        c.status = 'Complete';
-      }
+      c.status = c.totalTests > 0 ? 'Complete' : 'Incomplete';
     });
 
     this.chapters.sort((a, b) => a.chapterName.localeCompare(b.chapterName));

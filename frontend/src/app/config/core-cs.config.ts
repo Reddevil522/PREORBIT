@@ -127,69 +127,9 @@ export const coreCsSubjects: CoreCsSubject[] = [
 ];
 
 // ── Tests ──────────────────────────────────────────────────────
-// Generate minimum 4 tests per chapter per subject with 'not-available' status
-
 export const oopTests: TestMetadata[] = [];
-oopChapters.forEach(chapter => {
-  for (let i = 1; i <= 4; i++) {
-    oopTests.push({
-      id: `oop-${chapter.slug}-test-${i}`,
-      section: 'core-cs', subject: 'oop',
-      chapterSlug: chapter.slug, testNumber: i,
-      title: `${chapter.title} Test ${i}`,
-      totalQuestions: 25, status: 'not-available'
-    });
-  }
-});
-
 export const dbmsTests: TestMetadata[] = [];
-dbmsChapters.forEach(chapter => {
-  for (let i = 1; i <= 4; i++) {
-    dbmsTests.push({
-      id: `dbms-${chapter.slug}-test-${i}`,
-      section: 'core-cs', subject: 'dbms',
-      chapterSlug: chapter.slug, testNumber: i,
-      title: `${chapter.title} Test ${i}`,
-      totalQuestions: 25, status: 'not-available'
-    });
-  }
-});
-
 export const osTests: TestMetadata[] = [];
-osChapters.forEach(chapter => {
-  for (let i = 1; i <= 4; i++) {
-    osTests.push({
-      id: `os-${chapter.slug}-test-${i}`,
-      section: 'core-cs', subject: 'operating-system',
-      chapterSlug: chapter.slug, testNumber: i,
-      title: `${chapter.title} Test ${i}`,
-      totalQuestions: 25, status: 'not-available'
-    });
-  }
-});
-
 export const cnTests: TestMetadata[] = [];
-cnChapters.forEach(chapter => {
-  for (let i = 1; i <= 4; i++) {
-    cnTests.push({
-      id: `cn-${chapter.slug}-test-${i}`,
-      section: 'core-cs', subject: 'computer-networks',
-      chapterSlug: chapter.slug, testNumber: i,
-      title: `${chapter.title} Test ${i}`,
-      totalQuestions: 25, status: 'not-available'
-    });
-  }
-});
-
 export const sqlTests: TestMetadata[] = [];
-sqlChapters.forEach(chapter => {
-  for (let i = 1; i <= 4; i++) {
-    sqlTests.push({
-      id: `sql-${chapter.slug}-test-${i}`,
-      section: 'core-cs', subject: 'sql',
-      chapterSlug: chapter.slug, testNumber: i,
-      title: `${chapter.title} Test ${i}`,
-      totalQuestions: 25, status: 'not-available'
-    });
-  }
-});
+

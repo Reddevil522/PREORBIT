@@ -114,7 +114,7 @@ exports.getProgress = async (req, res) => {
           theoryCompleted: completedChapters.has(chapSlug)
         });
       }
-      chaptersMap.get(chapSlug).testsConfigured.push(t.testId);
+      chaptersMap.get(chapSlug).testsConfigured.push(t);
     });
 
     // Also include chapters that have theory completed but no tests configured yet
@@ -138,12 +138,37 @@ exports.getProgress = async (req, res) => {
     const chaptersProgress = [];
     chaptersMap.forEach(chap => {
       const theoryCompleted = chap.theoryCompleted;
+
+      // Sort tests sequentially by testNumber then createdAt
+      chap.testsConfigured.sort((a, b) => {
+        const numA = a.testNumber || 0;
+        const numB = b.testNumber || 0;
+        if (numA !== numB) return numA - numB;
+        return new Date(a.createdAt) - new Date(b.createdAt);
+      });
+
       const totalConfiguredTests = chap.testsConfigured.length;
 
       let chapterUniqueCompletedTests = 0;
-      chap.testsConfigured.forEach(tId => {
-        if (testStats.has(tId)) {
+      let chapterAvailableTests = 0;
+      let chapterLockedTests = 0;
+      let previousCompleted = true;
+
+      chap.testsConfigured.forEach(testObj => {
+        const tId = testObj.testId;
+        const isCompleted = testStats.has(tId);
+
+        if (isCompleted) {
           chapterUniqueCompletedTests++;
+          previousCompleted = true;
+        } else {
+          const adminAvailable = testObj.status === 'available' && testObj.isAvailable && (testObj.questionCount > 0);
+          if (adminAvailable && previousCompleted) {
+            chapterAvailableTests++;
+            previousCompleted = false;
+          } else {
+            chapterLockedTests++;
+          }
         }
       });
 
@@ -159,9 +184,9 @@ exports.getProgress = async (req, res) => {
       }
 
       let status = 'NOT_STARTED';
-      if (chapterUniqueCompletedTests === 0) {
+      if (totalConfiguredTests === 0 || chapterUniqueCompletedTests === 0) {
         status = 'NOT_STARTED';
-      } else if (chapterUniqueCompletedTests > 0 && chapterUniqueCompletedTests < totalConfiguredTests) {
+      } else if (chapterUniqueCompletedTests < totalConfiguredTests) {
         status = 'IN_PROGRESS';
       } else if (chapterUniqueCompletedTests === totalConfiguredTests && totalConfiguredTests > 0) {
         status = 'COMPLETED';
@@ -176,7 +201,9 @@ exports.getProgress = async (req, res) => {
         theory: { completed: theoryCompleted },
         tests: {
           completed: chapterUniqueCompletedTests,
-          total: totalConfiguredTests
+          total: totalConfiguredTests,
+          available: chapterAvailableTests,
+          locked: chapterLockedTests
         },
         completedUnits,
         totalUnits,

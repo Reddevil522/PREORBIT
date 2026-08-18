@@ -134,30 +134,6 @@ export const logicalReasoningChapters: AptitudeChapter[] = [
 ];
 
 // ── Tests ──────────────────────────────────────────────────────
-// Generate minimum 4 tests per chapter with 'not-available' status
-
 export const quantitativeTests: TestMetadata[] = [];
-quantitativeChapters.forEach(chapter => {
-  for (let i = 1; i <= 4; i++) {
-    quantitativeTests.push({
-      id: `quant-${chapter.slug}-test-${i}`,
-      section: 'aptitude', subject: 'quantitative',
-      chapterSlug: chapter.slug, testNumber: i,
-      title: `${chapter.title} Test ${i}`,
-      totalQuestions: 25, status: 'not-available'
-    });
-  }
-});
-
 export const logicalReasoningTests: TestMetadata[] = [];
-logicalReasoningChapters.forEach(chapter => {
-  for (let i = 1; i <= 4; i++) {
-    logicalReasoningTests.push({
-      id: `lr-${chapter.slug}-test-${i}`,
-      section: 'aptitude', subject: 'logical-reasoning',
-      chapterSlug: chapter.slug, testNumber: i,
-      title: `${chapter.title} Test ${i}`,
-      totalQuestions: 25, status: 'not-available'
-    });
-  }
-});
+

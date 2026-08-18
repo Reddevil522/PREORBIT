@@ -92,10 +92,7 @@ exports.getAvailableTests = async (req, res, next) => {
     const { module, subject } = req.query;
     let userId = req.user.userId;
 
-    // Admin users do not have student progress — return empty gracefully
-    if (req.user.role === 'admin' || !mongoose.Types.ObjectId.isValid(userId)) {
-      return sendSuccess(res, 200, 'No student data for admin', { tests: [], chapterGroups: [] });
-    }
+    const isAdmin = req.user.role === 'admin' || !mongoose.Types.ObjectId.isValid(userId);
 
     const query = { status: { $in: ['available', 'locked'] } };
 
@@ -112,7 +109,7 @@ exports.getAvailableTests = async (req, res, next) => {
       .select('testId testName module subject section chapterSlug testNumber questionCount multipleChoiceCount mcqCount totalMarks status isAvailable createdAt')
       .sort({ chapterSlug: 1 });
 
-    const submittedAttempts = await TestAttempt.find({ 
+    const submittedAttempts = isAdmin ? [] : await TestAttempt.find({ 
       userId, 
       status: 'submitted' 
     }).select('testId submittedAt').lean();
@@ -146,7 +143,7 @@ exports.getAvailableTests = async (req, res, next) => {
 
       for (let i = 0; i < chapterTests.length; i++) {
         const test = chapterTests[i];
-        const adminAvailable = test.status === 'available' && test.isAvailable;
+        const adminAvailable = (test.status === 'available' || test.isAvailable === true) && test.status !== 'incomplete' && test.status !== 'draft' && (test.questionCount > 0);
         
         const latestAttemptTime = completedAttemptsMap.get(test.testId);
         const isCompleted = !!(latestAttemptTime && new Date(latestAttemptTime) >= new Date(test.createdAt));
@@ -182,9 +179,7 @@ exports.getTestSummary = async (req, res, next) => {
     const { module, subject } = req.query;
     let userId = req.user.userId;
 
-    if (req.user.role === 'admin' || !mongoose.Types.ObjectId.isValid(userId)) {
-      return sendSuccess(res, 200, 'No student data for admin', { available: 0, completed: 0, total: 0 });
-    }
+    const isStudentUser = req.user.role !== 'admin' && mongoose.Types.ObjectId.isValid(userId);
 
     const query = {};
     if (module) query.module = String(module);
@@ -196,14 +191,14 @@ exports.getTestSummary = async (req, res, next) => {
     // 1. Get ALL tests for this module/subject (we need them all to determine sequence)
     // We only count tests that are technically available from the admin side towards "availableCount"
     const tests = await PracticeTest.find(query)
-      .select('testId chapterSlug testNumber status isAvailable createdAt')
+      .select('testId chapterSlug testNumber status isAvailable createdAt questionCount')
       .lean();
 
     // 2. Get tests completed by the user with their submittedAt timestamps
-    const submittedAttempts = await TestAttempt.find({ 
+    const submittedAttempts = isStudentUser ? await TestAttempt.find({ 
       userId, 
       status: 'submitted' 
-    }).select('testId submittedAt').lean();
+    }).select('testId submittedAt').lean() : [];
 
     const completedAttemptsMap = new Map();
     for (const attempt of submittedAttempts) {
@@ -238,7 +233,7 @@ exports.getTestSummary = async (req, res, next) => {
 
       for (let i = 0; i < chapterTests.length; i++) {
         const test = chapterTests[i];
-        const adminAvailable = test.status === 'available' && test.isAvailable;
+        const adminAvailable = (test.status === 'available' || test.isAvailable === true) && test.status !== 'incomplete' && test.status !== 'draft' && (test.questionCount > 0);
         
         const latestAttemptTime = completedAttemptsMap.get(test.testId);
         // Completed only if the attempt is not from a deleted/previous version of the test
@@ -258,7 +253,7 @@ exports.getTestSummary = async (req, res, next) => {
            isLocked = !previousCompleted;
         }
 
-        if (!isLocked && adminAvailable) {
+        if (!isLocked && adminAvailable && !isCompleted) {
            availableCount++;
         }
 
@@ -289,7 +284,7 @@ exports.getTestMetadata = async (req, res, next) => {
       return sendError(res, 404, 'Test not found');
     }
 
-    if (test.status !== 'available' || !test.isAvailable) {
+    if (test.status === 'incomplete' || test.status === 'draft' || (test.status !== 'available' && !test.isAvailable)) {
       return sendError(res, 403, 'Test is currently unavailable.');
     }
 
@@ -342,7 +337,7 @@ exports.startTest = async (req, res, next) => {
 
     if (!activeAttempt) {
       // Validate availability only when starting a NEW attempt
-      if (test.status !== 'available' || !test.isAvailable) {
+      if (test.status === 'incomplete' || test.status === 'draft' || (test.status !== 'available' && !test.isAvailable)) {
         return sendError(res, 403, 'Test is currently unavailable.');
       }
 
@@ -775,7 +770,7 @@ exports.retakeTest = async (req, res, next) => {
       return sendError(res, 404, 'Test not found');
     }
 
-    if (test.status !== 'available' || !test.isAvailable) {
+    if (test.status === 'incomplete' || test.status === 'draft' || (test.status !== 'available' && !test.isAvailable)) {
       return sendError(res, 403, 'Test is currently unavailable.');
     }
 

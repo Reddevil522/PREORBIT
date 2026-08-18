@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { javaDsaChapters, javaDsaTests, JavaDsaChapter } from '../../../config/java-dsa.config';
+import { javaDsaChapters, JavaDsaChapter } from '../../../config/java-dsa.config';
 import { TestMetadata } from '../../../core/models/test.model';
 import { TestCardComponent } from '../../../shared/components/test-card/test-card.component';
 import { environment } from '../../../../environments/environment';
@@ -57,10 +57,10 @@ export class JavaDsaTestsComponent implements OnInit {
 
     this.loading.set(true);
     this.error.set(false);
-    this.http.get<{success: boolean, data: any[]}>(`${environment.apiUrl}/tests?module=java-dsa`).subscribe({
+    this.http.get<{success: boolean, data: any}>(`${environment.apiUrl}/tests?module=java-dsa`).subscribe({
       next: (res) => {
-        if (res.success && res.data) {
-          const dbTests = res.data;
+        if (res.success) {
+          const dbTests = Array.isArray(res.data) ? res.data : (res.data?.tests || []);
           const updatedTests = dbTests.map((dbTest: any) => {
             let calculatedStatus: 'not-available' | 'available' | 'completed' | 'locked' = 'locked';
             if (dbTest.isCompleted) {
@@ -68,7 +68,7 @@ export class JavaDsaTestsComponent implements OnInit {
             } else if (dbTest.isLocked) {
               calculatedStatus = 'locked';
             } else {
-              calculatedStatus = (dbTest.status === 'available' && dbTest.isAvailable) ? 'available' : 'locked';
+              calculatedStatus = (dbTest.status === 'available' || dbTest.isAvailable) ? 'available' : 'locked';
             }
 
             return {
@@ -104,7 +104,9 @@ export class JavaDsaTestsComponent implements OnInit {
 
   getChapterProgress(chapterSlug: string) {
     const data = this.progressData();
-    if (!data) return null;
-    return data.chapters.find((c: any) => c.chapterSlug === chapterSlug);
+    const fallback = { theoryCompleted: false, tests: { completed: 0, total: 0, available: 0, locked: 0 }, progress: 0, status: 'NOT_STARTED' };
+    if (!data) return fallback;
+    const found = data.chapters.find((c: any) => c.chapterSlug === chapterSlug);
+    return found || fallback;
   }
 }

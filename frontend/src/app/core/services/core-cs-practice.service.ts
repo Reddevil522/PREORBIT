@@ -21,11 +21,12 @@ export class CoreCsPracticeService {
   }
 
   getChapterTests(subjectSlug: string, chapterSlug: string): Observable<TestMetadata[]> {
-    return this.http.get<{success: boolean, data: any[]}>(
+    return this.http.get<{success: boolean, data: any}>(
       `${environment.apiUrl}/tests?module=core-cs&subject=${subjectSlug}`
     ).pipe(
       map(response => {
-        const dbTests = response.data.filter((t: any) => t.chapterSlug && t.chapterSlug.toLowerCase() === chapterSlug.toLowerCase());
+        const rawData = Array.isArray(response?.data) ? response.data : (response?.data?.tests || []);
+        const dbTests = rawData.filter((t: any) => t.chapterSlug && t.chapterSlug.toLowerCase() === chapterSlug.toLowerCase());
         const tests: TestMetadata[] = [];
         let maxTestNumber = 0;
         

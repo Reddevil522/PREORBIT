@@ -1,4 +1,4 @@
-﻿<div class="logical-container fade-in">
+<div class="logical-container fade-in">
   <div class="header">
     <div class="header-top">
       <div class="header-title-area">
@@ -56,24 +56,23 @@
         <h2>Tests</h2>
         <p>Practice chapter-wise tests.</p>
         <div class="test-rules">
-          <span><i class="ph ph-stack"></i> Minimum 4 Tests per Chapter</span>
+          <span><i class="ph ph-stack"></i> Chapter-wise Tests</span>
           <span><i class="ph ph-list-numbers"></i> 25 Questions per Test</span>
         </div>
       </div>
 
       <div class="card-footer test-summary-footer">
         <div class="test-stat">
-          <span class="stat-value">{{ availableTestsCount() ?? '�' }}</span>
+          <span class="stat-value">{{ availableTestsCount() ?? 0 }}</span>
           <span class="stat-label">Available</span>
         </div>
         <div class="test-stat">
-          <span class="stat-value">{{ completedTestsCount() ?? '�' }}</span>
+          <span class="stat-value">{{ completedTestsCount() ?? 0 }}</span>
           <span class="stat-label">Completed</span>
         </div>
       </div>
     </a>
   </div>
-</div>
 
 
 

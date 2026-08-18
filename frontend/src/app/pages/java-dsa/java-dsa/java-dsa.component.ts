@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { javaDsaChapters, javaDsaTests } from '../../../config/java-dsa.config';
+import { javaDsaChapters } from '../../../config/java-dsa.config';
 import { TestEngineService } from '../../../core/services/test-engine.service';
 import { ProgressService } from '../../../core/services/progress.service';
 

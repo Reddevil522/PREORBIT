@@ -73,10 +73,6 @@ export class AptitudePracticeComponent implements OnInit {
           next: tests => {
             this.allTests.set(tests);
             this.isLoadingTests.set(false);
-            if (tests.length === 0) {
-              // All chapters returned empty — likely the backend is unavailable
-              this.apiError.set(true);
-            }
           },
           error: () => {
             this.allTests.set([]);
@@ -113,7 +109,9 @@ export class AptitudePracticeComponent implements OnInit {
 
   getChapterProgress(chapterSlug: string) {
     const data = this.progressData();
-    if (!data) return null;
-    return data.chapters.find((c: any) => c.chapterSlug === chapterSlug);
+    const fallback = { theoryCompleted: false, tests: { completed: 0, total: 0, available: 0, locked: 0 }, progress: 0, status: 'NOT_STARTED' };
+    if (!data) return fallback;
+    const found = data.chapters.find((c: any) => c.chapterSlug === chapterSlug);
+    return found || fallback;
   }
 }

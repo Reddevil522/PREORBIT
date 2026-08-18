@@ -28,11 +28,12 @@ export class AptitudePracticeService {
    * Retrieves the list of tests for a given chapter.
    */
   getChapterTests(subject: 'quantitative' | 'logical-reasoning', chapterSlug: string): Observable<TestMetadata[]> {
-    return this.http.get<{success: boolean, data: any[]}>( 
+    return this.http.get<{success: boolean, data: any}>( 
       `${environment.apiUrl}/tests?module=aptitude&subject=${subject}`
     ).pipe(
       map(response => {
-        const dbTests = response.data.filter((t: any) => t.chapterSlug && t.chapterSlug.toLowerCase() === chapterSlug.toLowerCase());
+        const rawData = Array.isArray(response?.data) ? response.data : (response?.data?.tests || []);
+        const dbTests = rawData.filter((t: any) => t.chapterSlug && t.chapterSlug.toLowerCase() === chapterSlug.toLowerCase());
         const tests: TestMetadata[] = [];
         let maxTestNumber = 0;
         

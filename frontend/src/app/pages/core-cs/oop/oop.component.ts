@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { oopChapters, oopTests } from '../../../config/core-cs.config';
+import { oopChapters } from '../../../config/core-cs.config';
 import { TestEngineService } from '../../../core/services/test-engine.service';
 import { ProgressService } from '../../../core/services/progress.service';
 

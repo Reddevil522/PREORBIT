@@ -31,18 +31,3 @@ export const javaDsaChapters: JavaDsaChapter[] = [
 
 export const javaDsaTests: TestMetadata[] = [];
 
-// Generate minimum 4 tests per chapter with 'not-ready' status
-javaDsaChapters.forEach(chapter => {
-  for (let i = 1; i <= 4; i++) {
-    javaDsaTests.push({
-      id: `${chapter.slug}-test-${i}`,
-      chapterSlug: chapter.slug,
-      testNumber: i,
-      title: `${chapter.title} Test ${i}`,
-      totalQuestions: 25,
-      multipleChoiceCount: 5,
-      mcqCount: 20,
-      status: 'not-available'
-    });
-  }
-});

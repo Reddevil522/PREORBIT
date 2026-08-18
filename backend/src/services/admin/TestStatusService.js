@@ -102,6 +102,7 @@ class TestStatusService {
         mcqCount,
         totalMarks,
         status,
+        ...(status === 'available' ? { isAvailable: true } : (status === 'incomplete' || status === 'draft' ? { isAvailable: false } : {})),
         configuration: {
           totalQuestions,
           totalMarks,
