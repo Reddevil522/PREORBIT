@@ -43,7 +43,10 @@
 
   <!-- Career & Placement Loaded -->
   <section *ngIf="!cpLoading() && !cpError()" class="dash__section">
-    <h2 class="dash__section-label">Career &amp; Placement</h2>
+    <div class="dash__section-header">
+      <h2 class="dash__section-label">Career &amp; Placement</h2>
+      <p class="dash__section-desc">Track your job applications and save useful career opportunities.</p>
+    </div>
 
     <!-- ── Overview Stats Row ── -->
     <div class="dash__cp-overview">
@@ -53,7 +56,7 @@
         <div class="dash__cp-stat-icon dash__cp-stat-icon--career">
           <i class="ph ph-briefcase"></i>
         </div>
-        <div>
+        <div class="dash__cp-stat-content">
           <span class="dash__cp-stat-val">{{ careerSummary()?.savedLinks ?? 0 }}</span>
           <span class="dash__cp-stat-label">Saved Career Links</span>
         </div>
@@ -64,7 +67,7 @@
         <div class="dash__cp-stat-icon dash__cp-stat-icon--total">
           <i class="ph ph-target"></i>
         </div>
-        <div>
+        <div class="dash__cp-stat-content">
           <span class="dash__cp-stat-val">{{ placementSummary()?.totalApplications ?? 0 }}</span>
           <span class="dash__cp-stat-label">Applications</span>
         </div>
@@ -75,7 +78,7 @@
         <div class="dash__cp-stat-icon dash__cp-stat-icon--progress">
           <i class="ph ph-arrows-clockwise"></i>
         </div>
-        <div>
+        <div class="dash__cp-stat-content">
           <span class="dash__cp-stat-val dash__cp-stat-val--progress">{{ placementSummary()?.inProgress ?? 0 }}</span>
           <span class="dash__cp-stat-label">In Progress</span>
         </div>
@@ -86,7 +89,7 @@
         <div class="dash__cp-stat-icon dash__cp-stat-icon--selected">
           <i class="ph ph-check-circle"></i>
         </div>
-        <div>
+        <div class="dash__cp-stat-content">
           <span class="dash__cp-stat-val dash__cp-stat-val--selected">{{ placementSummary()?.selected ?? 0 }}</span>
           <span class="dash__cp-stat-label">Selected</span>
         </div>
@@ -97,7 +100,7 @@
         <div class="dash__cp-stat-icon dash__cp-stat-icon--rejected">
           <i class="ph ph-x-circle"></i>
         </div>
-        <div>
+        <div class="dash__cp-stat-content">
           <span class="dash__cp-stat-val dash__cp-stat-val--rejected">{{ placementSummary()?.rejected ?? 0 }}</span>
           <span class="dash__cp-stat-label">Rejected</span>
         </div>
@@ -147,7 +150,8 @@
       <!-- Empty -->
       <div *ngIf="!placementSummary() || placementSummary()!.recentApplications.length === 0" class="dash__cp-empty">
         <i class="ph ph-target"></i>
-        <p>No placement applications yet.</p>
+        <h4>No applications yet</h4>
+        <p>Start tracking your job applications here.</p>
         <button class="dash__cp-action-btn" (click)="goToPlacement()">
           <i class="ph ph-plus"></i> Track Placement
         </button>
@@ -187,7 +191,8 @@
       <!-- Empty -->
       <div *ngIf="!careerSummary() || careerSummary()!.recentLinks.length === 0" class="dash__cp-empty">
         <i class="ph ph-briefcase"></i>
-        <p>No career links saved yet.</p>
+        <h4>No career links saved yet</h4>
+        <p>Save useful career opportunities for later.</p>
         <button class="dash__cp-action-btn" (click)="goToCareer()">
           <i class="ph ph-plus"></i> Save Career Link
         </button>
