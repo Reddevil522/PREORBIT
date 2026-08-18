@@ -63,6 +63,15 @@
   background: linear-gradient(90deg, #0ea5e9, #3b82f6, #8b5cf6);
 }
 
+.header-badges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
 .status-badge {
   display: inline-block;
   padding: 0.35rem 1rem;
@@ -72,7 +81,18 @@
   font-weight: var(--font-bold);
   border-radius: 20px;
   letter-spacing: 1px;
-  margin-bottom: 1rem;
+}
+
+.attempt-badge {
+  display: inline-block;
+  padding: 0.35rem 1rem;
+  background: rgba(56, 189, 248, 0.15);
+  color: #0284c7;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  font-size: 0.8rem;
+  font-weight: var(--font-bold);
+  border-radius: 20px;
+  letter-spacing: 1px;
 }
 
 .result-header h2 {

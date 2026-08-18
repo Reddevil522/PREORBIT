@@ -21,6 +21,8 @@ export class TestResult implements OnInit {
   startedAt = signal<string>('');
   submittedAt = signal<string>('');
   timeTaken = signal<string>('');
+  attemptNumber = signal<number>(1);
+  totalAttempts = signal<number>(1);
 
   constructor(
     private route: ActivatedRoute,
@@ -44,7 +46,7 @@ export class TestResult implements OnInit {
     this.testEngineService.getTestResult(attemptId).subscribe({
       next: (res) => {
         if (res.success && res.data) {
-          const { status, test, evaluation, questionAnalysis, startedAt, submittedAt } = res.data;
+          const { status, test, evaluation, questionAnalysis, startedAt, submittedAt, attemptNumber, totalAttempts } = res.data;
           
           if (status !== 'submitted') {
             this.router.navigate(['/test', test.testId]);
@@ -56,6 +58,8 @@ export class TestResult implements OnInit {
           this.questionsAnalysis.set(questionAnalysis);
           this.startedAt.set(startedAt);
           this.submittedAt.set(submittedAt);
+          if (attemptNumber) this.attemptNumber.set(attemptNumber);
+          if (totalAttempts) this.totalAttempts.set(totalAttempts);
           
           if (startedAt && submittedAt) {
             this.timeTaken.set(this.calculateTimeTaken(startedAt, submittedAt));

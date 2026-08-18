@@ -953,8 +953,24 @@ exports.getTestResult = async (req, res, next) => {
       });
     }
 
+    const allUserAttemptsForTest = await TestAttempt.find({ 
+      userId: attempt.userId, 
+      testId: attempt.testId, 
+      status: 'submitted' 
+    }).sort({ createdAt: 1 }).select('_id attemptId createdAt').lean();
+
+    let attemptNumber = 1;
+    const foundIndex = allUserAttemptsForTest.findIndex(a => a.attemptId === attempt.attemptId || a._id.toString() === attempt._id.toString());
+    if (foundIndex !== -1) {
+      attemptNumber = foundIndex + 1;
+    } else if (allUserAttemptsForTest.length > 0) {
+      attemptNumber = allUserAttemptsForTest.length;
+    }
+
     return sendSuccess(res, 200, 'Test result fetched successfully', {
       attemptId: attempt.attemptId,
+      attemptNumber,
+      totalAttempts: Math.max(1, allUserAttemptsForTest.length),
       status: attempt.status,
       startedAt: attempt.startedAt,
       submittedAt: attempt.submittedAt,

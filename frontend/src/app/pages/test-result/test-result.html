@@ -16,13 +16,17 @@
 
   <!-- Result Content -->
   <div *ngIf="!isLoading() && !errorMsg() && testMetadata() && evaluation()" class="result-content animate-fade-in">
-    
+
     <!-- Header -->
     <div class="result-header card glass-card">
-      <div class="status-badge">TEST COMPLETED</div>
+      <div class="header-badges">
+        <span class="status-badge">TEST COMPLETED</span>
+        <span class="attempt-badge">ATTEMPT #{{ attemptNumber() }}</span>
+      </div>
       <h2>{{ testMetadata().testName }}</h2>
-      <p class="subtitle">{{ testMetadata().module | uppercase }} <span *ngIf="testMetadata().subject">• {{ testMetadata().subject | uppercase }}</span></p>
-      
+      <p class="subtitle">{{ testMetadata().module | uppercase }} <span *ngIf="testMetadata().subject">• {{
+          testMetadata().subject | uppercase }}</span></p>
+
       <div class="score-highlight">
         <span class="marks">{{ evaluation().obtainedMarks }} / {{ evaluation().maximumMarks }} Marks</span>
         <span class="percentage">{{ evaluation().percentage }}%</span>
@@ -69,6 +73,10 @@
         <h3>Performance</h3>
         <div class="stat-list">
           <div class="stat-item">
+            <span>Attempt Number</span>
+            <span class="val">Attempt #{{ attemptNumber() }}</span>
+          </div>
+          <div class="stat-item">
             <span>Accuracy</span>
             <span class="val">{{ getAccuracy() }}%</span>
           </div>
@@ -91,9 +99,9 @@
     <!-- Question Analysis -->
     <div class="question-analysis">
       <h3 class="section-title">Question Analysis</h3>
-      
+
       <div class="question-card card glass-card" *ngFor="let q of questionsAnalysis(); let i = index">
-        
+
         <div class="q-header">
           <span class="q-number">Q{{ i + 1 }}</span>
           <span class="q-status" [ngClass]="{
@@ -112,14 +120,14 @@
         <div class="q-text">{{ q.question }}</div>
 
         <div class="q-options">
-          <div class="option-item" *ngFor="let opt of q.options"
-               [ngClass]="{
+          <div class="option-item" *ngFor="let opt of q.options" [ngClass]="{
                  'is-student-ans': hasSelected(q.studentAnswer, opt.key),
                  'is-correct-ans': isCorrectOption(q.correctAnswer, opt.key)
                }">
             <div class="opt-key">
               <span *ngIf="q.questionType === 'mcq'">{{ hasSelected(q.studentAnswer, opt.key) ? '◉' : '○' }}</span>
-              <span *ngIf="q.questionType === 'multiple-choice'">{{ hasSelected(q.studentAnswer, opt.key) ? '☑' : '☐' }}</span>
+              <span *ngIf="q.questionType === 'multiple-choice'">{{ hasSelected(q.studentAnswer, opt.key) ? '☑' : '☐'
+                }}</span>
               {{ opt.key }}
             </div>
             <div class="opt-text">{{ opt.text }}</div>
@@ -128,12 +136,12 @@
 
         <div class="q-footer">
           <div class="answer-legend">
-            <p><strong>Your Answer:</strong> 
+            <p><strong>Your Answer:</strong>
               <span *ngIf="!hasStudentAnswer(q)">Not answered</span>
               <span *ngIf="hasStudentAnswer(q) && !isArray(q.studentAnswer)">{{ q.studentAnswer }}</span>
               <span *ngIf="hasStudentAnswer(q) && isArray(q.studentAnswer)">{{ q.studentAnswer.join(', ') }}</span>
             </p>
-            <p><strong>Correct Answer:</strong> 
+            <p><strong>Correct Answer:</strong>
               <span *ngIf="!isArray(q.correctAnswer)">{{ q.correctAnswer }}</span>
               <span *ngIf="isArray(q.correctAnswer)">{{ q.correctAnswer.join(', ') }}</span>
             </p>
