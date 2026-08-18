@@ -99,9 +99,9 @@ async function isTestSequentiallyLocked(test, userId) {
 exports.getAvailableTests = async (req, res, next) => {
   try {
     const { module, subject } = req.query;
-    let userId = req.user.userId;
+    let userId = getValidUserId(req.user);
 
-    const isAdmin = req.user.role === 'admin' || !mongoose.Types.ObjectId.isValid(userId);
+    const isAdmin = req.user.role === 'admin' || !mongoose.Types.ObjectId.isValid(req.user?.userId);
 
     const query = { status: { $in: ['available', 'locked'] } };
 
@@ -186,7 +186,7 @@ exports.getAvailableTests = async (req, res, next) => {
 exports.getTestSummary = async (req, res, next) => {
   try {
     const { module, subject } = req.query;
-    let userId = req.user.userId;
+    let userId = getValidUserId(req.user);
 
     const isStudentUser = req.user.role !== 'admin' && mongoose.Types.ObjectId.isValid(userId);
 
@@ -282,7 +282,7 @@ exports.getTestSummary = async (req, res, next) => {
 exports.getTestMetadata = async (req, res, next) => {
   try {
     const { testId } = req.params;
-    let userId = req.user.userId;
+    let userId = getValidUserId(req.user);
 
     const test = await PracticeTest.findOne({ testId }).lean();
     if (!test) {
@@ -608,14 +608,10 @@ exports.submitTest = async (req, res, next) => {
 exports.resumeTest = async (req, res, next) => {
   try {
     const { testId } = req.params;
-    let userId = req.user.userId;
+    let userId = getValidUserId(req.user);
 
     const test = await PracticeTest.findOne({ testId });
     if (!test) return sendError(res, 404, 'Test not found');
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return sendSuccess(res, 200, 'No active attempt found', { hasActiveAttempt: false });
-    }
 
     // Find the latest attempt that belongs to the current test version
     const activeAttempt = await TestAttempt.findOne({ 
@@ -861,13 +857,10 @@ exports.retakeTest = async (req, res, next) => {
 exports.getTestResult = async (req, res, next) => {
   try {
     const { attemptId } = req.params;
-    let userId = req.user.userId;
+    let userId = getValidUserId(req.user);
 
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-       return sendError(res, 400, 'Invalid authenticated user identity');
-    }
-
-    const attempt = await TestAttempt.findOne({ attemptId, userId });
+    const attemptQuery = req.user.role === 'admin' ? { attemptId } : { attemptId, userId };
+    const attempt = await TestAttempt.findOne(attemptQuery);
     if (!attempt) {
       return sendError(res, 404, 'Test attempt not found or unauthorized');
     }
