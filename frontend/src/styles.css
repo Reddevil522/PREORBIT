@@ -582,3 +582,139 @@ ul, ol {
     margin-right: -16px;
   }
 }
+
+/* ============================================================
+   CHAPTER HEADER MOBILE MODERNIZATION (CSS ONLY)
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Common classes: .section-header (java-dsa), .chapter-header (aptitude/core-cs) */
+  .chapter-section .section-header,
+  .chapter-section .chapter-header,
+  .chapter-block .chapter-header,
+  .chapter-card .card-header {
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    align-items: start !important;
+    gap: 6px 12px !important;
+    padding-bottom: 16px !important;
+    border-bottom: 1px solid var(--border-default) !important;
+  }
+
+  /* Make containers display:contents so their children fall into the grid */
+  .chapter-section .section-info,
+  .chapter-section .chapter-info,
+  .chapter-block .chapter-info,
+  .chapter-section .chapter-progress-stats,
+  .chapter-block .chapter-progress-stats {
+    display: contents !important;
+  }
+
+  /* 1. Top row left: Chapter Number / Icon */
+  .chapter-section .section-icon,
+  .chapter-section .chapter-number,
+  .chapter-block .chapter-number,
+  .chapter-section .chapter-info .chapter-icon,
+  .chapter-block .chapter-info .chapter-icon {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    font-size: 13px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    color: var(--preorbit-primary) !important;
+    font-weight: 700 !important;
+    margin: 0 !important;
+  }
+
+  /* Top row right: Status Badge */
+  .chapter-section .stat-badge,
+  .chapter-block .stat-badge,
+  .chapter-section .chapter-status {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    align-self: center;
+    white-space: nowrap !important;
+    font-size: 11px !important;
+    padding: 6px 10px !important;
+    border-radius: 999px !important;
+    margin: 0 !important;
+    font-weight: 600 !important;
+  }
+
+  /* 2. Middle row: Chapter Title */
+  .chapter-section .section-info h2,
+  .chapter-section .chapter-info h2,
+  .chapter-block .chapter-info h2,
+  .chapter-section .chapter-content h2,
+  .chapter-section .section-header h2 {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    font-size: 24px !important;
+    font-weight: 800 !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    margin: 4px 0 0 0 !important;
+    color: var(--text-primary) !important;
+  }
+  
+  /* Any description paragraphs */
+  .chapter-section .chapter-info p,
+  .chapter-block .chapter-info p,
+  .chapter-section .section-info p {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    margin: 4px 0 0 0 !important;
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    color: var(--text-secondary) !important;
+  }
+
+  /* 3. Bottom row: Metadata Cards */
+  .chapter-section .stat-detail,
+  .chapter-block .stat-detail {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    padding-top: 12px !important;
+    margin-top: 8px !important;
+    flex-direction: row !important;
+    border-top: 1px dashed var(--border-default) !important;
+  }
+
+  /* Metadata card base styling */
+  .chapter-section .stat-detail span,
+  .chapter-block .stat-detail span {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    
+    background: var(--bg-surface) !important;
+    border: 1px solid var(--border-default) !important;
+    border-radius: 8px !important;
+    padding: 10px 4px !important;
+    text-align: center !important;
+    
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: var(--text-primary) !important;
+    line-height: 1.4 !important;
+    white-space: normal !important;
+  }
+
+  @media (max-width: 380px) {
+    .chapter-section .stat-detail,
+    .chapter-block .stat-detail {
+      grid-template-columns: 1fr 1fr !important;
+    }
+    .chapter-section .stat-detail .progress-stat,
+    .chapter-block .stat-detail .progress-stat {
+      grid-column: 1 / -1;
+    }
+  }
+}
