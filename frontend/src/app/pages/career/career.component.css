@@ -524,4 +524,10 @@ html.dark .cs--archived   { background: rgba(107,114,128,0.1);  color: #6b7280; 
   .career-filters__search-wrap { min-width: 0; }
   .career-summary { flex-wrap: nowrap; overflow-x: auto; padding-bottom: var(--space-2); }
   .career-summary__card { min-width: 90px; }
+  
+  .career-card__company,
+  .career-card__job {
+    white-space: normal;
+    word-break: break-word;
+  }
 }

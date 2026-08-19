@@ -195,6 +195,14 @@
   --page-padding-y:         var(--space-8);
 }
 
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 220px;
+    --sidebar-width-compact: 64px;
+    --page-padding-x: var(--space-6);
+  }
+}
+
 /* ============================================================
    DESIGN TOKENS — Light Mode Override
    ============================================================ */
@@ -428,6 +436,15 @@ input, textarea, select {
   font-family: var(--font-sans);
   font-size: var(--type-body);
   line-height: var(--lh-normal);
+  min-height: 44px;
+  padding: 0.625rem 0.875rem; /* 10px 14px */
+  border-radius: var(--radius-md);
+  box-sizing: border-box;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
 }
 
 ul, ol {
@@ -514,5 +531,45 @@ ul, ol {
     background: transparent !important;
     color: #000 !important;
     box-shadow: none !important;
+  }
+}
+
+/* ============================================================
+   MOBILE RESPONSIVENESS OVERRIDES
+   ============================================================ */
+@media (max-width: 768px) {
+  :root {
+    --type-display: var(--text-5xl);
+    --type-heading-1: var(--text-4xl);
+    --type-heading-2: var(--text-3xl);
+    --type-heading-3: var(--text-2xl);
+    --type-heading-4: var(--text-xl);
+  }
+  
+  h1, .t-h1, h2, .t-h2, h3, .t-h3, h4, .t-h4, .t-display {
+    word-break: break-word;
+    white-space: normal !important;
+  }
+  
+  button {
+    min-height: 44px;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  img, video, svg {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --type-display: var(--text-4xl);
+    --type-heading-1: var(--text-3xl);
+    --type-heading-2: var(--text-2xl);
+    --type-heading-3: var(--text-xl);
+    --page-padding-x: 16px;
+    --page-padding-y: 16px;
   }
 }

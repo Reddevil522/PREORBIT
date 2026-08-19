@@ -27,6 +27,36 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 1.25rem;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .test-card {
+    padding: 1.25rem;
+  }
+  .card-body h3 {
+    white-space: normal;
+    line-height: 1.3;
+  }
+  .detail-item {
+    white-space: normal;
+    align-items: flex-start;
+  }
+  .card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .card-footer span {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 .test-icon {

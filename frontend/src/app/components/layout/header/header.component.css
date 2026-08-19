@@ -65,7 +65,8 @@
   display: none;
   align-items: center;
   gap: var(--space-2);
-  flex-shrink: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .header__mobile-logo {
@@ -91,6 +92,8 @@
   letter-spacing: var(--ls-widest);
   color: var(--text-primary);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ── Desktop page title ──────────────────────────────────── */
@@ -157,6 +160,20 @@
 .header__profile-btn:focus-visible {
   outline: 2px solid var(--preorbit-primary);
   outline-offset: 2px;
+}
+
+/* Ensure mobile menu wrapper is touch friendly */
+.header__menu-wrap button,
+.header__menu-btn {
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 /* ── User avatar ─────────────────────────────────────────── */
@@ -236,7 +253,12 @@
 /* ── Mobile ──────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .header {
-    padding: 0 var(--space-4);
+    padding: 0 16px; /* fixed safe padding */
+    gap: 8px; /* safer gap on tiny screens */
+  }
+
+  .header__left {
+    gap: 8px;
   }
 
   .header__menu-wrap {
@@ -245,6 +267,8 @@
 
   .header__mobile-brand {
     display: flex;
+    flex: 1;
+    min-width: 0;
   }
 
   .header__page-title {
@@ -261,6 +285,13 @@
   }
 
   .header__profile-btn {
-    padding: var(--space-1);
+    padding: 0;
+    min-width: 36px;
+    min-height: 36px;
+    justify-content: center;
+  }
+  
+  .header__right {
+    gap: 8px;
   }
 }

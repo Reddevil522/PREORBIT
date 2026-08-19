@@ -443,6 +443,7 @@
   .sidebar,
   .sidebar--compact {
     width: var(--sidebar-width);
+    max-width: calc(100vw - 56px); /* Ensures a tap area remains to close the drawer */
   }
 
   /* Restore labels on mobile */

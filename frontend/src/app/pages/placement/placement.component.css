@@ -972,8 +972,18 @@ html.dark .pt-followup-list--overdue .pt-followup-item {
   .pt-filters         { flex-direction: column; align-items: stretch; }
   .pt-filters__search-wrap { min-width: 0; }
   .pt-modal__footer   { flex-wrap: wrap; }
-  .pt-card__actions   {
-  margin-top: auto; flex-wrap: wrap; }
+  .pt-card__actions   { margin-top: auto; flex-wrap: wrap; }
+  
+  .pt-card__company,
+  .pt-card__role,
+  .pt-followup-company {
+    white-space: normal;
+    word-break: break-word;
+  }
+  
+  .pt-card__top {
+    align-items: flex-start;
+  }
 }
 
 @media (max-width: 400px) {
