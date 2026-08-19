@@ -578,8 +578,7 @@ ul, ol {
   .theory-grid, 
   .chapter-list .test-grid,
   .dash__grid {
-    margin-left: -16px;
-    margin-right: -16px;
+    /* margins removed to fit 100% width cleanly since parent padding is 0 */
   }
 }
 

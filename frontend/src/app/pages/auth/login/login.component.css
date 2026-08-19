@@ -342,8 +342,6 @@
 
 @media (max-width: 480px) {
   .tests-grid, .chapters-grid, .theory-grid, .dash__grid, .chapter-list .test-grid {
-    margin-left: -1rem !important;
-    margin-right: -1rem !important;
     width: auto !important;
   }
   .section-info, .header-info {
