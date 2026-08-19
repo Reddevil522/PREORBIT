@@ -357,7 +357,7 @@
 }
 .nav-bubble.current {
   background: var(--text-primary);
-  color: #fff;
+  color: var(--bg-base);
   border-color: var(--text-primary);
 }
 
