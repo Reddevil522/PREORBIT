@@ -205,8 +205,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Dark Mode Overrides */
@@ -276,11 +283,11 @@
   .java-dsa-container {
     padding: 1.5rem;
   }
-  
+
   .cards-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .header {
     flex-direction: column;
     align-items: flex-start;
@@ -291,10 +298,17 @@
 
 
 @media (max-width: 480px) {
-  .tests-grid, .chapters-grid, .theory-grid, .dash__grid, .chapter-list .test-grid {
+
+  .tests-grid,
+  .chapters-grid,
+  .theory-grid,
+  .dash__grid,
+  .chapter-list .test-grid {
     width: auto !important;
   }
-  .section-info, .header-info {
+
+  .section-info,
+  .header-info {
     flex-direction: column !important;
     align-items: flex-start !important;
     width: 100% !important;
@@ -305,8 +319,8 @@
 /* AUTO-APPENDED MOBILE PADDING FIX */
 @media (max-width: 768px) {
   .java-dsa-container {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding-left: 7px !important;
+    padding-right: 7px !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
     width: 100% !important;

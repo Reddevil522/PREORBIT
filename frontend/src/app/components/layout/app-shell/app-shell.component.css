@@ -23,7 +23,7 @@
   position: relative;
   transition:
     grid-template-columns var(--transition-normal),
-    background-color      var(--transition-theme);
+    background-color var(--transition-theme);
 }
 
 /* ── Compact grid ────────────────────────────────────────── */
@@ -72,7 +72,7 @@
 }
 
 /* Route content fade-in animation */
-.shell__main > * {
+.shell__main>* {
   animation: preorbit-fade-in 220ms ease both;
 }
 
@@ -97,6 +97,7 @@
 
 /* ── Mobile: single column, fixed sidebar ───────────────── */
 @media (max-width: 768px) {
+
   /* Always single column on mobile regardless of compact state */
   .shell,
   .shell--compact {
@@ -131,7 +132,7 @@
   }
 
   .shell__main {
-    padding: var(--space-5) var(--space-4);
+    padding: 0;
   }
 }
 

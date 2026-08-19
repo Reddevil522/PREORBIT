@@ -2,7 +2,8 @@
   display: block;
 }
 
-.practice-container, .not-found-container {
+.practice-container,
+.not-found-container {
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -233,7 +234,8 @@
   margin: 0 0 1.5rem 0;
 }
 
-.clear-search-btn, .return-btn {
+.clear-search-btn,
+.return-btn {
   background: var(--primary, #10b981);
   color: white;
   border: none;
@@ -248,7 +250,8 @@
   display: inline-block;
 }
 
-.clear-search-btn:hover, .return-btn:hover {
+.clear-search-btn:hover,
+.return-btn:hover {
   background: #059669;
   transform: translateY(-2px);
 }
@@ -264,8 +267,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Chapter Progress Header & Stats */
@@ -419,10 +429,17 @@
 
 
 @media (max-width: 480px) {
-  .tests-grid, .chapters-grid, .theory-grid, .dash__grid, .chapter-list .test-grid {
+
+  .tests-grid,
+  .chapters-grid,
+  .theory-grid,
+  .dash__grid,
+  .chapter-list .test-grid {
     width: auto !important;
   }
-  .section-info, .header-info {
+
+  .section-info,
+  .header-info {
     flex-direction: column !important;
     align-items: flex-start !important;
     width: 100% !important;
@@ -432,9 +449,11 @@
 
 /* AUTO-APPENDED MOBILE PADDING FIX */
 @media (max-width: 768px) {
-  .practice-container, .not-found-container {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+
+  .practice-container,
+  .not-found-container {
+    padding-left: 7px !important;
+    padding-right: 7px !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
     width: 100% !important;

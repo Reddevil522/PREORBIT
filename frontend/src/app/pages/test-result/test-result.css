@@ -25,7 +25,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .action-buttons {
@@ -209,9 +211,17 @@
   font-size: 1.1rem;
 }
 
-.text-success { color: #10b981; }
-.text-danger { color: #ef4444; }
-.text-warning { color: #f59e0b; }
+.text-success {
+  color: #10b981;
+}
+
+.text-danger {
+  color: #ef4444;
+}
+
+.text-warning {
+  color: #f59e0b;
+}
 
 /* Question Analysis */
 .section-title {
@@ -370,15 +380,34 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 768px) {
-  .result-header h2 { font-size: 1.5rem; }
-  .percentage { font-size: 2.5rem; }
-  .global-actions { flex-direction: column; }
-  .btn { width: 100%; text-align: center; }
+  .result-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .percentage {
+    font-size: 2.5rem;
+  }
+
+  .global-actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 @media (max-width: 480px) {
@@ -386,7 +415,7 @@
     padding-left: 0;
     padding-right: 0;
   }
-  
+
   .result-header,
   .stat-card,
   .question-card,
@@ -394,28 +423,36 @@
     border-radius: 0;
     border-left: none;
     border-right: none;
-    margin-left: 0;
-    margin-right: 0;
+    margin-left: 7px;
+    margin-right: 7px;
   }
-  
+
   .q-options .option-item {
     border-radius: 8px;
   }
-  
+
   .global-actions {
     padding-left: 1rem;
     padding-right: 1rem;
   }
-  
+
   .section-title {
     margin-left: 1rem;
   }
 }
+
 @media (max-width: 480px) {
-  .tests-grid, .chapters-grid, .theory-grid, .dash__grid, .chapter-list .test-grid {
+
+  .tests-grid,
+  .chapters-grid,
+  .theory-grid,
+  .dash__grid,
+  .chapter-list .test-grid {
     width: auto !important;
   }
-  .section-info, .header-info {
+
+  .section-info,
+  .header-info {
     flex-direction: column !important;
     align-items: flex-start !important;
     width: 100% !important;

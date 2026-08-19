@@ -1,0 +1,14 @@
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/admin/tests/admin-test-details/admin-test-details.css
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/aptitude/logical-reasoning/logical-reasoning.component.css
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/aptitude/practice/aptitude-practice.component.css
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/aptitude/quantitative/quantitative.component.css
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/aptitude/theory/aptitude-theory.component.css
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/core-cs/computer-networks/computer-networks.component.css
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/core-cs/dbms/dbms.component.css
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/core-cs/oop/oop.component.css
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/core-cs/operating-system/operating-system.component.css
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/core-cs/sql/sql.component.css
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/core-cs/theory/core-cs-theory.component.css
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/java-dsa/tests/java-dsa-tests.component.css
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/java-dsa/theory/java-dsa-theory.component.css
+d:/Sigma Batch/Web Development/PREORBIT/frontend/src/app/pages/notes/notes-list/notes-list.component.css
