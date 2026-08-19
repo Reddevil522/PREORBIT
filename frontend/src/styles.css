@@ -39,46 +39,51 @@
   --preorbit-danger:         hsl(0,   72%, 58%);
 
   /* ── Background Layers — Dark ────────────────────────────── */
-  --bg-base:         hsl(223, 24%, 6%);      /* Page background */
-  --bg-surface:      hsl(223, 20%, 10%);     /* Cards, panels  */
-  --bg-elevated:     hsl(223, 18%, 14%);     /* Hover, active  */
-  --bg-overlay:      hsl(223, 14%, 18%);     /* Dropdowns, menus */
-  --bg-input:        hsl(223, 18%, 12%);     /* Form inputs    */
+  --bg-base:         #0b0d11;      /* Page background */
+  --bg-surface:      #11141a;      /* Primary surface / Cards  */
+  --bg-elevated:     #171b22;      /* Hover, active  */
+  --bg-overlay:      #1c2129;      /* Dropdowns, menus */
+  --bg-input:        #141820;      /* Form inputs    */
+
+  /* ── Component Token Aliases (Dark) ─────────────────────── */
+  --surface:         #151920;
+  --surface-hover:   #1c2129;
+  --border:          rgba(255, 255, 255, 0.08);
 
   /* ── Glassmorphism — Dark ────────────────────────────────── */
   --glass-bg:        hsla(223, 22%, 11%, 0.80);
   --glass-bg-strong: hsla(223, 22%, 8%,  0.90);
-  --glass-border:    hsla(246, 50%, 78%, 0.09);
+  --glass-border:    rgba(255, 255, 255, 0.08);
   --glass-blur:      16px;
   --glass-blur-sm:   8px;
-  --glass-shadow:    0 8px 40px hsla(223, 40%, 2%, 0.55),
-                     0 2px 8px  hsla(223, 40%, 2%, 0.30);
+  --glass-shadow:    0 8px 30px rgba(0, 0, 0, 0.20),
+                     0 2px 8px  rgba(0, 0, 0, 0.30);
 
   /* ── Text — Dark ─────────────────────────────────────────── */
-  --text-primary:    hsl(220, 18%, 93%);
-  --text-secondary:  hsl(220, 10%, 60%);
-  --text-muted:      hsl(220,  8%, 40%);
-  --text-disabled:   hsl(220,  6%, 30%);
+  --text-primary:    #f4f6f8;
+  --text-secondary:  #b8c0cc;
+  --text-muted:      #8993a3;
+  --text-disabled:   #5f6876;
   --text-on-brand:   hsl(0, 0%, 100%);
   --text-on-accent:  hsl(0, 0%, 100%);
   --text-link:       var(--preorbit-primary-light);
   --text-link-hover: var(--preorbit-accent-light);
 
   /* ── Borders — Dark ──────────────────────────────────────── */
-  --border-subtle:   hsla(220, 20%, 60%, 0.09);
-  --border-default:  hsla(220, 20%, 60%, 0.16);
-  --border-strong:   hsla(246, 60%, 70%, 0.28);
+  --border-subtle:   rgba(255, 255, 255, 0.06);
+  --border-default:  rgba(255, 255, 255, 0.08);
+  --border-strong:   rgba(255, 255, 255, 0.14);
   --border-accent:   hsla(162, 72%, 40%, 0.40);
 
   /* ── Shadows — Dark ──────────────────────────────────────── */
-  --shadow-xs:       0 1px 3px  hsla(223, 40%, 2%, 0.28);
-  --shadow-sm:       0 2px 8px  hsla(223, 40%, 2%, 0.36);
-  --shadow-md:       0 4px 20px hsla(223, 40%, 2%, 0.44);
-  --shadow-lg:       0 8px 40px hsla(223, 40%, 2%, 0.52);
-  --shadow-xl:       0 16px 64px hsla(223, 40%, 2%, 0.60);
+  --shadow-xs:       0 1px 3px  rgba(0, 0, 0, 0.28);
+  --shadow-sm:       0 2px 8px  rgba(0, 0, 0, 0.36);
+  --shadow-md:       0 4px 20px rgba(0, 0, 0, 0.44);
+  --shadow-lg:       0 8px 40px rgba(0, 0, 0, 0.52);
+  --shadow-xl:       0 16px 64px rgba(0, 0, 0, 0.60);
   --shadow-glow-primary: 0 0 32px hsla(246, 80%, 66%, 0.24);
   --shadow-glow-accent:  0 0 32px hsla(162, 72%, 40%, 0.20);
-  --shadow-inset:    inset 0 1px 2px hsla(223, 40%, 2%, 0.25);
+  --shadow-inset:    inset 0 1px 2px rgba(0, 0, 0, 0.25);
 
   /* ── Typography ──────────────────────────────────────────── */
   --font-sans:  'Outfit', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -206,6 +211,11 @@
   --bg-elevated:     hsl(210, 18%, 92%);    /* Hover state     */
   --bg-overlay:      hsl(210, 14%, 88%);    /* Menus           */
   --bg-input:        hsl(210, 18%, 98%);    /* Form fields     */
+
+  /* ── Component Token Aliases (Light) ────────────────────── */
+  --surface:         #ffffff;
+  --surface-hover:   hsl(210, 18%, 92%);
+  --border:          hsla(220, 14%, 18%, 0.13);
 
   /* ── Glassmorphism — Light ────────────────────────────────── */
   --glass-bg:        hsla(0, 0%, 100%, 0.82);

@@ -218,93 +218,64 @@
 }
 
 /* Dark Mode */
+:host-context([data-theme="dark"]) .back-btn,
+:host-context([data-theme="dark"]) .search-input,
+:host-context([data-theme="dark"]) .empty-state,
+:host-context([data-theme="dark"]) .no-tests-state,
 :host-context(html.dark) .back-btn,
 :host-context(html.dark) .search-input,
 :host-context(html.dark) .empty-state,
 :host-context(html.dark) .no-tests-state {
-  background: var(--surface, #1f2937);
-  border-color: var(--border, #374151);
+  background: var(--surface, #151920);
+  border-color: var(--border, rgba(255, 255, 255, 0.08));
 }
 
+:host-context([data-theme="dark"]) .search-input,
 :host-context(html.dark) .search-input {
-  color: var(--text-primary, #f9fafb);
+  color: var(--text-primary, #f4f6f8);
 }
 
+:host-context([data-theme="dark"]) .search-input::placeholder,
+:host-context(html.dark) .search-input::placeholder {
+  color: #7d8796;
+}
+
+:host-context([data-theme="dark"]) .search-icon,
+:host-context(html.dark) .search-icon {
+  color: #9aa4b2;
+}
+
+:host-context([data-theme="dark"]) .back-btn,
 :host-context(html.dark) .back-btn {
-  color: var(--text-secondary, #9ca3af);
+  color: var(--text-secondary, #b8c0cc);
 }
 
+:host-context([data-theme="dark"]) .back-btn:hover,
 :host-context(html.dark) .back-btn:hover {
-  background: var(--surface-hover, #374151);
-  color: var(--text-primary, #f9fafb);
-  border-color: var(--text-secondary, #6b7280);
+  background: var(--surface-hover, #1c2129);
+  color: var(--text-primary, #f4f6f8);
+  border-color: rgba(255, 255, 255, 0.14);
 }
 
+:host-context([data-theme="dark"]) .switch-btn,
 :host-context(html.dark) .switch-btn {
-  background: rgba(59, 130, 246, 0.2);
+  background: rgba(59, 130, 246, 0.12);
   color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.18);
 }
 
+:host-context([data-theme="dark"]) .switch-btn:hover,
 :host-context(html.dark) .switch-btn:hover {
-  background: #3b82f6;
-  color: white;
+  background: rgba(59, 130, 246, 0.18);
 }
 
-:host-context(html.dark) .header-text h1,
-:host-context(html.dark) .chapter-info h2,
-:host-context(html.dark) .empty-state h2 {
-  color: var(--text-primary, #f9fafb);
-}
-
-:host-context(html.dark) .header-text p,
-:host-context(html.dark) .chapter-info p,
-:host-context(html.dark) .empty-state p,
-:host-context(html.dark) .no-tests-state {
-  color: var(--text-secondary, #9ca3af);
-}
-
-:host-context(html.dark) .chapter-header {
-  border-color: var(--border, #374151);
-}
-
-:host-context(html.dark) .empty-icon {
-  background: var(--surface-hover, #374151);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .practice-container {
-    padding: 1.5rem;
-  }
-  
-  .header-top {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.25rem;
-  }
-  
-  .header-actions {
-    width: 100%;
-  }
-
-  .switch-btn {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .search-container {
-    max-width: 100%;
-  }
-  
-  .tests-grid {
-    grid-template-columns: 1fr;
-  }
-}
-/* Chapter Progress Stats */
+/* Chapter Progress Header & Stats */
 .chapter-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  padding-bottom: 1rem;
 }
 
 .chapter-progress-stats {
@@ -315,6 +286,8 @@
 }
 
 .stat-badge {
+  display: inline-flex;
+  width: fit-content;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.75rem;
@@ -350,9 +323,55 @@
   font-weight: var(--font-medium);
 }
 
+:host-context([data-theme="dark"]) .header-text h1,
+:host-context([data-theme="dark"]) .chapter-info h2,
+:host-context([data-theme="dark"]) .empty-state h2,
+:host-context(html.dark) .header-text h1,
+:host-context(html.dark) .chapter-info h2,
+:host-context(html.dark) .empty-state h2 {
+  color: var(--text-primary, #f4f6f8);
+}
+
+:host-context([data-theme="dark"]) .header-text p,
+:host-context([data-theme="dark"]) .chapter-info p,
+:host-context([data-theme="dark"]) .empty-state p,
+:host-context([data-theme="dark"]) .no-tests-state,
+:host-context([data-theme="dark"]) .stat-detail,
+:host-context(html.dark) .header-text p,
+:host-context(html.dark) .chapter-info p,
+:host-context(html.dark) .empty-state p,
+:host-context(html.dark) .no-tests-state,
+:host-context(html.dark) .stat-detail {
+  color: var(--text-secondary, #aeb7c5);
+}
+
+:host-context([data-theme="dark"]) .chapter-header,
+:host-context(html.dark) .chapter-header {
+  border-color: var(--border, rgba(255, 255, 255, 0.08));
+}
+
+:host-context([data-theme="dark"]) .empty-icon,
+:host-context(html.dark) .empty-icon {
+  background: var(--surface-hover, #1c2129);
+  color: #9aa4b2;
+}
+
+:host-context([data-theme="dark"]) .stat-badge.not-started,
 :host-context(html.dark) .stat-badge.not-started {
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(239, 68, 68, 0.12);
   color: #f87171;
+}
+
+:host-context([data-theme="dark"]) .stat-badge.in-progress,
+:host-context(html.dark) .stat-badge.in-progress {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+}
+
+:host-context([data-theme="dark"]) .stat-badge.completed,
+:host-context(html.dark) .stat-badge.completed {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
 }
 
 /* ── API error banner ──────────────────────────────────────── */

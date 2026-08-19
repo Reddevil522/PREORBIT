@@ -133,28 +133,46 @@
 }
 
 /* Dark Mode */
+:host-context([data-theme="dark"]) .test-card,
 :host-context(html.dark) .test-card {
-  background: var(--surface, #1f2937);
-  border-color: var(--border, #374151);
+  background: var(--surface, #151920);
+  border-color: var(--border, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.20);
 }
 
+:host-context([data-theme="dark"]) .card-body h3,
 :host-context(html.dark) .card-body h3 {
-  color: var(--text-primary, #f9fafb);
+  color: var(--text-primary, #f4f6f8);
 }
 
+:host-context([data-theme="dark"]) .detail-item,
+:host-context([data-theme="dark"]) .card-footer,
 :host-context(html.dark) .detail-item,
 :host-context(html.dark) .card-footer {
-  margin-top: auto;
-  color: var(--text-secondary, #9ca3af);
+  color: var(--text-secondary, #b8c0cc);
 }
 
+:host-context([data-theme="dark"]) .card-footer,
 :host-context(html.dark) .card-footer {
-  margin-top: auto;
-  border-color: var(--border, #374151);
+  border-color: var(--border, rgba(255, 255, 255, 0.08));
 }
 
+:host-context([data-theme="dark"]) .test-icon.not-ready,
+:host-context([data-theme="dark"]) .status-not-ready,
 :host-context(html.dark) .test-icon.not-ready,
 :host-context(html.dark) .status-not-ready {
-  background: var(--surface-hover, #374151);
-  color: var(--text-secondary, #9ca3af);
+  background: rgba(148, 163, 184, 0.12);
+  color: #94a3b8;
+}
+
+:host-context([data-theme="dark"]) .status-available,
+:host-context(html.dark) .status-available {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+}
+
+:host-context([data-theme="dark"]) .status-completed,
+:host-context(html.dark) .status-completed {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
 }

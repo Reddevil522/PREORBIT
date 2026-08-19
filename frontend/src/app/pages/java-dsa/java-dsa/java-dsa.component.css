@@ -210,40 +210,65 @@
 }
 
 /* Dark Mode Overrides */
+:host-context([data-theme="dark"]) .header-text h1,
+:host-context([data-theme="dark"]) .card-content h2,
+:host-context([data-theme="dark"]) .progress-title,
+:host-context([data-theme="dark"]) .stat-value,
 :host-context(html.dark) .header-text h1,
 :host-context(html.dark) .card-content h2,
 :host-context(html.dark) .progress-title,
 :host-context(html.dark) .stat-value {
-  color: var(--text-primary, #f9fafb);
+  color: var(--text-primary, #f4f6f8);
 }
 
+:host-context([data-theme="dark"]) .header-text p,
+:host-context([data-theme="dark"]) .card-content p,
+:host-context([data-theme="dark"]) .test-rules,
+:host-context([data-theme="dark"]) .progress-stats,
+:host-context([data-theme="dark"]) .stat-label,
 :host-context(html.dark) .header-text p,
 :host-context(html.dark) .card-content p,
 :host-context(html.dark) .test-rules,
 :host-context(html.dark) .progress-stats,
 :host-context(html.dark) .stat-label {
-  color: var(--text-secondary, #9ca3af);
+  color: var(--text-secondary, #aeb7c5);
 }
 
+:host-context([data-theme="dark"]) .feature-card,
 :host-context(html.dark) .feature-card {
-  background: var(--surface, #1f2937);
-  border-color: var(--border, #374151);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  background: var(--surface, #151920);
+  border-color: var(--border, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.20);
 }
 
+:host-context([data-theme="dark"]) .card-footer,
 :host-context(html.dark) .card-footer {
   margin-top: auto;
-  border-color: var(--border, #374151);
+  border-color: var(--border, rgba(255, 255, 255, 0.08));
 }
 
-:host-context(html.dark) .card-action,
-:host-context(html.dark) .progress-bar {
-  background: var(--surface-hover, #374151);
-}
-
+:host-context([data-theme="dark"]) .card-action,
 :host-context(html.dark) .card-action {
   margin-top: auto;
-  color: var(--text-secondary, #9ca3af);
+  background: var(--surface-hover, #1c2129);
+  color: var(--text-secondary, #b8c0cc);
+}
+
+:host-context([data-theme="dark"]) .progress-bar,
+:host-context(html.dark) .progress-bar {
+  background: #252b34;
+}
+
+:host-context([data-theme="dark"]) .theory-icon,
+:host-context(html.dark) .theory-icon {
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+}
+
+:host-context([data-theme="dark"]) .tests-icon,
+:host-context(html.dark) .tests-icon {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
 }
 
 /* Responsive */
