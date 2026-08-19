@@ -705,7 +705,7 @@
 
 @media (max-width: 480px) {
   .chapter-list .test-grid {
-    padding: 10px;
+    padding: 10px 0;
     gap: 10px;
   }
 
@@ -717,5 +717,18 @@
 
   .chapter-list .card-actions button {
     flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .tests-grid, .chapters-grid, .theory-grid, .dash__grid, .chapter-list .test-grid {
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+    width: auto !important;
+  }
+  .section-info, .header-info {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    width: 100% !important;
   }
 }

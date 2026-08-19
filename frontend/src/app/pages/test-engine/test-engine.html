@@ -65,6 +65,7 @@
 
   <!-- IN-PROGRESS STATE -->
   <div class="in-progress-container" *ngIf="status === 'in-progress' && currentQuestion">
+    <input type="checkbox" id="mobile-drawer-toggle" class="drawer-checkbox" hidden>
     
     <!-- Header -->
     <header class="test-header">
@@ -75,6 +76,9 @@
         <div class="question-progress">
           Question {{ currentQuestionIndex + 1 }} of {{ questions.length }}
         </div>
+        <label for="mobile-drawer-toggle" class="drawer-toggle-btn" title="Open Navigator">
+          <i class="ph ph-list"></i>
+        </label>
       </div>
     </header>
 
@@ -145,9 +149,13 @@
       </main>
 
       <!-- Sidebar (Navigation Grid) -->
+      <label for="mobile-drawer-toggle" class="drawer-backdrop"></label>
       <aside class="test-sidebar" *ngIf="attemptStatus !== 'submitted'">
         <div class="sidebar-card card">
-          <h3>Question Navigator</h3>
+          <div class="drawer-header">
+            <h3>Question Navigator</h3>
+            <label for="mobile-drawer-toggle" class="drawer-close-btn">&times;</label>
+          </div>
           
           <!-- Answered Summary -->
           <div class="nav-summary">

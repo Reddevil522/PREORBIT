@@ -380,3 +380,46 @@
   .global-actions { flex-direction: column; }
   .btn { width: 100%; text-align: center; }
 }
+
+@media (max-width: 480px) {
+  .result-page-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
+  .result-header,
+  .stat-card,
+  .question-card,
+  .glass-card {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  .q-options .option-item {
+    border-radius: 8px;
+  }
+  
+  .global-actions {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .section-title {
+    margin-left: 1rem;
+  }
+}
+@media (max-width: 480px) {
+  .tests-grid, .chapters-grid, .theory-grid, .dash__grid, .chapter-list .test-grid {
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+    width: auto !important;
+  }
+  .section-info, .header-info {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+  }
+}

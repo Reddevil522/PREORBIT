@@ -572,4 +572,13 @@ ul, ol {
     --page-padding-x: 16px;
     --page-padding-y: 16px;
   }
+
+  .tests-grid, 
+  .chapters-grid, 
+  .theory-grid, 
+  .chapter-list .test-grid,
+  .dash__grid {
+    margin-left: -16px;
+    margin-right: -16px;
+  }
 }

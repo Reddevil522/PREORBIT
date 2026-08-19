@@ -476,3 +476,16 @@
   letter-spacing: 0.05em;
   opacity: 0.8;
 }
+
+@media (max-width: 480px) {
+  .tests-grid, .chapters-grid, .theory-grid, .dash__grid, .chapter-list .test-grid {
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+    width: auto !important;
+  }
+  .section-info, .header-info {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+  }
+}
