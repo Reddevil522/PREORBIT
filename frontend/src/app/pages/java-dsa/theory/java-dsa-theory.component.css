@@ -568,10 +568,7 @@
 
 @media (max-width: 768px) {
   .theory-container, .tests-container, .practice-container, .subject-container {
-        padding: 1.25rem 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
+    padding: 1.25rem 1rem !important;
   }
 
   .header {
@@ -676,28 +673,5 @@
     font-size: 0.9375rem !important;
     white-space: normal !important;
     line-height: 1.5 !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .tests-grid, .chapters-grid, .theory-grid, .dash__grid, .chapter-list .test-grid {
-    width: auto !important;
-  }
-  .section-info, .header-info {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    width: 100% !important;
-  }
-}
-
-
-/* AUTO-APPENDED MOBILE PADDING FIX */
-@media (max-width: 768px) {
-  .theory-container {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
   }
 }

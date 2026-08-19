@@ -483,13 +483,16 @@
 }
 
 @media (max-width: 480px) {
-  .test-engine-container {
+  .test-engine-container,
+  .instructions-container {
     padding-left: 0;
     padding-right: 0;
   }
   
   .premium-card,
-  .question-card {
+  .question-card,
+  .sidebar-card,
+  .modal-card {
     border-radius: 0;
     border-left: none;
     border-right: none;
@@ -497,6 +500,11 @@
     margin-right: 0;
   }
   
+  .test-layout,
+  .test-stats {
+    gap: 0;
+  }
+
   .test-header,
   .test-navigation {
     padding-left: 1rem;
