@@ -350,3 +350,14 @@
     width: 100% !important;
   }
 }
+
+@media (max-width: 768px) {
+  .login-page {
+    height: 100dvh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    align-items: flex-start; /* Ensure content starts at top when scrolling */
+  }
+}
