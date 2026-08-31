@@ -61,7 +61,7 @@
 
 @media (max-width: 480px) {
   .test-card {
-    border-radius: 0;
+    border-radius: 15px;
     border-left: none;
     border-right: none;
     padding-left: 1rem;
