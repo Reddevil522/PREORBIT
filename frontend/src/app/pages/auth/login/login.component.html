@@ -1,108 +1,194 @@
-<!-- PREORBIT — Login Page -->
+<!-- PREORBIT — 3D Flip Login & Register Component -->
 <div class="login-page">
 
-  <!-- Ambient glow orbs (CSS-only, decorative) -->
+  <!-- Ambient glow orbs -->
   <div class="login-page__orb login-page__orb--1" aria-hidden="true"></div>
   <div class="login-page__orb login-page__orb--2" aria-hidden="true"></div>
 
   <div class="login-page__container">
 
-    <!-- Brand -->
+    <!-- Brand Header -->
     <div class="login-page__brand">
       <span class="login-page__brand-name">PREORBIT</span>
-      <p class="login-page__brand-tagline">Your placement journey starts here</p>
+      <p class="login-page__brand-tagline">
+        {{ isFlipped() ? 'Join thousands preparing for placements' : 'Your placement journey starts here' }}
+      </p>
     </div>
 
-    <!-- Card -->
-    <div class="login-page__card">
+    <!-- 3D Perspective Scene Container -->
+    <div class="login-page__scene">
+      <div class="login-page__flipper" [class.is-flipped]="isFlipped()">
 
-      <div class="login-page__card-header">
-        <h1 class="login-page__title">Welcome back</h1>
-        <p class="login-page__subtitle">Sign in to continue preparing</p>
-      </div>
+        <!-- ==================== FRONT: LOGIN CARD ==================== -->
+        <div class="login-page__card login-page__card--front">
 
-      <!-- Error message -->
-      @if (errorMessage()) {
-        <div class="login-page__error" role="alert">
-          <i class="ph ph-warning-circle"></i>
-          <span>{{ errorMessage() }}</span>
-        </div>
-      }
-
-      <!-- Form -->
-      <form class="login-page__form" (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
-
-        <!-- Email -->
-        <div class="login-page__field">
-          <label class="login-page__label" for="login-email">Email address</label>
-          <div class="login-page__input-wrapper">
-            <i class="ph ph-envelope login-page__input-icon"></i>
-            <input
-              id="login-email"
-              class="login-page__input"
-              type="email"
-              name="email"
-              placeholder="you@example.com"
-              autocomplete="email"
-              [(ngModel)]="email"
-              required
-              [disabled]="isLoading()"
-            />
+          <div class="login-page__card-header">
+            <h1 class="login-page__title">Welcome back</h1>
+            <p class="login-page__subtitle">Sign in to continue preparing</p>
           </div>
-        </div>
 
-        <!-- Password -->
-        <div class="login-page__field">
-          <label class="login-page__label" for="login-password">Password</label>
-          <div class="login-page__input-wrapper">
-            <i class="ph ph-lock login-page__input-icon"></i>
-            <input
-              id="login-password"
-              class="login-page__input login-page__input--has-action"
-              [type]="showPassword() ? 'text' : 'password'"
-              name="password"
-              placeholder="Enter your password"
-              autocomplete="current-password"
-              [(ngModel)]="password"
-              required
-              [disabled]="isLoading()"
-            />
-            <button
-              type="button"
-              class="login-page__input-toggle"
-              (click)="togglePassword()"
-              [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
-            >
-              <i class="ph" [class.ph-eye]="!showPassword()" [class.ph-eye-slash]="showPassword()"></i>
-            </button>
+          <!-- Login Error message -->
+          @if (errorMessage() && !isFlipped()) {
+          <div class="login-page__error" role="alert">
+            <i class="ph ph-warning-circle"></i>
+            <span>{{ errorMessage() }}</span>
           </div>
-        </div>
-
-        <!-- Submit -->
-        <button
-          id="login-submit-btn"
-          class="login-page__submit-btn"
-          type="submit"
-          [disabled]="isLoading()"
-        >
-          @if (isLoading()) {
-            <span class="login-page__spinner" aria-hidden="true"></span>
-            <span>Signing in…</span>
-          } @else {
-            <i class="ph ph-sign-in"></i>
-            <span>Sign In</span>
           }
-        </button>
 
-      </form>
+          <!-- Login Form -->
+          <form class="login-page__form" (ngSubmit)="onLoginSubmit()" #loginForm="ngForm" novalidate>
 
-      <!-- Footer -->
-      <div class="login-page__card-footer">
-        <span class="login-page__footer-text">Don't have an account?</span>
-        <a routerLink="/register" class="login-page__register-link">Create account</a>
+            <!-- Email -->
+            <div class="login-page__field">
+              <label class="login-page__label" for="login-email">Email address</label>
+              <div class="login-page__input-wrapper">
+                <i class="ph ph-envelope login-page__input-icon"></i>
+                <input id="login-email" class="login-page__input" type="email" name="loginEmail"
+                  placeholder="you@example.com" autocomplete="email" [(ngModel)]="email" required
+                  [disabled]="isLoading()" />
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="login-page__field">
+              <label class="login-page__label" for="login-password">Password</label>
+              <div class="login-page__input-wrapper">
+                <i class="ph ph-lock login-page__input-icon"></i>
+                <input id="login-password" class="login-page__input login-page__input--has-action"
+                  [type]="showPassword() ? 'text' : 'password'" name="loginPassword" placeholder="Enter your password"
+                  autocomplete="current-password" [(ngModel)]="password" required [disabled]="isLoading()" />
+                <button type="button" class="login-page__input-toggle" (click)="togglePassword()"
+                  [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'">
+                  <i class="ph" [class.ph-eye]="!showPassword()" [class.ph-eye-slash]="showPassword()"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <button id="login-submit-btn" class="login-page__submit-btn" type="submit" [disabled]="isLoading()">
+              @if (isLoading()) {
+              <span class="login-page__spinner" aria-hidden="true"></span>
+              <span>Signing in…</span>
+              } @else {
+              <i class="ph ph-sign-in"></i>
+              <span>Sign In</span>
+              }
+            </button>
+
+          </form>
+
+          <!-- Footer Toggle to Register -->
+          <div class="login-page__card-footer">
+            <span class="login-page__footer-text">Don't have an account?</span>
+            <button type="button" class="login-page__toggle-action-btn" (click)="toggleFlip()">Create account</button>
+          </div>
+
+        </div><!-- /front card -->
+
+
+        <!-- ==================== BACK: REGISTER CARD ==================== -->
+        <div class="login-page__card login-page__card--back">
+
+          <div class="login-page__card-header">
+            <h1 class="login-page__title">Create account</h1>
+            <p class="login-page__subtitle">Free access to all study materials</p>
+          </div>
+
+          <!-- Register Error Alert -->
+          @if (errorMessage() && isFlipped()) {
+          <div class="login-page__alert login-page__alert--error" role="alert">
+            <i class="ph ph-warning-circle"></i>
+            <span>{{ errorMessage() }}</span>
+          </div>
+          }
+
+          <!-- Register Success Alert -->
+          @if (successMessage() && isFlipped()) {
+          <div class="login-page__alert login-page__alert--success" role="status">
+            <i class="ph ph-check-circle"></i>
+            <span>{{ successMessage() }}</span>
+          </div>
+          }
+
+          <!-- Register Form -->
+          <form class="login-page__form" (ngSubmit)="onRegisterSubmit()" #regForm="ngForm" novalidate>
+
+            <!-- Name -->
+            <div class="login-page__field">
+              <label class="login-page__label" for="reg-name">Full name</label>
+              <div class="login-page__input-wrapper">
+                <i class="ph ph-user login-page__input-icon"></i>
+                <input id="reg-name" class="login-page__input" type="text" name="name" placeholder="Your full name"
+                  autocomplete="name" [(ngModel)]="regName" required [disabled]="isLoading()" />
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="login-page__field">
+              <label class="login-page__label" for="reg-email">Email address</label>
+              <div class="login-page__input-wrapper">
+                <i class="ph ph-envelope login-page__input-icon"></i>
+                <input id="reg-email" class="login-page__input" type="email" name="email" placeholder="you@example.com"
+                  autocomplete="email" [(ngModel)]="regEmail" required [disabled]="isLoading()" />
+              </div>
+            </div>
+
+            <!-- Password -->
+            <div class="login-page__field">
+              <label class="login-page__label" for="reg-password">Password</label>
+              <div class="login-page__input-wrapper">
+                <i class="ph ph-lock login-page__input-icon"></i>
+                <input id="reg-password" class="login-page__input login-page__input--has-action"
+                  [type]="showPassword() ? 'text' : 'password'" name="password" placeholder="Min. 6 characters"
+                  autocomplete="new-password" [(ngModel)]="regPassword" required [disabled]="isLoading()" />
+                <button type="button" class="login-page__input-toggle" (click)="togglePassword()"
+                  [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'">
+                  <i class="ph" [class.ph-eye]="!showPassword()" [class.ph-eye-slash]="showPassword()"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="login-page__field">
+              <label class="login-page__label" for="reg-confirm">Confirm password</label>
+              <div class="login-page__input-wrapper">
+                <i class="ph ph-lock-key login-page__input-icon"></i>
+                <input id="reg-confirm" class="login-page__input login-page__input--has-action"
+                  [type]="showConfirmPassword() ? 'text' : 'password'" name="confirmPassword"
+                  placeholder="Re-enter your password" autocomplete="new-password" [(ngModel)]="regConfirmPassword"
+                  required [disabled]="isLoading()" />
+                <button type="button" class="login-page__input-toggle" (click)="toggleConfirm()"
+                  [attr.aria-label]="showConfirmPassword() ? 'Hide password' : 'Show password'">
+                  <i class="ph" [class.ph-eye]="!showConfirmPassword()"
+                    [class.ph-eye-slash]="showConfirmPassword()"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <button id="register-submit-btn" class="login-page__submit-btn login-page__submit-btn--register"
+              type="submit" [disabled]="isLoading()">
+              @if (isLoading()) {
+              <span class="login-page__spinner" aria-hidden="true"></span>
+              <span>Creating account…</span>
+              } @else {
+              <i class="ph ph-rocket-launch"></i>
+              <span>Create Account</span>
+              }
+            </button>
+
+          </form>
+
+          <!-- Footer Toggle to Login -->
+          <div class="login-page__card-footer">
+            <span class="login-page__footer-text">Already have an account?</span>
+            <button type="button" class="login-page__toggle-action-btn" (click)="toggleFlip()">Sign in</button>
+          </div>
+
+        </div><!-- /back card -->
+
       </div>
-
-    </div><!-- /card -->
+    </div><!-- /scene -->
 
   </div><!-- /container -->
 </div>

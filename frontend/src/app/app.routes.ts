@@ -34,14 +34,6 @@ export const routes: Routes = [
     title: 'Sign In — PREORBIT',
   },
 
-  {
-    path: 'register',
-    loadComponent: () =>
-      import('./pages/auth/register/register.component').then(
-        (m) => m.RegisterComponent
-      ),
-    title: 'Create Account — PREORBIT',
-  },
 
   // ── Authenticated shell (layout wrapper) ─────────────────
   // AppShellComponent renders Sidebar + Header + <router-outlet>.
