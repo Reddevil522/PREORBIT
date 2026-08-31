@@ -318,7 +318,7 @@
 /* Responsive */
 @media (max-width: 768px) {
   .quantitative-container {
-    padding: 0;
+    padding: 1.25rem 7px !important;
   }
 
   .cards-grid {

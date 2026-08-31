@@ -240,8 +240,8 @@
 /* AUTO-APPENDED MOBILE PADDING FIX */
 @media (max-width: 768px) {
   .core-cs-container {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding-left: 7px !important;
+    padding-right: 7px !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
     width: 100% !important;

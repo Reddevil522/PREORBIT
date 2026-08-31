@@ -362,7 +362,7 @@
   .tests-container,
   .practice-container,
   .subject-container {
-    padding: 1.25rem 1rem !important;
+    padding: 1.25rem 7px !important;
   }
 
   .header {
