@@ -1,8 +1,10 @@
 // ============================================================
-// PREORBIT — Career Controller (v2)
+// PREORBIT — Career Controller (v3)
 // ============================================================
-// Added: status, category, archive, restore, career summary
+// v2: status, category, archive, restore, career summary
 //        aggregation, Track Application → Placement conversion
+// v3: isGlobal support — global entries appended to every
+//        student's career list (read-only, cannot be mutated)
 // ============================================================
 
 const CareerLink          = require('../models/CareerLink');
@@ -19,6 +21,8 @@ const VALID_PL_STATUSES = PlacementApplication.schema.path('status').enumValues;
 const isValidUrl = (url) => /^https?:\/\/.+/.test(url.trim());
 
 // ── GET /api/career ──────────────────────────────────────────
+// Returns user's own links + all global (curated) links.
+// Global links are appended after personal links, deduped by _id.
 const getCareerLinks = async (req, res) => {
   try {
     let userId = req.user.userId;
@@ -26,10 +30,18 @@ const getCareerLinks = async (req, res) => {
       userId = new mongoose.Types.ObjectId('000000000000000000000000');
     }
 
+    const [userLinks, globalLinks] = await Promise.all([
+      CareerLink.find({ userId, isGlobal: { $ne: true } })
+        .sort({ createdAt: -1 })
+        .lean(),
+      CareerLink.find({ isGlobal: true })
+        .sort({ sortOrder: 1 }) // chronological Jan→Dec ordering
+        .lean(),
+    ]);
 
-    const links = await CareerLink.find({ userId })
-      .sort({ createdAt: -1 })
-      .lean();
+    // Combine: personal links first, then global entries
+    // No dedup needed — personal links have userId, global have userId=null
+    const links = [...userLinks, ...globalLinks];
 
     return sendSuccess(res, 200, 'Career links fetched successfully.', { links });
   } catch (err) {
@@ -40,6 +52,7 @@ const getCareerLinks = async (req, res) => {
 
 // ── GET /api/career/summary ──────────────────────────────────
 // Aggregated counts by status + category + 3 recent (for dashboard)
+// Summary counts only include the user's personal links (not global).
 const getCareerSummary = async (req, res) => {
   try {
     let userId = req.user.userId;
@@ -50,14 +63,14 @@ const getCareerSummary = async (req, res) => {
 
     const [statusAgg, categoryAgg, recentLinks] = await Promise.all([
       CareerLink.aggregate([
-        { $match: { userId } },
+        { $match: { userId, isGlobal: { $ne: true } } },
         { $group: { _id: '$status', count: { $sum: 1 } } },
       ]),
       CareerLink.aggregate([
-        { $match: { userId, status: { $ne: 'Archived' } } },
+        { $match: { userId, isGlobal: { $ne: true }, status: { $ne: 'Archived' } } },
         { $group: { _id: '$category', count: { $sum: 1 } } },
       ]),
-      CareerLink.find({ userId })
+      CareerLink.find({ userId, isGlobal: { $ne: true } })
         .sort({ createdAt: -1 })
         .limit(3)
         .select('companyName jobTitle url status category createdAt')
@@ -156,6 +169,7 @@ const createCareerLink = async (req, res) => {
       notes:       String(notes).trim(),
       status,
       category,
+      isGlobal:   false,  // user-created links are never global
     });
 
     return sendSuccess(res, 201, 'Career link saved.', { link });
@@ -182,6 +196,11 @@ const updateCareerLink = async (req, res) => {
 
     const existing = await CareerLink.findOne({ _id: id, userId });
     if (!existing) return sendError(res, 404, 'Career link not found.');
+
+    // Guard: global entries are read-only
+    if (existing.isGlobal) {
+      return sendError(res, 403, 'Global career opportunities cannot be modified.');
+    }
 
     const { companyName, jobTitle, url, location, notes, status, category } = req.body;
 
@@ -247,6 +266,15 @@ const deleteCareerLink = async (req, res) => {
 
     const { id } = req.params;
 
+    // First check if it exists and is global
+    const link = await CareerLink.findOne({ _id: id });
+    if (!link) return sendError(res, 404, 'Career link not found.');
+
+    // Guard: global entries cannot be deleted by users
+    if (link.isGlobal) {
+      return sendError(res, 403, 'Global career opportunities cannot be deleted.');
+    }
+
     const deleted = await CareerLink.findOneAndDelete({ _id: id, userId });
     if (!deleted) return sendError(res, 404, 'Career link not found.');
 
@@ -275,9 +303,19 @@ const trackApplication = async (req, res) => {
 
     const { id } = req.params;
 
-    // Verify ownership of career link
-    const careerLink = await CareerLink.findOne({ _id: id, userId });
+    // Verify ownership of career link (global links are accessible, personal need userId match)
+    const careerLink = await CareerLink.findOne({ _id: id });
     if (!careerLink) return sendError(res, 404, 'Career link not found.');
+
+    // Guard: global entries cannot be tracked (they're reference cards, not personal applications)
+    if (careerLink.isGlobal) {
+      return sendError(res, 403, 'Global opportunities cannot be tracked directly. Save a personal copy first.');
+    }
+
+    // Ensure user owns this personal career link
+    if (String(careerLink.userId) !== String(userId)) {
+      return sendError(res, 403, 'Career link not found.');
+    }
 
     // Check if already tracked (same careerLinkId + userId)
     const existing = await PlacementApplication.findOne({ userId, careerLinkId: id });

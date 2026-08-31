@@ -93,17 +93,31 @@ export class CareerComponent implements OnInit {
       links = links.filter(l =>
         l.companyName.toLowerCase().includes(q) ||
         l.jobTitle.toLowerCase().includes(q)    ||
-        (l.location || '').toLowerCase().includes(q)
+        (l.location        || '').toLowerCase().includes(q) ||
+        (l.tentativeMonth  || '').toLowerCase().includes(q) ||
+        (l.quarter         || '').toLowerCase().includes(q)
       );
     }
 
     // Sort
     const sorted = [...links];
     const sort = this.sortBy();
-    if (sort === 'newest') sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    else if (sort === 'oldest') sorted.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-    else if (sort === 'company-az') sorted.sort((a, b) => a.companyName.localeCompare(b.companyName));
-    else if (sort === 'company-za') sorted.sort((a, b) => b.companyName.localeCompare(a.companyName));
+
+    sorted.sort((a, b) => {
+      // 1. Primary: sortOrder (global links have month-based order, personal links fallback to 9999)
+      const orderA = a.sortOrder ?? 9999;
+      const orderB = b.sortOrder ?? 9999;
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+
+      // 2. Secondary: user selected sort (applies to items with the same sortOrder, like personal links)
+      if (sort === 'newest') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      if (sort === 'oldest') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      if (sort === 'company-az') return a.companyName.localeCompare(b.companyName);
+      if (sort === 'company-za') return b.companyName.localeCompare(a.companyName);
+      return 0;
+    });
 
     return sorted;
   });
@@ -347,5 +361,10 @@ export class CareerComponent implements OnInit {
 
   getStatusCss(status: string): string {
     return CAREER_STATUS_META[status as CareerStatus]?.css ?? 'cs--saved';
+  }
+
+  /** True when the link has no valid URL (Google Solutions Challenge = 'coming soon') */
+  isComingSoon(url: string): boolean {
+    return !url || url.trim() === '' || url.trim() === 'https://coming-soon';
   }
 }

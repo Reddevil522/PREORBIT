@@ -151,22 +151,26 @@
       *ngFor="let link of filteredLinks()"
       class="career-card"
       [id]="'career-card-' + link._id"
-      [class.career-card--archived]="link.status === 'Archived'">
+      [class.career-card--archived]="link.status === 'Archived'"
+      [class.career-card--global]="link.isGlobal">
 
       <!-- Card header -->
       <div class="career-card__header">
         <div class="career-card__company-wrap">
           <div class="career-card__company-icon">
-            <i class="ph ph-buildings"></i>
+            <i [class]="link.isGlobal ? 'ph ph-star' : 'ph ph-buildings'"></i>
           </div>
           <div class="career-card__title-group">
             <h3 class="career-card__company">{{ link.companyName }}</h3>
             <p class="career-card__job">{{ link.jobTitle }}</p>
           </div>
         </div>
-        <!-- Status + Category badges -->
+        <!-- Status + Category + Global badges -->
         <div class="career-card__badges">
-          <span class="career-badge" [ngClass]="getStatusCss(link.status)">{{ link.status }}</span>
+          <span *ngIf="link.isGlobal" class="career-badge career-badge--global">
+            <i class="ph ph-globe"></i> Curated
+          </span>
+          <span *ngIf="!link.isGlobal" class="career-badge" [ngClass]="getStatusCss(link.status)">{{ link.status }}</span>
           <span class="career-badge career-badge--cat">{{ link.category }}</span>
         </div>
       </div>
@@ -176,7 +180,12 @@
         <span *ngIf="link.location" class="career-card__meta-item">
           <i class="ph ph-map-pin"></i> {{ link.location }}
         </span>
-        <span class="career-card__meta-item">
+        <!-- Timing badge (global entries) -->
+        <span *ngIf="link.tentativeMonth" class="career-card__meta-item career-card__meta-item--timing">
+          <i class="ph ph-clock"></i> {{ link.tentativeMonth }}
+          <span *ngIf="link.quarter" class="career-card__quarter-badge">{{ link.quarter }}</span>
+        </span>
+        <span *ngIf="!link.isGlobal" class="career-card__meta-item">
           <i class="ph ph-calendar-blank"></i> {{ link.createdAt | date:'dd MMM y' }}
         </span>
       </div>
@@ -189,64 +198,79 @@
 
       <!-- Actions -->
       <div class="career-card__actions">
-        <!-- Open link -->
-        <button class="career-btn career-btn--sm career-btn--open" (click)="openLink(link.url)" title="Open job link">
-          <i class="ph ph-arrow-square-out"></i> Open
-        </button>
 
-        <!-- Track Application — only for non-archived, non-applied -->
+        <!-- Global entry: Coming Soon chip (no URL) -->
+        <span *ngIf="link.isGlobal && isComingSoon(link.url)" class="career-badge career-badge--coming-soon">
+          <i class="ph ph-hourglass"></i> Link Coming Soon
+        </span>
+
+        <!-- Visit Link (shown for non-global OR global with valid URL) -->
         <button
-          *ngIf="link.status !== 'Archived'"
-          class="career-btn career-btn--sm career-btn--track"
-          (click)="openTrackModal(link)"
-          title="Track as Placement Application">
-          <i class="ph ph-target"></i>
-          {{ link.status === 'Applied' ? 'Tracked' : 'Track Application' }}
+          *ngIf="!isComingSoon(link.url)"
+          class="career-btn career-btn--sm career-btn--open"
+          (click)="openLink(link.url)"
+          title="Visit opportunity page">
+          <i class="ph ph-arrow-square-out"></i> Visit Link
         </button>
 
-        <!-- Mark Interested -->
-        <button
-          *ngIf="link.status === 'Saved'"
-          class="career-btn career-btn--sm career-btn--ghost"
-          (click)="quickStatusUpdate(link, 'Interested')"
-          title="Mark as Interested">
-          <i class="ph ph-star"></i>
-        </button>
+        <!-- Personal entry actions only -->
+        <ng-container *ngIf="!link.isGlobal">
 
-        <!-- Unarchive -->
-        <button
-          *ngIf="link.status === 'Archived'"
-          class="career-btn career-btn--sm career-btn--ghost"
-          (click)="quickStatusUpdate(link, 'Saved')"
-          title="Restore">
-          <i class="ph ph-arrow-counter-clockwise"></i> Restore
-        </button>
+          <!-- Track Application — only for non-archived -->
+          <button
+            *ngIf="link.status !== 'Archived'"
+            class="career-btn career-btn--sm career-btn--track"
+            (click)="openTrackModal(link)"
+            title="Track as Placement Application">
+            <i class="ph ph-target"></i>
+            {{ link.status === 'Applied' ? 'Tracked' : 'Track Application' }}
+          </button>
 
-        <!-- Edit -->
-        <button class="career-btn career-btn--sm career-btn--ghost" (click)="openEdit(link)" title="Edit">
-          <i class="ph ph-pencil-simple"></i>
-        </button>
+          <!-- Mark Interested -->
+          <button
+            *ngIf="link.status === 'Saved'"
+            class="career-btn career-btn--sm career-btn--ghost"
+            (click)="quickStatusUpdate(link, 'Interested')"
+            title="Mark as Interested">
+            <i class="ph ph-star"></i>
+          </button>
 
-        <!-- Archive (only if not already archived) -->
-        <button
-          *ngIf="link.status !== 'Archived'"
-          class="career-btn career-btn--sm career-btn--ghost"
-          (click)="quickStatusUpdate(link, 'Archived')"
-          title="Archive">
-          <i class="ph ph-archive"></i>
-        </button>
+          <!-- Unarchive -->
+          <button
+            *ngIf="link.status === 'Archived'"
+            class="career-btn career-btn--sm career-btn--ghost"
+            (click)="quickStatusUpdate(link, 'Saved')"
+            title="Restore">
+            <i class="ph ph-arrow-counter-clockwise"></i> Restore
+          </button>
 
-        <!-- Delete -->
-        <button
-          class="career-btn career-btn--sm career-btn--danger-ghost"
-          (click)="confirmDelete(link._id)"
-          title="Delete">
-          <i class="ph ph-trash"></i>
-        </button>
+          <!-- Edit -->
+          <button class="career-btn career-btn--sm career-btn--ghost" (click)="openEdit(link)" title="Edit">
+            <i class="ph ph-pencil-simple"></i>
+          </button>
+
+          <!-- Archive (only if not already archived) -->
+          <button
+            *ngIf="link.status !== 'Archived'"
+            class="career-btn career-btn--sm career-btn--ghost"
+            (click)="quickStatusUpdate(link, 'Archived')"
+            title="Archive">
+            <i class="ph ph-archive"></i>
+          </button>
+
+          <!-- Delete -->
+          <button
+            class="career-btn career-btn--sm career-btn--danger-ghost"
+            (click)="confirmDelete(link._id)"
+            title="Delete">
+            <i class="ph ph-trash"></i>
+          </button>
+
+        </ng-container>
       </div>
 
-      <!-- Inline delete confirm -->
-      <div *ngIf="deletingId() === link._id" class="career-card__confirm-delete">
+      <!-- Inline delete confirm (personal entries only) -->
+      <div *ngIf="!link.isGlobal && deletingId() === link._id" class="career-card__confirm-delete">
         <span>Delete this link? Associated placement applications will remain.</span>
         <div class="career-card__confirm-actions">
           <button class="career-btn career-btn--xs career-btn--ghost" (click)="cancelDelete()">Cancel</button>
@@ -257,6 +281,7 @@
       </div>
 
     </div>
+
   </div>
 
 </div>

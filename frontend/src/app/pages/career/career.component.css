@@ -1,8 +1,9 @@
 /* ============================================================
-   PREORBIT — Career Page CSS (v2)
+   PREORBIT — Career Page CSS (v3)
    All selectors scoped: .career-* / .cs-*
    No global overrides.
 ============================================================ */
+
 
 /* ── Layout ──────────────────────────────────────────────── */
 .career-container {
@@ -339,6 +340,29 @@ html.dark .career-summary__card--applied.career-summary__card--active .career-su
   color: var(--text-primary);
 }
 
+/* Visit Link button — primary action for curated opportunities */
+.career-btn--open {
+  color: var(--preorbit-primary);
+  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(16, 185, 129, 0.06);
+}
+
+.career-btn--open:hover {
+  border-color: var(--preorbit-primary);
+  color: var(--preorbit-primary-dark);
+  background: rgba(16, 185, 129, 0.12);
+}
+
+html.dark .career-btn--open {
+  color: #6ee7b7;
+  border-color: rgba(110, 231, 183, 0.25);
+}
+
+html.dark .career-btn--open:hover {
+  color: #a7f3d0;
+  border-color: rgba(110, 231, 183, 0.5);
+}
+
 .career-btn--track {
   color: var(--preorbit-primary);
   border-color: rgba(16, 185, 129, 0.3);
@@ -401,6 +425,20 @@ html.dark .career-btn--track:hover {
   opacity: 0.7;
   filter: grayscale(1);
 }
+
+/* Global curated opportunity — subtle left accent border */
+.career-card--global {
+  border-left: 3px solid rgba(16, 185, 129, 0.4);
+}
+
+.career-card--global:hover {
+  border-left-color: var(--preorbit-primary);
+}
+
+html.dark .career-card--global {
+  border-left-color: rgba(110, 231, 183, 0.3);
+}
+
 
 .career-card__header {
   display: flex;
@@ -477,6 +515,44 @@ html.dark .career-btn--track:hover {
   border: 1px solid var(--border-subtle);
 }
 
+/* Global / Curated opportunity badge */
+.career-badge--global {
+  background: rgba(16, 185, 129, 0.12);
+  color: var(--preorbit-primary);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+html.dark .career-badge--global {
+  background: rgba(16, 185, 129, 0.15);
+  color: #6ee7b7;
+  border-color: rgba(110, 231, 183, 0.25);
+}
+
+/* Coming Soon badge (for links not yet published) */
+.career-badge--coming-soon {
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: default;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: var(--font-bold);
+}
+
+html.dark .career-badge--coming-soon {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fcd34d;
+  border-color: rgba(252, 211, 77, 0.2);
+}
+
+
 .career-card__meta {
   display: flex;
   align-items: center;
@@ -491,6 +567,35 @@ html.dark .career-btn--track:hover {
   align-items: center;
   gap: 4px;
 }
+
+/* Timing meta item (tentativeMonth) for global entries */
+.career-card__meta-item--timing {
+  color: var(--preorbit-primary);
+  font-weight: var(--font-semibold);
+}
+
+html.dark .career-card__meta-item--timing {
+  color: #6ee7b7;
+}
+
+/* Quarter pill (Q1 / Q2 / Q3 / Q4) */
+.career-card__quarter-badge {
+  display: inline-block;
+  padding: 1px 5px;
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--preorbit-primary);
+  border-radius: 4px;
+  font-size: 0.6rem;
+  font-weight: var(--font-bold);
+  letter-spacing: 0.03em;
+  margin-left: 2px;
+}
+
+html.dark .career-card__quarter-badge {
+  background: rgba(110, 231, 183, 0.12);
+  color: #6ee7b7;
+}
+
 
 .career-card__notes {
   margin-top: var(--space-3);
@@ -845,8 +950,65 @@ html.dark .cs--archived {
   }
 }
 
+/* ── 480px — small phones ────────────────────────────────── */
 @media (max-width: 480px) {
+  .career-container {
+    padding: var(--space-3);
+    gap: var(--space-4);
+  }
 
+  .career-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .career-card {
+    padding: var(--space-4);
+  }
+
+  .career-card__badges {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 3px;
+  }
+
+  .career-card__actions {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding-top: var(--space-3);
+  }
+
+  .career-btn--sm {
+    padding: 5px 10px;
+    font-size: 0.7rem;
+  }
+
+  .career-badge {
+    font-size: 0.6rem;
+    padding: 2px 6px;
+  }
+
+  .career-badge--coming-soon {
+    font-size: 0.6rem;
+    padding: 3px 8px;
+  }
+
+  .career-summary__card {
+    min-width: 70px;
+    padding: var(--space-2);
+  }
+
+  .career-summary__val {
+    font-size: var(--text-xl);
+  }
+
+  .career-filters__select {
+    width: 100%;
+  }
+
+  /* Legacy global override — kept for backward compat */
   .tests-grid,
   .chapters-grid,
   .theory-grid,
@@ -860,5 +1022,60 @@ html.dark .cs--archived {
     flex-direction: column !important;
     align-items: flex-start !important;
     width: 100% !important;
+  }
+}
+
+/* ── 360px / 320px — very small phones ──────────────────── */
+@media (max-width: 360px) {
+  .career-header__title {
+    font-size: var(--text-2xl);
+  }
+
+  .career-card {
+    padding: var(--space-3);
+  }
+
+  .career-card__company-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
+
+  .career-card__company {
+    font-size: var(--text-sm);
+  }
+
+  .career-card__job {
+    font-size: 0.7rem;
+  }
+
+  .career-card__header {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .career-card__badges {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .career-btn--sm {
+    padding: 4px 8px;
+    font-size: 0.65rem;
+  }
+
+  .career-summary {
+    gap: var(--space-2);
+  }
+
+  .career-summary__card {
+    min-width: 60px;
+    padding: var(--space-2) var(--space-1);
+  }
+
+  .career-summary__lbl {
+    font-size: 0.55rem;
   }
 }

@@ -16,17 +16,22 @@ export const CAREER_CATEGORIES: CareerCategory[] = [
 ];
 
 export interface CareerLink {
-  _id:         string;
-  userId:      string;
-  companyName: string;
-  jobTitle:    string;
-  url:         string;
-  location:    string;
-  notes:       string;
-  status:      CareerStatus;
-  category:    CareerCategory;
-  createdAt:   string;
-  updatedAt:   string;
+  _id:            string;
+  userId:         string | null;
+  companyName:    string;
+  jobTitle:       string;
+  url:            string;
+  location:       string;
+  notes:          string;
+  status:         CareerStatus;
+  category:       CareerCategory;
+  // Global / curated opportunity fields (v3)
+  isGlobal:       boolean;
+  tentativeMonth: string;  // e.g. 'Aug–Sep'
+  quarter:        string;  // e.g. 'Q2'
+  sortOrder?:     number;  // chronological month order
+  createdAt:      string;
+  updatedAt:      string;
 }
 
 export interface CareerLinkForm {

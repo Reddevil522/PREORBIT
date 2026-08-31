@@ -1,7 +1,10 @@
 // ============================================================
-// PREORBIT — CareerLink Model (v2)
+// PREORBIT — CareerLink Model (v3)
 // ============================================================
-// Added: status (Saved/Interested/Applied/Archived), category
+// v2: status, category
+// v3: isGlobal, tentativeMonth, quarter
+//     userId made optional (null for global entries)
+//     url    made optional ('' for "coming soon" global entries)
 // Backward compatible: existing docs get defaults automatically
 // ============================================================
 
@@ -15,11 +18,12 @@ const CAREER_CATEGORIES = [
 
 const careerLinkSchema = new mongoose.Schema(
   {
+    // null for global (curated) entries; required for user-created entries
     userId: {
-      type:     mongoose.Schema.Types.ObjectId,
-      ref:      'User',
-      required: [true, 'userId is required'],
-      index:    true,
+      type:  mongoose.Schema.Types.ObjectId,
+      ref:   'User',
+      index: true,
+      default: null,
     },
 
     companyName: {
@@ -36,14 +40,11 @@ const careerLinkSchema = new mongoose.Schema(
       maxlength: [200, 'Job title cannot exceed 200 characters'],
     },
 
+    // Optional for global "coming soon" entries (stored as '')
     url: {
-      type:     String,
-      required: [true, 'URL is required'],
-      trim:     true,
-      validate: {
-        validator: (v) => /^https?:\/\/.+/.test(v),
-        message:  'URL must start with http:// or https://',
-      },
+      type:    String,
+      trim:    true,
+      default: '',
     },
 
     location: {
@@ -78,6 +79,39 @@ const careerLinkSchema = new mongoose.Schema(
         message: 'Invalid category.',
       },
       default: 'Other',
+    },
+
+    // ── Global / Curated entry fields ─────────────────────────
+    // true  → seeded curated opportunity, visible to all students (read-only)
+    // false → user-created personal career link (default)
+    isGlobal: {
+      type:    Boolean,
+      default: false,
+      index:   true,
+    },
+
+    // e.g. "Aug–Sep", "Nov–Dec"  (from PDF timing column)
+    tentativeMonth: {
+      type:      String,
+      trim:      true,
+      maxlength: [50, 'Tentative month cannot exceed 50 characters'],
+      default:   '',
+    },
+
+    // e.g. "Q1", "Q2", "Q3", "Q4"
+    quarter: {
+      type:      String,
+      trim:      true,
+      maxlength: [10, 'Quarter cannot exceed 10 characters'],
+      default:   '',
+    },
+
+    // Chronological position for display ordering of global entries.
+    // Lower = earlier in the calendar year. Personal entries default to 9999.
+    sortOrder: {
+      type:    Number,
+      default: 9999,
+      index:   true,
     },
   },
   {
