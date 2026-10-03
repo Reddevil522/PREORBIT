@@ -5,6 +5,23 @@ const OptionSchema = new mongoose.Schema({
   text: { type: String, required: true }
 }, { _id: false });
 
+const javaDSAChapters = [
+  'arrays',
+  'strings',
+  'linked-list',
+  'stack',
+  'queue',
+  'hashing',
+  'recursion',
+  'searching',
+  'sorting',
+  'trees',
+  'bst',
+  'heap',
+  'graphs',
+  'dynamic-programming'
+];
+
 const JavaDSAQuestionSchema = new mongoose.Schema({
   question: {
     type: String,
@@ -67,7 +84,11 @@ const JavaDSAQuestionSchema = new mongoose.Schema({
   },
   chapterSlug: {
     type: String,
-    required: [true, 'Chapter slug is required']
+    required: [true, 'Chapter slug is required'],
+    enum: {
+      values: javaDSAChapters,
+      message: 'Chapter slug is not valid for Java DSA'
+    }
   },
   testId: {
     type: String,
