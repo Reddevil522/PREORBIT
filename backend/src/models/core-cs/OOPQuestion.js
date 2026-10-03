@@ -54,9 +54,9 @@ const OOPQuestionSchema = new mongoose.Schema({
   },
   correctAnswer: {
     type: String,
-    required: function() { return this.questionType === 'mcq'; },
+    required: function () { return this.questionType === 'mcq'; },
     validate: {
-      validator: function(v) {
+      validator: function (v) {
         if (this.questionType !== 'mcq') return true;
         if (!v) return false;
         return this.options && this.options.some(opt => opt.key === v);
@@ -66,9 +66,9 @@ const OOPQuestionSchema = new mongoose.Schema({
   },
   correctAnswers: {
     type: [String],
-    required: function() { return this.questionType === 'multiple-choice'; },
+    required: function () { return this.questionType === 'multiple-choice'; },
     validate: {
-      validator: function(v) {
+      validator: function (v) {
         if (this.questionType !== 'multiple-choice') return true;
         if (!v || v.length === 0) return false;
         const optionKeys = this.options ? this.options.map(opt => opt.key) : [];

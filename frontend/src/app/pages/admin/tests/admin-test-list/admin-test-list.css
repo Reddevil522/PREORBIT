@@ -4,6 +4,9 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+.chapter-group{
+  margin-bottom: 20px;
+} 
 
 .header-section {
   margin-bottom: 2rem;
