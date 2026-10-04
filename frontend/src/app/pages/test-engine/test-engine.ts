@@ -243,16 +243,22 @@ export class TestEngine implements OnInit {
       }
     } else {
       // Default to Single Choice MCQ
-      this.answers[question._id] = optionKey;
+      // If the same option is clicked again, clear the selection (deselect)
+      if (this.answers[question._id] === optionKey) {
+        delete this.answers[question._id];
+      } else {
+        this.answers[question._id] = optionKey;
+      }
     }
     
-    // Auto-save Answer
+    // Auto-save Answer (use null explicitly when cleared so backend deletes the entry)
     if (this.testMetadata?.testId && this.attemptId) {
+      const answerToSave = this.answers[question._id] !== undefined ? this.answers[question._id] : null;
       this.testEngineService.saveAnswer(
         this.testMetadata.testId, 
         this.attemptId, 
         question._id, 
-        this.answers[question._id]
+        answerToSave
       ).subscribe({
         next: () => console.log(`[ATTEMPT] Answer saved for ${question._id}`),
         error: (err) => console.error(`[ATTEMPT] Failed to save answer`, err)
