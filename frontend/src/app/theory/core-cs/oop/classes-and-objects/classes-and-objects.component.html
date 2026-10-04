@@ -1,0 +1,173 @@
+<div class="chapter-container fade-in">
+  <!-- Back link -->
+  <a routerLink="/core-cs/oop/theory" class="back-link">
+    <i class="ph ph-arrow-left"></i> Back to Chapters
+  </a>
+
+  <!-- 1. Chapter Hero -->
+  <header class="chapter-hero">
+    <h1 class="hero-title">Classes and Objects</h1>
+    <p class="hero-subtitle">Understanding classes, objects, and instantiation</p>
+  </header>
+
+  <main class="chapter-content">
+    
+    <!-- 2. Concept Introduction -->
+    <section class="content-section">
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="card-header procedural-header">
+            <i class="ph ph-file-code"></i> Class (The Blueprint)
+          </div>
+          <div class="card-body">
+            <p>A class is a user-defined blueprint or prototype from which objects are created. It represents the set of properties or methods that are common to all objects of one type.</p>
+            <ul class="card-list">
+              <li>Logical entity</li>
+              <li>Does not consume memory</li>
+              <li>Declared once</li>
+            </ul>
+          </div>
+        </div>
+        <div class="comparison-card">
+          <div class="card-header oop-header">
+            <i class="ph ph-cube"></i> Object (The Instance)
+          </div>
+          <div class="card-body">
+            <p>An object is a basic unit of Object-Oriented Programming and represents the real-life entities. It is an instance of a class.</p>
+            <ul class="card-list">
+              <li>Physical/Runtime entity</li>
+              <li>Consumes memory when created</li>
+              <li>Can be instantiated multiple times</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Real-World Example -->
+    <section class="content-section callout-box real-world-box">
+      <div class="callout-icon"><i class="ph ph-house"></i></div>
+      <div class="callout-content">
+        <h3>Real-World Analogy: Building a House</h3>
+        <p>A <strong>Class</strong> is like an architect's blueprint for a house. It defines where the rooms, doors, and windows go, but it is not a physical house you can live in.</p>
+        <p>An <strong>Object</strong> is the actual physical house built from that blueprint. You can build many houses (Objects) from the exact same blueprint (Class).</p>
+      </div>
+    </section>
+
+    <!-- 5. Visual/Concept Diagram -->
+    <section class="content-section diagram-section">
+      <h2 class="section-title">Instantiation Process</h2>
+      <div class="diagram-flow">
+        <div class="diagram-node blueprint">
+          <i class="ph ph-blueprint"></i>
+          <span>Class: Dog</span>
+          <small>breed, age, color</small>
+        </div>
+        <div class="diagram-arrow">
+          <i class="ph ph-arrow-right"></i>
+          <span>instantiates</span>
+        </div>
+        <div class="diagram-group">
+          <div class="diagram-node instance">
+            <i class="ph ph-dog"></i>
+            <span>Object 1</span>
+            <small>"Buddy", Golden, 3</small>
+          </div>
+          <div class="diagram-node instance">
+            <i class="ph ph-dog"></i>
+            <span>Object 2</span>
+            <small>"Max", Husky, 5</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Java Example -->
+    <section class="content-section code-section">
+      <h2 class="section-title">Defining a Class and Creating an Object</h2>
+      <div class="code-container">
+        <div class="code-header">
+          <span class="code-lang">Java</span>
+        </div>
+        <pre><code><span class="comment">// 1. Defining the Class</span>
+<span class="keyword">class</span> <span class="class-name">Dog</span> &#123;
+    <span class="keyword">String</span> name;
+    <span class="keyword">int</span> age;
+
+    <span class="keyword">void</span> <span class="method">bark</span>() &#123;
+        System.out.println(name + <span class="string">" says Woof!"</span>);
+    &#125;
+&#125;
+
+<span class="keyword">public class</span> <span class="class-name">Main</span> &#123;
+    <span class="keyword">public static void</span> <span class="method">main</span>(String[] args) &#123;
+        <span class="comment">// 2. Creating an Object (Instantiation)</span>
+        Dog myDog = <span class="keyword">new</span> Dog(); 
+        
+        <span class="comment">// 3. Accessing state and behavior</span>
+        myDog.name = <span class="string">"Buddy"</span>;
+        myDog.age = 3;
+        myDog.<span class="method">bark</span>(); <span class="comment">// Output: Buddy says Woof!</span>
+    &#125;
+&#125;</code></pre>
+      </div>
+    </section>
+
+    <!-- 7. Important Points -->
+    <section class="content-section important-points">
+      <h2 class="section-title"><i class="ph ph-star"></i> Memory Allocation</h2>
+      <ul>
+        <li>When a class is defined, no memory is allocated.</li>
+        <li>Memory is allocated on the <strong>Heap</strong> when the <code>new</code> keyword is used to create an object.</li>
+        <li>The reference variable (like <code>myDog</code>) is stored on the <strong>Stack</strong> and points to the object on the heap.</li>
+      </ul>
+    </section>
+
+    <!-- 8. Quick Revision & Interview Questions -->
+    <section class="content-section accordion-section">
+      <details class="interactive-accordion">
+        <summary>Common Interview Questions <i class="ph ph-caret-down"></i></summary>
+        <div class="accordion-content">
+          <p><strong>Q: What is the difference between a class and an object?</strong><br>A: A class is a template or blueprint. An object is a physical instance of that class that consumes memory.</p>
+          <p><strong>Q: What does the 'new' keyword do?</strong><br>A: It allocates memory at runtime for the object on the heap and returns a reference to it.</p>
+        </div>
+      </details>
+    </section>
+
+  </main>
+
+  <!-- Completion Action -->
+  <div class="chapter-completion">
+    <button
+      class="btn-complete"
+      [class.btn-complete--done]="isCompleted()"
+      (click)="markCompleted()"
+      [disabled]="isCompleted()"
+    >
+      <i class="ph" [class.ph-check-circle]="isCompleted()" [class.ph-circle]="!isCompleted()"></i>
+      {{ isCompleted() ? 'Theory Completed ✓' : 'Mark Theory as Completed' }}
+    </button>
+  </div>
+
+  <!-- Chapter Navigation -->
+  <footer class="chapter-nav">
+    <div class="nav-item">
+      <a *ngIf="prevChapter" [routerLink]="prevChapter.path" class="nav-btn">
+        <i class="ph ph-arrow-left"></i>
+        <span>
+          <small>PREVIOUS CHAPTER</small>
+          <strong>{{ prevChapter.title }}</strong>
+        </span>
+      </a>
+    </div>
+    <div class="nav-item nav-item--next">
+      <a *ngIf="nextChapter" [routerLink]="nextChapter.path" class="nav-btn nav-btn--next">
+        <span>
+          <small>NEXT CHAPTER</small>
+          <strong>{{ nextChapter.title }}</strong>
+        </span>
+        <i class="ph ph-arrow-right"></i>
+      </a>
+    </div>
+  </footer>
+</div>

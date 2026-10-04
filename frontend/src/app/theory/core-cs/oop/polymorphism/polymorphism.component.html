@@ -1,0 +1,158 @@
+<div class="chapter-container fade-in">
+  <a routerLink="/core-cs/oop/theory" class="back-link">
+    <i class="ph ph-arrow-left"></i> Back to Chapters
+  </a>
+
+  <!-- 1. Chapter Hero -->
+  <header class="chapter-hero">
+    <h1 class="hero-title">Polymorphism</h1>
+    <p class="hero-subtitle">Compile-time and run-time polymorphism</p>
+  </header>
+
+  <main class="chapter-content">
+    
+    <section class="content-section">
+      <h2 class="section-title">What is Polymorphism?</h2>
+      <p class="section-text">
+        The word polymorphism means having many forms. In OOP, it allows us to perform a single action in different ways. It is mainly divided into two types: Compile-time Polymorphism (Method Overloading) and Runtime Polymorphism (Method Overriding).
+      </p>
+    </section>
+
+    <!-- 3. Comparison -->
+    <section class="content-section">
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="card-header compile-header">
+            <i class="ph ph-code"></i> Compile-Time (Overloading)
+          </div>
+          <div class="card-body">
+            <p>Multiple methods in the same class have the same name but different parameters (number, type, or order).</p>
+            <ul class="card-list">
+              <li>Resolved during compilation (Static Binding)</li>
+              <li>Same method name, different signature</li>
+            </ul>
+          </div>
+        </div>
+        <div class="comparison-card">
+          <div class="card-header runtime-header">
+            <i class="ph ph-play"></i> Run-Time (Overriding)
+          </div>
+          <div class="card-body">
+            <p>A subclass provides a specific implementation of a method that is already provided by its parent class.</p>
+            <ul class="card-list">
+              <li>Resolved during execution (Dynamic Binding)</li>
+              <li>Same method name, same signature</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Real-World Example -->
+    <section class="content-section callout-box real-world-box">
+      <div class="callout-icon"><i class="ph ph-device-mobile"></i></div>
+      <div class="callout-content">
+        <h3>Real-World Analogy: Smartphone</h3>
+        <p>A smartphone has a <strong>Save Contact</strong> function. You can save a contact with just a name and phone number. Or, you can save a contact with a name, phone number, and email. The action is the same ("Save Contact"), but the form changes based on the inputs provided. This is <em>Method Overloading</em>.</p>
+      </div>
+    </section>
+
+    <!-- 5. Visual Diagram -->
+    <section class="content-section diagram-section">
+      <h2 class="section-title">Method Overriding Diagram</h2>
+      <div class="diagram-poly">
+        <div class="poly-parent">
+          <span class="poly-label">Parent Reference</span>
+          <code>Animal a = new Dog();</code>
+          <div class="poly-arrow"><i class="ph ph-arrow-down"></i></div>
+          <code class="poly-call">a.makeSound();</code>
+        </div>
+        <div class="poly-child">
+          <div class="poly-child-box">
+            <span class="poly-label">Child Object</span>
+            <code>Dog Object</code>
+            <div class="poly-exec"><i class="ph ph-lightning"></i> Executes Dog's makeSound()</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Java Example -->
+    <section class="content-section code-section">
+      <h2 class="section-title">Runtime Polymorphism in Java</h2>
+      <div class="code-container">
+        <div class="code-header">
+          <span class="code-lang">Java</span>
+        </div>
+        <pre><code><span class="keyword">class</span> <span class="class-name">Animal</span> &#123;
+    <span class="keyword">public void</span> <span class="method">sound</span>() &#123;
+        System.out.println(<span class="string">"Animal makes a sound"</span>);
+    &#125;
+&#125;
+
+<span class="keyword">class</span> <span class="class-name">Cat</span> <span class="keyword">extends</span> <span class="class-name">Animal</span> &#123;
+    <span class="keyword">@Override</span>
+    <span class="keyword">public void</span> <span class="method">sound</span>() &#123;
+        System.out.println(<span class="string">"Meow"</span>);
+    &#125;
+&#125;
+
+<span class="keyword">public class</span> <span class="class-name">Main</span> &#123;
+    <span class="keyword">public static void</span> <span class="method">main</span>(String[] args) &#123;
+        <span class="comment">// Upcasting: Parent reference points to Child object</span>
+        Animal myAnimal = <span class="keyword">new</span> Cat();
+        
+        <span class="comment">// The JVM decides at runtime which sound() to call</span>
+        myAnimal.<span class="method">sound</span>(); <span class="comment">// Output: Meow</span>
+    &#125;
+&#125;</code></pre>
+      </div>
+    </section>
+
+    <!-- 7. Important Points -->
+    <section class="content-section important-points">
+      <h2 class="section-title"><i class="ph ph-star"></i> Rules for Overriding</h2>
+      <ul>
+        <li>The method must have the same name as in the parent class.</li>
+        <li>The method must have the same parameters as in the parent class.</li>
+        <li>There must be an IS-A relationship (inheritance).</li>
+        <li>You cannot override <code>private</code>, <code>static</code>, or <code>final</code> methods.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- Completion Action -->
+  <div class="chapter-completion">
+    <button
+      class="btn-complete"
+      [class.btn-complete--done]="isCompleted()"
+      (click)="markCompleted()"
+      [disabled]="isCompleted()"
+    >
+      <i class="ph" [class.ph-check-circle]="isCompleted()" [class.ph-circle]="!isCompleted()"></i>
+      {{ isCompleted() ? 'Theory Completed ✓' : 'Mark Theory as Completed' }}
+    </button>
+  </div>
+
+  <footer class="chapter-nav">
+    <div class="nav-item">
+      <a *ngIf="prevChapter" [routerLink]="prevChapter.path" class="nav-btn">
+        <i class="ph ph-arrow-left"></i>
+        <span>
+          <small>PREVIOUS CHAPTER</small>
+          <strong>{{ prevChapter.title }}</strong>
+        </span>
+      </a>
+    </div>
+    <div class="nav-item nav-item--next">
+      <a *ngIf="nextChapter" [routerLink]="nextChapter.path" class="nav-btn nav-btn--next">
+        <span>
+          <small>NEXT CHAPTER</small>
+          <strong>{{ nextChapter.title }}</strong>
+        </span>
+        <i class="ph ph-arrow-right"></i>
+      </a>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,139 @@
+<div class="chapter-container fade-in">
+  <a routerLink="/core-cs/oop/theory" class="back-link">
+    <i class="ph ph-arrow-left"></i> Back to Chapters
+  </a>
+
+  <!-- 1. Chapter Hero -->
+  <header class="chapter-hero">
+    <h1 class="hero-title">Interfaces</h1>
+    <p class="hero-subtitle">Contracts and multiple inheritance</p>
+  </header>
+
+  <main class="chapter-content">
+    
+    <section class="content-section">
+      <h2 class="section-title">What is an Interface?</h2>
+      <p class="section-text">
+        An interface in Java is a blueprint of a class. It has static constants and abstract methods. It is used to achieve fully complete abstraction and multiple inheritance. There can be only abstract methods in the Java interface, not method body (prior to Java 8).
+      </p>
+    </section>
+
+    <!-- 4. Real-World Example -->
+    <section class="content-section callout-box real-world-box">
+      <div class="callout-icon"><i class="ph ph-plug"></i></div>
+      <div class="callout-content">
+        <h3>Real-World Analogy: USB Port</h3>
+        <p>Think of a USB connection. The USB standard is an <strong>Interface</strong>. It defines exactly what pins go where, and how data should be formatted. It doesn't care if you plug in a mouse, a keyboard, or a webcam—as long as the device <em>implements</em> the USB interface correctly, the computer can talk to it.</p>
+      </div>
+    </section>
+
+    <!-- 5. Visual Diagram -->
+    <section class="content-section diagram-section">
+      <h2 class="section-title">Multiple Inheritance via Interfaces</h2>
+      <div class="diagram-multi">
+        <div class="multi-top">
+          <div class="multi-interface">
+            <i class="ph ph-camera"></i>
+            <span>Camera</span>
+            <small>takePhoto()</small>
+          </div>
+          <div class="multi-interface">
+            <i class="ph ph-music-notes"></i>
+            <span>MusicPlayer</span>
+            <small>playAudio()</small>
+          </div>
+        </div>
+        <div class="multi-arrows">
+          <div class="arrow-left"><i class="ph ph-arrow-down-right"></i></div>
+          <div class="arrow-right"><i class="ph ph-arrow-down-left"></i></div>
+        </div>
+        <div class="multi-bottom">
+          <div class="multi-class">
+            <i class="ph ph-device-mobile"></i>
+            <span>Smartphone</span>
+            <small>implements both</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Java Example -->
+    <section class="content-section code-section">
+      <h2 class="section-title">Implementing an Interface</h2>
+      <div class="code-container">
+        <div class="code-header">
+          <span class="code-lang">Java</span>
+        </div>
+        <pre><code><span class="comment">// Define an interface</span>
+<span class="keyword">interface</span> <span class="class-name">Drawable</span> &#123;
+    <span class="keyword">void</span> <span class="method">draw</span>(); <span class="comment">// Automatically public abstract</span>
+&#125;
+
+<span class="comment">// Implement the interface</span>
+<span class="keyword">class</span> <span class="class-name">Rectangle</span> <span class="keyword">implements</span> <span class="class-name">Drawable</span> &#123;
+    <span class="keyword">public void</span> <span class="method">draw</span>() &#123;
+        System.out.println(<span class="string">"Drawing rectangle"</span>);
+    &#125;
+&#125;
+
+<span class="keyword">class</span> <span class="class-name">Circle</span> <span class="keyword">implements</span> <span class="class-name">Drawable</span> &#123;
+    <span class="keyword">public void</span> <span class="method">draw</span>() &#123;
+        System.out.println(<span class="string">"Drawing circle"</span>);
+    &#125;
+&#125;
+
+<span class="keyword">public class</span> <span class="class-name">Main</span> &#123;
+    <span class="keyword">public static void</span> <span class="method">main</span>(String[] args) &#123;
+        Drawable d = <span class="keyword">new</span> Circle();
+        d.<span class="method">draw</span>(); <span class="comment">// Output: Drawing circle</span>
+    &#125;
+&#125;</code></pre>
+      </div>
+    </section>
+
+    <!-- 7. Important Points -->
+    <section class="content-section important-points">
+      <h2 class="section-title"><i class="ph ph-star"></i> Interfaces vs Abstract Classes</h2>
+      <ul>
+        <li>A class can implement <strong>multiple</strong> interfaces, but can extend only <strong>one</strong> abstract class.</li>
+        <li>Interface variables are implicitly <code>public</code>, <code>static</code>, and <code>final</code>.</li>
+        <li>Interfaces cannot have constructors, while abstract classes can.</li>
+        <li>Since Java 8, interfaces can have <code>default</code> and <code>static</code> methods with bodies.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <div class="chapter-completion">
+    <button
+      class="btn-complete"
+      [class.btn-complete--done]="isCompleted()"
+      (click)="markCompleted()"
+      [disabled]="isCompleted()"
+    >
+      <i class="ph" [class.ph-check-circle]="isCompleted()" [class.ph-circle]="!isCompleted()"></i>
+      {{ isCompleted() ? 'Theory Completed ✓' : 'Mark Theory as Completed' }}
+    </button>
+  </div>
+
+  <footer class="chapter-nav">
+    <div class="nav-item">
+      <a *ngIf="prevChapter" [routerLink]="prevChapter.path" class="nav-btn">
+        <i class="ph ph-arrow-left"></i>
+        <span>
+          <small>PREVIOUS CHAPTER</small>
+          <strong>{{ prevChapter.title }}</strong>
+        </span>
+      </a>
+    </div>
+    <div class="nav-item nav-item--next">
+      <a *ngIf="nextChapter" [routerLink]="nextChapter.path" class="nav-btn nav-btn--next">
+        <span>
+          <small>NEXT CHAPTER</small>
+          <strong>{{ nextChapter.title }}</strong>
+        </span>
+        <i class="ph ph-arrow-right"></i>
+      </a>
+    </div>
+  </footer>
+</div>

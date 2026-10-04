@@ -1,0 +1,53 @@
+<div class="chapter-container fade-in">
+  <a routerLink="/core-cs/operating-system/theory" class="back-link">
+    <i class="ph ph-arrow-left"></i> Back to Chapters
+  </a>
+
+  <!-- Chapter Hero -->
+  <header class="chapter-hero">
+    <h1 class="hero-title">Memory Management</h1>
+    <p class="hero-subtitle">Paging, segmentation, and fragmentation</p>
+  </header>
+
+  <main class="chapter-content">
+    
+<section class="content-section">
+  <h2 class="section-title">Introduction</h2>
+  <p>This is a placeholder for the Memory Management notes.</p>
+</section>
+
+  </main>
+
+  <div class="chapter-completion">
+    <button
+      class="btn-complete"
+      [class.btn-complete--done]="isCompleted()"
+      (click)="markCompleted()"
+      [disabled]="isCompleted()"
+    >
+      <i class="ph" [class.ph-check-circle]="isCompleted()" [class.ph-circle]="!isCompleted()"></i>
+      {{ isCompleted() ? 'Theory Completed ✓' : 'Mark Theory as Completed' }}
+    </button>
+  </div>
+
+  <footer class="chapter-nav">
+    <div class="nav-item">
+      <a *ngIf="prevChapter" [routerLink]="prevChapter.path" class="nav-btn">
+        <i class="ph ph-arrow-left"></i>
+        <span>
+          <small>PREVIOUS CHAPTER</small>
+          <strong>{{ prevChapter.title }}</strong>
+        </span>
+      </a>
+    </div>
+    <div class="nav-item nav-item--next">
+      <a *ngIf="nextChapter" [routerLink]="nextChapter.path" class="nav-btn nav-btn--next">
+        <span>
+          <small>{{ nextChapter.path.includes('theory') && !nextChapter.path.includes(nextChapter.title.toLowerCase().replace(/ /g, '-')) ? 'Back to Index' : 'NEXT CHAPTER' }}</small>
+          <strong>{{ nextChapter.title }}</strong>
+        </span>
+        <i class="ph" [ngClass]="nextChapter.path.includes('theory') && !nextChapter.path.includes(nextChapter.title.toLowerCase().replace(/ /g, '-')) ? 'ph-list' : 'ph-arrow-right'"></i>
+      </a>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,146 @@
+<div class="chapter-container fade-in">
+  <a routerLink="/core-cs/oop/theory" class="back-link">
+    <i class="ph ph-arrow-left"></i> Back to Chapters
+  </a>
+
+  <header class="chapter-hero">
+    <h1 class="hero-title">Inheritance</h1>
+    <p class="hero-subtitle">Reusability and types of inheritance</p>
+  </header>
+
+  <main class="chapter-content">
+    
+    <section class="content-section">
+      <h2 class="section-title">What is Inheritance?</h2>
+      <p class="section-text">
+        Inheritance allows a new class (subclass or child class) to acquire the properties and methods of an existing class (superclass or parent class). This mechanism enables code reusability and establishes a natural hierarchy between objects.
+      </p>
+    </section>
+
+    <!-- 4. Real-World Example -->
+    <section class="content-section callout-box real-world-box">
+      <div class="callout-icon"><i class="ph ph-tree-structure"></i></div>
+      <div class="callout-content">
+        <h3>Real-World Analogy: Animals</h3>
+        <p>A <strong>Dog</strong> IS-A <strong>Animal</strong>. The Animal class might have properties like <code>age</code> and methods like <code>eat()</code>. Instead of rewriting these for the Dog class, the Dog class can <em>inherit</em> them from Animal, and then add its own specific methods like <code>bark()</code>.</p>
+      </div>
+    </section>
+
+    <!-- 5. Visual Diagram -->
+    <section class="content-section diagram-section">
+      <h2 class="section-title">Inheritance Hierarchy</h2>
+      <div class="diagram-tree">
+        <div class="diagram-node parent">
+          <i class="ph ph-paw-print"></i>
+          <span>Animal</span>
+          <small>eat(), sleep()</small>
+        </div>
+        <div class="tree-lines">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical left"></div>
+          <div class="line-vertical right"></div>
+        </div>
+        <div class="tree-children">
+          <div class="diagram-node child">
+            <i class="ph ph-dog"></i>
+            <span>Dog</span>
+            <small>bark()</small>
+          </div>
+          <div class="diagram-node child">
+            <i class="ph ph-cat"></i>
+            <span>Cat</span>
+            <small>meow()</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Java Example -->
+    <section class="content-section code-section">
+      <h2 class="section-title">Using 'extends' in Java</h2>
+      <div class="code-container">
+        <div class="code-header">
+          <span class="code-lang">Java</span>
+        </div>
+        <pre><code><span class="comment">// Parent Class</span>
+<span class="keyword">class</span> <span class="class-name">Animal</span> &#123;
+    <span class="keyword">public void</span> <span class="method">eat</span>() &#123;
+        System.out.println(<span class="string">"I can eat"</span>);
+    &#125;
+&#125;
+
+<span class="comment">// Child Class</span>
+<span class="keyword">class</span> <span class="class-name">Dog</span> <span class="keyword">extends</span> <span class="class-name">Animal</span> &#123;
+    <span class="keyword">public void</span> <span class="method">bark</span>() &#123;
+        System.out.println(<span class="string">"I can bark"</span>);
+    &#125;
+&#125;
+
+<span class="keyword">public class</span> <span class="class-name">Main</span> &#123;
+    <span class="keyword">public static void</span> <span class="method">main</span>(String[] args) &#123;
+        Dog myDog = <span class="keyword">new</span> Dog();
+        myDog.<span class="method">eat</span>();  <span class="comment">// Inherited from Animal</span>
+        myDog.<span class="method">bark</span>(); <span class="comment">// Defined in Dog</span>
+    &#125;
+&#125;</code></pre>
+      </div>
+    </section>
+
+    <!-- 7. Important Points -->
+    <section class="content-section important-points">
+      <h2 class="section-title"><i class="ph ph-star"></i> Types of Inheritance</h2>
+      <ul>
+        <li><strong>Single:</strong> Class B extends Class A.</li>
+        <li><strong>Multilevel:</strong> Class C extends Class B, which extends Class A.</li>
+        <li><strong>Hierarchical:</strong> Class B and Class C both extend Class A.</li>
+        <li><em>Note:</em> Java does not support <strong>Multiple Inheritance</strong> with classes (Class C cannot extend both Class A and Class B) to avoid the "Diamond Problem". It uses Interfaces for this instead.</li>
+      </ul>
+    </section>
+
+    <!-- 8. Quick Revision -->
+    <section class="content-section accordion-section">
+      <details class="interactive-accordion">
+        <summary>Common Interview Questions <i class="ph ph-caret-down"></i></summary>
+        <div class="accordion-content">
+          <p><strong>Q: What is the 'super' keyword?</strong><br>A: The <code>super</code> keyword is a reference variable used to refer to the immediate parent class object. It can be used to call parent class methods, variables, and constructors.</p>
+          <p><strong>Q: Why is multiple inheritance not supported in Java?</strong><br>A: To avoid ambiguity (The Diamond Problem). If two parent classes have methods with the same name, the compiler wouldn't know which one the child class should inherit.</p>
+        </div>
+      </details>
+    </section>
+
+  </main>
+
+  <!-- Completion Action -->
+  <div class="chapter-completion">
+    <button
+      class="btn-complete"
+      [class.btn-complete--done]="isCompleted()"
+      (click)="markCompleted()"
+      [disabled]="isCompleted()"
+    >
+      <i class="ph" [class.ph-check-circle]="isCompleted()" [class.ph-circle]="!isCompleted()"></i>
+      {{ isCompleted() ? 'Theory Completed ✓' : 'Mark Theory as Completed' }}
+    </button>
+  </div>
+
+  <footer class="chapter-nav">
+    <div class="nav-item">
+      <a *ngIf="prevChapter" [routerLink]="prevChapter.path" class="nav-btn">
+        <i class="ph ph-arrow-left"></i>
+        <span>
+          <small>PREVIOUS CHAPTER</small>
+          <strong>{{ prevChapter.title }}</strong>
+        </span>
+      </a>
+    </div>
+    <div class="nav-item nav-item--next">
+      <a *ngIf="nextChapter" [routerLink]="nextChapter.path" class="nav-btn nav-btn--next">
+        <span>
+          <small>NEXT CHAPTER</small>
+          <strong>{{ nextChapter.title }}</strong>
+        </span>
+        <i class="ph ph-arrow-right"></i>
+      </a>
+    </div>
+  </footer>
+</div>

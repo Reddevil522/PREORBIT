@@ -28,7 +28,7 @@
 
   <div class="chapters-grid" *ngIf="filteredChapters().length > 0; else emptyState">
     <a *ngFor="let chapter of filteredChapters()" 
-       [routerLink]="['/java-dsa/theory', chapter.slug]" 
+       [routerLink]="['/theory/java-dsa', chapter.slug]" 
        (click)="onChapterClick(chapter)"
        class="chapter-card">
        

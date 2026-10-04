@@ -1,0 +1,43 @@
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { ProgressService } from '../../../../core/services/progress.service';
+
+const CHAPTER_SLUG = 'exception-handling';
+const PREV_CHAPTER = { title: 'Interfaces', path: '/theory/core-cs/oop/interfaces' };
+const NEXT_CHAPTER: any = null;
+
+@Component({
+  selector: 'app-theory-exception-handling',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  templateUrl: './exception-handling.component.html',
+  styleUrl: './exception-handling.component.css'
+})
+export class ExceptionHandlingComponent implements OnInit {
+  private progressService = inject(ProgressService);
+
+  isCompleted = signal<boolean>(false);
+  prevChapter: any = PREV_CHAPTER;
+  nextChapter: any = NEXT_CHAPTER;
+
+  ngOnInit(): void {
+    this.progressService.getProgress().subscribe({
+      next: () => {
+        const data = this.progressService.progressData();
+        if (!data) { this.isCompleted.set(false); return; }
+        const ch = data.chapters.find((c: any) => c.chapterSlug === CHAPTER_SLUG);
+        this.isCompleted.set(!!(ch && ch.theoryCompleted));
+      },
+      error: () => this.isCompleted.set(false)
+    });
+  }
+
+  markCompleted(): void {
+    if (this.isCompleted()) return;
+    this.progressService.markTheoryCompleted(CHAPTER_SLUG).subscribe({
+      next: () => this.isCompleted.set(true),
+      error: (err) => console.error('Failed to mark theory completed:', err)
+    });
+  }
+}

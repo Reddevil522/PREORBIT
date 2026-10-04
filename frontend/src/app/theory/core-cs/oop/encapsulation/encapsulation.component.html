@@ -1,0 +1,130 @@
+<div class="chapter-container fade-in">
+  <a routerLink="/core-cs/oop/theory" class="back-link">
+    <i class="ph ph-arrow-left"></i> Back to Chapters
+  </a>
+
+  <!-- 1. Chapter Hero -->
+  <header class="chapter-hero">
+    <h1 class="hero-title">Encapsulation</h1>
+    <p class="hero-subtitle">Data hiding and getters/setters</p>
+  </header>
+
+  <main class="chapter-content">
+    
+    <!-- 2. Concept Introduction -->
+    <section class="content-section">
+      <h2 class="section-title">Data Hiding</h2>
+      <p class="section-text">
+        Encapsulation is the mechanism of wrapping the data (variables) and code acting on the data (methods) together as a single unit. In encapsulation, the variables of a class are hidden from other classes, and can only be accessed through the methods of their current class.
+      </p>
+    </section>
+
+    <!-- 4. Real-World Example -->
+    <section class="content-section callout-box real-world-box">
+      <div class="callout-icon"><i class="ph ph-pill"></i></div>
+      <div class="callout-content">
+        <h3>Real-World Analogy: A Medical Capsule</h3>
+        <p>A capsule hides the actual medicine inside it. You don't interact with the powder directly; you swallow the capsule, and it does its job safely. Similarly, a class hides its variables and provides safe methods (like getters and setters) to interact with them.</p>
+      </div>
+    </section>
+
+    <!-- 5. Visual Diagram -->
+    <section class="content-section diagram-section">
+      <h2 class="section-title">The Encapsulation Shield</h2>
+      <div class="diagram-shield">
+        <div class="shield-outer">
+          <div class="shield-header">Public Methods (Getters/Setters)</div>
+          <div class="shield-inner">
+            <i class="ph ph-lock-key"></i>
+            <span>Private Data</span>
+            <small>Hidden from outside world</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Java Example -->
+    <section class="content-section code-section">
+      <h2 class="section-title">Achieving Encapsulation in Java</h2>
+      <div class="code-container">
+        <div class="code-header">
+          <span class="code-lang">Java</span>
+        </div>
+        <pre><code><span class="keyword">class</span> <span class="class-name">BankAccount</span> &#123;
+    <span class="comment">// 1. Private data variables</span>
+    <span class="keyword">private double</span> balance;
+
+    <span class="comment">// 2. Public getter method</span>
+    <span class="keyword">public double</span> <span class="method">getBalance</span>() &#123;
+        <span class="keyword">return</span> balance;
+    &#125;
+
+    <span class="comment">// 3. Public setter method with validation</span>
+    <span class="keyword">public void</span> <span class="method">deposit</span>(<span class="keyword">double</span> amount) &#123;
+        <span class="keyword">if</span> (amount > <span class="string">0</span>) &#123;
+            balance += amount;
+        &#125; <span class="keyword">else</span> &#123;
+            System.out.println(<span class="string">"Invalid amount"</span>);
+        &#125;
+    &#125;
+&#125;</code></pre>
+      </div>
+    </section>
+
+    <!-- 7. Important Points -->
+    <section class="content-section important-points">
+      <h2 class="section-title"><i class="ph ph-star"></i> Benefits of Encapsulation</h2>
+      <ul>
+        <li><strong>Control:</strong> You have full control over the data (e.g., preventing negative account balances).</li>
+        <li><strong>Security:</strong> Data is hidden from external classes, preventing accidental modification.</li>
+        <li><strong>Flexibility:</strong> Internal implementation can be changed without breaking external code.</li>
+      </ul>
+    </section>
+
+    <!-- 8. Quick Revision -->
+    <section class="content-section accordion-section">
+      <details class="interactive-accordion">
+        <summary>Common Interview Questions <i class="ph ph-caret-down"></i></summary>
+        <div class="accordion-content">
+          <p><strong>Q: How do you achieve encapsulation in Java?</strong><br>A: By declaring the variables of a class as <code>private</code> and providing <code>public</code> setter and getter methods to modify and view the variables.</p>
+          <p><strong>Q: What is data hiding?</strong><br>A: Data hiding is a feature of OOP that prevents direct access to data members of a class. It is the core concept behind encapsulation.</p>
+        </div>
+      </details>
+    </section>
+
+  </main>
+
+  <!-- Completion Action -->
+  <div class="chapter-completion">
+    <button
+      class="btn-complete"
+      [class.btn-complete--done]="isCompleted()"
+      (click)="markCompleted()"
+      [disabled]="isCompleted()"
+    >
+      <i class="ph" [class.ph-check-circle]="isCompleted()" [class.ph-circle]="!isCompleted()"></i>
+      {{ isCompleted() ? 'Theory Completed ✓' : 'Mark Theory as Completed' }}
+    </button>
+  </div>
+
+  <footer class="chapter-nav">
+    <div class="nav-item">
+      <a *ngIf="prevChapter" [routerLink]="prevChapter.path" class="nav-btn">
+        <i class="ph ph-arrow-left"></i>
+        <span>
+          <small>PREVIOUS CHAPTER</small>
+          <strong>{{ prevChapter.title }}</strong>
+        </span>
+      </a>
+    </div>
+    <div class="nav-item nav-item--next">
+      <a *ngIf="nextChapter" [routerLink]="nextChapter.path" class="nav-btn nav-btn--next">
+        <span>
+          <small>NEXT CHAPTER</small>
+          <strong>{{ nextChapter.title }}</strong>
+        </span>
+        <i class="ph ph-arrow-right"></i>
+      </a>
+    </div>
+  </footer>
+</div>

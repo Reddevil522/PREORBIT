@@ -1,0 +1,129 @@
+<div class="chapter-container fade-in">
+  <a routerLink="/core-cs/oop/theory" class="back-link">
+    <i class="ph ph-arrow-left"></i> Back to Chapters
+  </a>
+
+  <!-- 1. Chapter Hero -->
+  <header class="chapter-hero">
+    <h1 class="hero-title">Exception Handling</h1>
+    <p class="hero-subtitle">Try, catch, throw, and custom exceptions</p>
+  </header>
+
+  <main class="chapter-content">
+    
+    <section class="content-section">
+      <h2 class="section-title">What is an Exception?</h2>
+      <p class="section-text">
+        An exception is an unwanted or unexpected event occurring during the execution of a program (at runtime) that disrupts the normal flow of instructions. Exception Handling is a mechanism to handle these runtime errors (like ClassNotFoundException, IOException, SQLException, etc.) so the normal flow of the application can be maintained.
+      </p>
+    </section>
+
+    <!-- 4. Real-World Example -->
+    <section class="content-section callout-box real-world-box">
+      <div class="callout-icon"><i class="ph ph-warning-circle"></i></div>
+      <div class="callout-content">
+        <h3>Real-World Analogy: Flat Tire</h3>
+        <p>You are driving to work (normal flow). Suddenly, you get a flat tire (an exception). If you don't know what to do, you're stuck (app crashes). But if you have a spare tire and know how to change it (exception handling), you fix the problem and continue driving to work (normal flow maintained).</p>
+      </div>
+    </section>
+
+    <!-- 5. Visual Diagram -->
+    <section class="content-section diagram-section">
+      <h2 class="section-title">Exception Hierarchy in Java</h2>
+      <div class="diagram-tree">
+        <div class="diagram-node parent">
+          <i class="ph ph-bug"></i>
+          <span>Throwable</span>
+        </div>
+        <div class="tree-lines">
+          <div class="line-horizontal"></div>
+          <div class="line-vertical left"></div>
+          <div class="line-vertical right"></div>
+        </div>
+        <div class="tree-children">
+          <div class="diagram-node child error-node">
+            <i class="ph ph-skull"></i>
+            <span>Error</span>
+            <small>Out of Memory, etc.</small>
+          </div>
+          <div class="diagram-node child exception-node">
+            <i class="ph ph-warning"></i>
+            <span>Exception</span>
+            <small>Checked & Unchecked</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Java Example -->
+    <section class="content-section code-section">
+      <h2 class="section-title">Try-Catch Block</h2>
+      <div class="code-container">
+        <div class="code-header">
+          <span class="code-lang">Java</span>
+        </div>
+        <pre><code><span class="keyword">public class</span> <span class="class-name">Main</span> &#123;
+    <span class="keyword">public static void</span> <span class="method">main</span>(String[] args) &#123;
+        <span class="keyword">try</span> &#123;
+            <span class="comment">// Code that may raise exception</span>
+            <span class="keyword">int</span> data = <span class="string">100</span> / <span class="string">0</span>;
+            System.out.println(<span class="string">"This line will not execute"</span>);
+        &#125; <span class="keyword">catch</span> (ArithmeticException e) &#123;
+            <span class="comment">// Handling the exception</span>
+            System.out.println(<span class="string">"Cannot divide by zero!"</span>);
+        &#125; <span class="keyword">finally</span> &#123;
+            <span class="comment">// Executes regardless of exception</span>
+            System.out.println(<span class="string">"Finally block is always executed"</span>);
+        &#125;
+        
+        System.out.println(<span class="string">"Rest of the code..."</span>);
+    &#125;
+&#125;</code></pre>
+      </div>
+    </section>
+
+    <!-- 7. Important Points -->
+    <section class="content-section important-points">
+      <h2 class="section-title"><i class="ph ph-star"></i> Checked vs Unchecked</h2>
+      <ul>
+        <li><strong>Checked Exceptions:</strong> Checked at compile-time (e.g., <code>IOException</code>). You are forced to handle them using try-catch or declare them using <code>throws</code>.</li>
+        <li><strong>Unchecked Exceptions:</strong> Checked at runtime (e.g., <code>NullPointerException</code>). They usually indicate programming logic errors.</li>
+        <li><strong>Errors:</strong> Severe problems that a reasonable application should not try to catch (e.g., <code>OutOfMemoryError</code>).</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <div class="chapter-completion">
+    <button
+      class="btn-complete"
+      [class.btn-complete--done]="isCompleted()"
+      (click)="markCompleted()"
+      [disabled]="isCompleted()"
+    >
+      <i class="ph" [class.ph-check-circle]="isCompleted()" [class.ph-circle]="!isCompleted()"></i>
+      {{ isCompleted() ? 'Theory Completed ✓' : 'Mark Theory as Completed' }}
+    </button>
+  </div>
+
+  <footer class="chapter-nav">
+    <div class="nav-item">
+      <a *ngIf="prevChapter" [routerLink]="prevChapter.path" class="nav-btn">
+        <i class="ph ph-arrow-left"></i>
+        <span>
+          <small>PREVIOUS CHAPTER</small>
+          <strong>{{ prevChapter.title }}</strong>
+        </span>
+      </a>
+    </div>
+    <div class="nav-item nav-item--next">
+      <a *ngIf="nextChapter" [routerLink]="nextChapter.path" class="nav-btn nav-btn--next">
+        <span>
+          <small>Back to Index</small>
+          <strong>{{ nextChapter.title }}</strong>
+        </span>
+        <i class="ph ph-list"></i>
+      </a>
+    </div>
+  </footer>
+</div>

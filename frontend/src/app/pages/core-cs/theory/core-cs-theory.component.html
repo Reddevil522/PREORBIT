@@ -39,7 +39,7 @@
   <!-- Content Grid -->
   <div class="chapters-grid" *ngIf="filteredChapters().length > 0; else emptyState">
     <a *ngFor="let chapter of filteredChapters(); let i = index" 
-       [routerLink]="['/core-cs', subject()?.slug, 'theory', chapter.slug]" 
+       [routerLink]="['/theory/core-cs', subject()?.slug, chapter.slug]"
        class="chapter-card">
       
       <div class="card-header">

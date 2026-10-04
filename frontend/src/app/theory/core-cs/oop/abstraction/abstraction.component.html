@@ -1,0 +1,133 @@
+<div class="chapter-container fade-in">
+  <a routerLink="/core-cs/oop/theory" class="back-link">
+    <i class="ph ph-arrow-left"></i> Back to Chapters
+  </a>
+
+  <!-- 1. Chapter Hero -->
+  <header class="chapter-hero">
+    <h1 class="hero-title">Abstraction</h1>
+    <p class="hero-subtitle">Hiding implementation details using abstract classes</p>
+  </header>
+
+  <main class="chapter-content">
+    
+    <section class="content-section">
+      <h2 class="section-title">What is Abstraction?</h2>
+      <p class="section-text">
+        Data abstraction is the property by virtue of which only the essential details are displayed to the user. The trivial or non-essential units are not displayed to the user. In Java, abstraction is achieved using Abstract classes and Interfaces.
+      </p>
+    </section>
+
+    <!-- 4. Real-World Example -->
+    <section class="content-section callout-box real-world-box">
+      <div class="callout-icon"><i class="ph ph-steering-wheel"></i></div>
+      <div class="callout-content">
+        <h3>Real-World Analogy: Driving a Car</h3>
+        <p>When you drive a car, you know that pressing the accelerator increases speed and pressing the brake stops the car. You don't need to know how the internal combustion engine works or how the hydraulic brakes function. The complex internal implementation is <em>hidden</em> from you.</p>
+      </div>
+    </section>
+
+    <!-- 5. Visual Diagram -->
+    <section class="content-section diagram-section">
+      <h2 class="section-title">The Abstraction Layer</h2>
+      <div class="diagram-layer">
+        <div class="layer-user">
+          <i class="ph ph-user"></i>
+          <span>End User</span>
+        </div>
+        <div class="layer-arrow"><i class="ph ph-arrow-down"></i></div>
+        <div class="layer-interface">
+          <i class="ph ph-toggle-left"></i>
+          <span>Public Interface (What it does)</span>
+        </div>
+        <div class="layer-arrow"><i class="ph ph-prohibit"></i></div>
+        <div class="layer-hidden">
+          <i class="ph ph-gear"></i>
+          <span>Hidden Implementation (How it works)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Java Example -->
+    <section class="content-section code-section">
+      <h2 class="section-title">Abstract Classes in Java</h2>
+      <div class="code-container">
+        <div class="code-header">
+          <span class="code-lang">Java</span>
+        </div>
+        <pre><code><span class="comment">// Abstract class</span>
+<span class="keyword">abstract class</span> <span class="class-name">Shape</span> &#123;
+    <span class="comment">// Abstract method (does not have a body)</span>
+    <span class="keyword">public abstract void</span> <span class="method">draw</span>();
+    
+    <span class="comment">// Regular method</span>
+    <span class="keyword">public void</span> <span class="method">color</span>() &#123;
+        System.out.println(<span class="string">"Coloring the shape"</span>);
+    &#125;
+&#125;
+
+<span class="comment">// Subclass (provided from another file or developer)</span>
+<span class="keyword">class</span> <span class="class-name">Circle</span> <span class="keyword">extends</span> <span class="class-name">Shape</span> &#123;
+    <span class="keyword">public void</span> <span class="method">draw</span>() &#123;
+        <span class="comment">// The body of draw() is provided here</span>
+        System.out.println(<span class="string">"Drawing a Circle"</span>);
+    &#125;
+&#125;
+
+<span class="keyword">public class</span> <span class="class-name">Main</span> &#123;
+    <span class="keyword">public static void</span> <span class="method">main</span>(String[] args) &#123;
+        Shape myShape = <span class="keyword">new</span> Circle(); <span class="comment">// Create a Circle object</span>
+        myShape.<span class="method">draw</span>();
+        myShape.<span class="method">color</span>();
+    &#125;
+&#125;</code></pre>
+      </div>
+    </section>
+
+    <!-- 7. Important Points -->
+    <section class="content-section important-points">
+      <h2 class="section-title"><i class="ph ph-star"></i> Key Rules for Abstract Classes</h2>
+      <ul>
+        <li>An abstract class must be declared with an <code>abstract</code> keyword.</li>
+        <li>It <strong>cannot be instantiated</strong> (you cannot create objects of an abstract class).</li>
+        <li>It can have both abstract and non-abstract (regular) methods.</li>
+        <li>If a class has at least one abstract method, then the class must be declared abstract.</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <!-- Completion Action -->
+  <div class="chapter-completion">
+    <button
+      class="btn-complete"
+      [class.btn-complete--done]="isCompleted()"
+      (click)="markCompleted()"
+      [disabled]="isCompleted()"
+    >
+      <i class="ph" [class.ph-check-circle]="isCompleted()" [class.ph-circle]="!isCompleted()"></i>
+      {{ isCompleted() ? 'Theory Completed ✓' : 'Mark Theory as Completed' }}
+    </button>
+  </div>
+
+  <footer class="chapter-nav">
+    <div class="nav-item">
+      <a *ngIf="prevChapter" [routerLink]="prevChapter.path" class="nav-btn">
+        <i class="ph ph-arrow-left"></i>
+        <span>
+          <small>PREVIOUS CHAPTER</small>
+          <strong>{{ prevChapter.title }}</strong>
+        </span>
+      </a>
+    </div>
+    <div class="nav-item nav-item--next">
+      <a *ngIf="nextChapter" [routerLink]="nextChapter.path" class="nav-btn nav-btn--next">
+        <span>
+          <small>NEXT CHAPTER</small>
+          <strong>{{ nextChapter.title }}</strong>
+        </span>
+        <i class="ph ph-arrow-right"></i>
+      </a>
+    </div>
+  </footer>
+</div>

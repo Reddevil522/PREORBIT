@@ -1,0 +1,162 @@
+<div class="chapter-container fade-in">
+  <!-- Back link -->
+  <a routerLink="/core-cs/oop/theory" class="back-link">
+    <i class="ph ph-arrow-left"></i> Back to Chapters
+  </a>
+
+  <!-- 1. Chapter Hero -->
+  <header class="chapter-hero">
+    <h1 class="hero-title">Introduction to OOP</h1>
+    <p class="hero-subtitle">Basic concepts and paradigms of Object-Oriented Programming</p>
+  </header>
+
+  <main class="chapter-content">
+    
+    <!-- 2. Concept Introduction -->
+    <section class="content-section">
+      <h2 class="section-title">What is Object-Oriented Programming?</h2>
+      <p class="section-text">
+        Object-Oriented Programming (OOP) is a programming paradigm based on the concept of "objects", which can contain data (attributes or properties) and code (methods or behaviors). Instead of writing procedures or functions that perform operations on data, OOP allows you to create objects that encapsulate both data and operations.
+      </p>
+    </section>
+
+    <!-- 3. Core Explanation -->
+    <section class="content-section">
+      <h2 class="section-title">Procedural vs. Object-Oriented</h2>
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="card-header procedural-header">
+            <i class="ph ph-list-numbers"></i> Procedural Programming
+          </div>
+          <ul class="card-list">
+            <li>Focuses on functions and processes</li>
+            <li>Data and functions are separate</li>
+            <li>Top-down approach</li>
+            <li>Harder to maintain for large codebases</li>
+          </ul>
+        </div>
+        <div class="comparison-card">
+          <div class="card-header oop-header">
+            <i class="ph ph-intersect"></i> Object-Oriented Programming
+          </div>
+          <ul class="card-list">
+            <li>Focuses on data (objects)</li>
+            <li>Data and methods are encapsulated together</li>
+            <li>Bottom-up approach</li>
+            <li>Highly scalable and maintainable</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Real-World Example -->
+    <section class="content-section callout-box real-world-box">
+      <div class="callout-icon"><i class="ph ph-globe-hemisphere-west"></i></div>
+      <div class="callout-content">
+        <h3>Real-World Analogy</h3>
+        <p>Think of a <strong>Car</strong>. In the real world, a car has attributes (color, brand, speed) and behaviors (accelerate, brake, honk). In OOP, we define a <code>Car</code> class as a blueprint, and every actual car (like your specific red Toyota) is an object created from that blueprint.</p>
+      </div>
+    </section>
+
+    <!-- 5. Visual/Concept Diagram -->
+    <section class="content-section diagram-section">
+      <h2 class="section-title">The Four Pillars of OOP</h2>
+      <div class="pillars-diagram">
+        <div class="pillar-node">
+          <i class="ph ph-lock-key"></i>
+          <span>Encapsulation</span>
+        </div>
+        <div class="pillar-node">
+          <i class="ph ph-tree-structure"></i>
+          <span>Inheritance</span>
+        </div>
+        <div class="pillar-node">
+          <i class="ph ph-shapes"></i>
+          <span>Polymorphism</span>
+        </div>
+        <div class="pillar-node">
+          <i class="ph ph-ghost"></i>
+          <span>Abstraction</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Java Example -->
+    <section class="content-section code-section">
+      <h2 class="section-title">A Simple Java Class</h2>
+      <div class="code-container">
+        <div class="code-header">
+          <span class="code-lang">Java</span>
+        </div>
+        <pre><code><span class="keyword">public class</span> <span class="class-name">Car</span> &#123;
+    <span class="comment">// Attributes (Data)</span>
+    <span class="keyword">String</span> color;
+    <span class="keyword">int</span> maxSpeed;
+
+    <span class="comment">// Behavior (Methods)</span>
+    <span class="keyword">public void</span> <span class="method">accelerate</span>() &#123;
+        System.out.println(<span class="string">"The car is accelerating..."</span>);
+    &#125;
+&#125;</code></pre>
+      </div>
+    </section>
+
+    <!-- 7. Important Points -->
+    <section class="content-section important-points">
+      <h2 class="section-title"><i class="ph ph-star"></i> Key Takeaways</h2>
+      <ul>
+        <li>OOP makes code reusable and easier to maintain.</li>
+        <li>It mimics real-world entities, making complex systems easier to understand.</li>
+        <li>Java is fundamentally an Object-Oriented language, meaning everything revolves around classes and objects.</li>
+      </ul>
+    </section>
+
+    <!-- 8. Quick Revision & Interview Questions -->
+    <section class="content-section accordion-section">
+      <details class="interactive-accordion">
+        <summary>Common Interview Questions <i class="ph ph-caret-down"></i></summary>
+        <div class="accordion-content">
+          <p><strong>Q: What are the four pillars of OOP?</strong><br>A: Encapsulation, Inheritance, Polymorphism, and Abstraction.</p>
+          <p><strong>Q: Why use OOP over Procedural programming?</strong><br>A: OOP provides better data security, reusability, and makes large codebases easier to manage.</p>
+        </div>
+      </details>
+    </section>
+
+  </main>
+
+  <!-- Completion Action -->
+  <div class="chapter-completion">
+    <button
+      class="btn-complete"
+      [class.btn-complete--done]="isCompleted()"
+      (click)="markCompleted()"
+      [disabled]="isCompleted()"
+    >
+      <i class="ph" [class.ph-check-circle]="isCompleted()" [class.ph-circle]="!isCompleted()"></i>
+      {{ isCompleted() ? 'Theory Completed ✓' : 'Mark Theory as Completed' }}
+    </button>
+  </div>
+
+  <!-- Chapter Navigation -->
+  <footer class="chapter-nav">
+    <div class="nav-item">
+      <a *ngIf="prevChapter" [routerLink]="prevChapter.path" class="nav-btn">
+        <i class="ph ph-arrow-left"></i>
+        <span>
+          <small>PREVIOUS CHAPTER</small>
+          <strong>{{ prevChapter.title }}</strong>
+        </span>
+      </a>
+    </div>
+    <div class="nav-item nav-item--next">
+      <a *ngIf="nextChapter" [routerLink]="nextChapter.path" class="nav-btn nav-btn--next">
+        <span>
+          <small>NEXT CHAPTER</small>
+          <strong>{{ nextChapter.title }}</strong>
+        </span>
+        <i class="ph ph-arrow-right"></i>
+      </a>
+    </div>
+  </footer>
+
+</div>

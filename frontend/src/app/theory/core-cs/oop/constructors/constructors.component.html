@@ -1,0 +1,135 @@
+<div class="chapter-container fade-in">
+  <a routerLink="/core-cs/oop/theory" class="back-link">
+    <i class="ph ph-arrow-left"></i> Back to Chapters
+  </a>
+
+  <!-- 1. Chapter Hero -->
+  <header class="chapter-hero">
+    <h1 class="hero-title">Constructors</h1>
+    <p class="hero-subtitle">Types of constructors and object initialization</p>
+  </header>
+
+  <main class="chapter-content">
+    
+    <section class="content-section">
+      <h2 class="section-title">What is a Constructor?</h2>
+      <p class="section-text">
+        A constructor in Java is a special block of code similar to a method that is called when an instance of an object is created. Unlike methods, constructors have the exact same name as the class and do not have a return type.
+      </p>
+    </section>
+
+    <!-- 4. Real-World Example -->
+    <section class="content-section callout-box real-world-box">
+      <div class="callout-icon"><i class="ph ph-factory"></i></div>
+      <div class="callout-content">
+        <h3>Real-World Analogy: Car Factory</h3>
+        <p>When a new car rolls off the assembly line, it needs to be painted, given a serial number, and filled with a little bit of gas before it can be used. A constructor is like that final assembly step—it sets the initial values (color, serial number) for a brand new object.</p>
+      </div>
+    </section>
+
+    <!-- 5. Comparison -->
+    <section class="content-section">
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="card-header default-header">
+            <i class="ph ph-cube-transparent"></i> Default Constructor
+          </div>
+          <div class="card-body">
+            <p>A constructor with no arguments. If you don't write any constructor, Java provides an invisible default one.</p>
+            <code>public Dog() &#123;&#125;</code>
+          </div>
+        </div>
+        <div class="comparison-card">
+          <div class="card-header param-header">
+            <i class="ph ph-sliders"></i> Parameterized Constructor
+          </div>
+          <div class="card-body">
+            <p>A constructor that accepts parameters, allowing you to pass specific values to initialize the object's fields immediately.</p>
+            <code>public Dog(String name) &#123;&#125;</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Java Example -->
+    <section class="content-section code-section">
+      <h2 class="section-title">Using Constructors in Java</h2>
+      <div class="code-container">
+        <div class="code-header">
+          <span class="code-lang">Java</span>
+        </div>
+        <pre><code><span class="keyword">class</span> <span class="class-name">Student</span> &#123;
+    <span class="keyword">String</span> name;
+    <span class="keyword">int</span> age;
+
+    <span class="comment">// 1. No-arg (Default) Constructor</span>
+    <span class="keyword">public</span> <span class="method">Student</span>() &#123;
+        System.out.println(<span class="string">"Student created with no data"</span>);
+    &#125;
+
+    <span class="comment">// 2. Parameterized Constructor (Overloading)</span>
+    <span class="keyword">public</span> <span class="method">Student</span>(<span class="keyword">String</span> name, <span class="keyword">int</span> age) &#123;
+        <span class="keyword">this</span>.name = name;
+        <span class="keyword">this</span>.age = age;
+        System.out.println(name + <span class="string">" created!"</span>);
+    &#125;
+&#125;
+
+<span class="keyword">public class</span> <span class="class-name">Main</span> &#123;
+    <span class="keyword">public static void</span> <span class="method">main</span>(String[] args) &#123;
+        <span class="comment">// Calls the no-arg constructor</span>
+        Student s1 = <span class="keyword">new</span> Student(); 
+        
+        <span class="comment">// Calls the parameterized constructor</span>
+        Student s2 = <span class="keyword">new</span> Student(<span class="string">"Alice"</span>, <span class="string">20</span>); 
+    &#125;
+&#125;</code></pre>
+      </div>
+    </section>
+
+    <!-- 7. Important Points -->
+    <section class="content-section important-points">
+      <h2 class="section-title"><i class="ph ph-star"></i> Rules of Constructors</h2>
+      <ul>
+        <li>Constructor name must be the <strong>same as its class name</strong>.</li>
+        <li>A constructor must have <strong>no explicit return type</strong> (not even <code>void</code>).</li>
+        <li>A Java constructor cannot be <code>abstract</code>, <code>static</code>, <code>final</code>, or <code>synchronized</code>.</li>
+        <li>You can use the <code>this()</code> keyword to call another constructor in the same class (Constructor Chaining).</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <div class="chapter-completion">
+    <button
+      class="btn-complete"
+      [class.btn-complete--done]="isCompleted()"
+      (click)="markCompleted()"
+      [disabled]="isCompleted()"
+    >
+      <i class="ph" [class.ph-check-circle]="isCompleted()" [class.ph-circle]="!isCompleted()"></i>
+      {{ isCompleted() ? 'Theory Completed ✓' : 'Mark Theory as Completed' }}
+    </button>
+  </div>
+
+  <footer class="chapter-nav">
+    <div class="nav-item">
+      <a *ngIf="prevChapter" [routerLink]="prevChapter.path" class="nav-btn">
+        <i class="ph ph-arrow-left"></i>
+        <span>
+          <small>PREVIOUS CHAPTER</small>
+          <strong>{{ prevChapter.title }}</strong>
+        </span>
+      </a>
+    </div>
+    <div class="nav-item nav-item--next">
+      <a *ngIf="nextChapter" [routerLink]="nextChapter.path" class="nav-btn nav-btn--next">
+        <span>
+          <small>NEXT CHAPTER</small>
+          <strong>{{ nextChapter.title }}</strong>
+        </span>
+        <i class="ph ph-arrow-right"></i>
+      </a>
+    </div>
+  </footer>
+</div>
