@@ -122,6 +122,170 @@
       </details>
     </section>
 
+    <!-- ═══════════ NEW CONTENT START ═══════════ -->
+
+    <!-- A. Class vs Object (animated tabs) -->
+    <section class="content-section x-section">
+      <h2 class="section-title"><i class="ph ph-cube"></i> Class vs Object</h2>
+      <p class="section-text">Tabs par click karke dekho: class ek blueprint hai, aur objects usse bane real cheezein.</p>
+
+      <div class="x-tabs">
+        <input type="radio" name="x-tab" id="x-tab1" checked>
+        <input type="radio" name="x-tab" id="x-tab2">
+        <input type="radio" name="x-tab" id="x-tab3">
+
+        <div class="x-tab-bar">
+          <label for="x-tab1"><i class="ph ph-blueprint"></i> Class</label>
+          <label for="x-tab2"><i class="ph ph-car"></i> Objects</label>
+          <label for="x-tab3"><i class="ph ph-arrows-left-right"></i> Difference</label>
+        </div>
+
+        <div class="x-tab-panels">
+          <div class="x-panel x-p1">
+            <h3>Class = Blueprint</h3>
+            <p>Class ek template hai jo batata hai ki object ke paas <strong>kaunsa data</strong> aur <strong>kaunse methods</strong> honge. Ye khud memory mein real cheez nahi banati.</p>
+            <div class="x-blueprint">
+              <span>color</span><span>brand</span><span>maxSpeed</span><span>accelerate()</span><span>brake()</span>
+            </div>
+          </div>
+
+          <div class="x-panel x-p2">
+            <h3>Object = Real Instance</h3>
+            <p>Ek class se jitne chaho objects bana sakte ho. Har object ki apni values hoti hain.</p>
+            <div class="x-cars">
+              <div class="x-car x-car--red"><i class="ph ph-car-profile"></i><b>car1</b><small>Red · Toyota · 180</small></div>
+              <div class="x-car x-car--blue"><i class="ph ph-car-profile"></i><b>car2</b><small>Blue · Honda · 200</small></div>
+              <div class="x-car x-car--green"><i class="ph ph-car-profile"></i><b>car3</b><small>Green · Tata · 160</small></div>
+            </div>
+          </div>
+
+          <div class="x-panel x-p3">
+            <h3>Quick Difference</h3>
+            <table class="x-table">
+              <thead><tr><th>Class</th><th>Object</th></tr></thead>
+              <tbody>
+                <tr><td>Blueprint / template</td><td>Real instance</td></tr>
+                <tr><td>Ek baar define hoti hai</td><td>Kitne bhi ban sakte hain</td></tr>
+                <tr><td>Memory nahi leti (data ke liye)</td><td>Heap memory leta hai</td></tr>
+                <tr><td><code>class Car</code></td><td><code>new Car()</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- B. Flip cards for 4 pillars -->
+    <section class="content-section x-section">
+      <h2 class="section-title"><i class="ph ph-columns"></i> Pillars Explained (Hover / Tap)</h2>
+      <div class="x-flip-grid">
+
+        <div class="x-flip" tabindex="0">
+          <div class="x-flip-inner">
+            <div class="x-flip-front"><i class="ph ph-lock-key"></i><h4>Encapsulation</h4><small>Hover to flip</small></div>
+            <div class="x-flip-back">
+              <p>Data ko <strong>private</strong> rakho aur getters/setters se access do. Jaise ATM: tum paise nikaal sakte ho, par bank ka internal system nahi chhoo sakte.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="x-flip" tabindex="0">
+          <div class="x-flip-inner">
+            <div class="x-flip-front"><i class="ph ph-tree-structure"></i><h4>Inheritance</h4><small>Hover to flip</small></div>
+            <div class="x-flip-back">
+              <p>Child class parent ki properties aur methods reuse karti hai. <code>Dog extends Animal</code> matlab Dog ko eat() free mein mil gaya.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="x-flip" tabindex="0">
+          <div class="x-flip-inner">
+            <div class="x-flip-front"><i class="ph ph-shapes"></i><h4>Polymorphism</h4><small>Hover to flip</small></div>
+            <div class="x-flip-back">
+              <p>Ek naam, kai roop. <code>draw()</code> Circle par circle banata hai, Square par square. Method same, behavior alag.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="x-flip" tabindex="0">
+          <div class="x-flip-inner">
+            <div class="x-flip-front"><i class="ph ph-ghost"></i><h4>Abstraction</h4><small>Hover to flip</small></div>
+            <div class="x-flip-back">
+              <p>Sirf zaruri cheezein dikhao, internal details chhupao. Car chalane ke liye steering chahiye, engine ka code nahi.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- C. Object creation steps (animated stepper) -->
+    <section class="content-section x-section">
+      <h2 class="section-title"><i class="ph ph-play-circle"></i> How an Object Is Created</h2>
+      <p class="section-text">Code: <code>Car myCar = new Car();</code>. Step select karo.</p>
+
+      <div class="x-steps">
+        <input type="radio" name="x-step" id="x-s1" checked>
+        <input type="radio" name="x-step" id="x-s2">
+        <input type="radio" name="x-step" id="x-s3">
+
+        <div class="x-step-track">
+          <label for="x-s1"><span>1</span> Declare</label>
+          <label for="x-s2"><span>2</span> Allocate</label>
+          <label for="x-s3"><span>3</span> Assign</label>
+          <div class="x-step-line"><div class="x-step-fill"></div></div>
+        </div>
+
+        <div class="x-step-info">
+          <div class="x-si x-si1"><code>Car myCar;</code> Reference variable stack par banta hai. Abhi ye <strong>null</strong> hai, koi object nahi.</div>
+          <div class="x-si x-si2"><code>new Car()</code> Heap memory mein naya Car object banta hai aur constructor chalta hai.</div>
+          <div class="x-si x-si3"><code>myCar = ...</code> Reference ab heap ke object ka address point karta hai. Object ready hai!</div>
+        </div>
+
+        <div class="x-memory">
+          <div class="x-mem-box"><small>STACK</small><div class="x-ref">myCar</div></div>
+          <div class="x-arrow"><i class="ph ph-arrow-right"></i></div>
+          <div class="x-mem-box"><small>HEAP</small><div class="x-obj"><i class="ph ph-car"></i> Car object</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- D. Access modifiers -->
+    <section class="content-section x-section">
+      <h2 class="section-title"><i class="ph ph-shield-check"></i> Access Modifiers</h2>
+      <div class="x-modifiers">
+        <div class="x-mod" style="--i:0"><b>public</b><span>Kahin se bhi access</span><div class="x-bar"><i style="width:100%"></i></div></div>
+        <div class="x-mod" style="--i:1"><b>protected</b><span>Same package + subclasses</span><div class="x-bar"><i style="width:70%"></i></div></div>
+        <div class="x-mod" style="--i:2"><b>default</b><span>Sirf same package</span><div class="x-bar"><i style="width:45%"></i></div></div>
+        <div class="x-mod" style="--i:3"><b>private</b><span>Sirf apni class ke andar</span><div class="x-bar"><i style="width:15%"></i></div></div>
+      </div>
+    </section>
+
+    <!-- E. Mini quiz -->
+    <section class="content-section x-section">
+      <h2 class="section-title"><i class="ph ph-question"></i> Quick Quiz</h2>
+
+      <div class="x-quiz">
+        <p class="x-q"><strong>Q1.</strong> Object kis keyword se banta hai?</p>
+        <input type="radio" name="x-q1" id="x-q1a" class="wrong"><label for="x-q1a">class</label>
+        <input type="radio" name="x-q1" id="x-q1b" class="right"><label for="x-q1b">new</label>
+        <input type="radio" name="x-q1" id="x-q1c" class="wrong"><label for="x-q1c">this</label>
+        <div class="x-fb x-fb-ok">✅ Sahi! <code>new</code> heap mein object banata hai.</div>
+        <div class="x-fb x-fb-no">❌ Galat. Dobara try karo.</div>
+      </div>
+
+      <div class="x-quiz">
+        <p class="x-q"><strong>Q2.</strong> Data hiding kis pillar se hoti hai?</p>
+        <input type="radio" name="x-q2" id="x-q2a" class="right"><label for="x-q2a">Encapsulation</label>
+        <input type="radio" name="x-q2" id="x-q2b" class="wrong"><label for="x-q2b">Polymorphism</label>
+        <input type="radio" name="x-q2" id="x-q2c" class="wrong"><label for="x-q2c">Inheritance</label>
+        <div class="x-fb x-fb-ok">✅ Bilkul! Private fields + getters/setters.</div>
+        <div class="x-fb x-fb-no">❌ Galat. Hint: lock icon yaad karo 🔒</div>
+      </div>
+    </section>
+
+    <!-- ═══════════ NEW CONTENT END ═══════════ -->
+
   </main>
 
   <!-- Completion Action -->
