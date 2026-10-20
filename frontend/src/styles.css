@@ -49,6 +49,8 @@
   --surface:         #151920;
   --surface-hover:   #1c2129;
   --border:          rgba(255, 255, 255, 0.08);
+  --border-color:    rgba(255, 255, 255, 0.08);
+  --text-color:      #f4f6f8;
 
   /* ── Glassmorphism — Dark ────────────────────────────────── */
   --glass-bg:        hsla(223, 22%, 11%, 0.80);
@@ -224,6 +226,8 @@
   --surface:         #ffffff;
   --surface-hover:   hsl(210, 18%, 92%);
   --border:          hsla(220, 14%, 18%, 0.13);
+  --border-color:    hsla(220, 14%, 18%, 0.13);
+  --text-color:      hsl(220, 26%, 12%);
 
   /* ── Glassmorphism — Light ────────────────────────────────── */
   --glass-bg:        hsla(0, 0%, 100%, 0.82);

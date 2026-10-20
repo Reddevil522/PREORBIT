@@ -103,8 +103,9 @@ export class SidebarComponent implements OnInit {
       { label: 'Career',    route: '/career',    icon: 'ph ph-briefcase'  },
       { label: 'Placement', route: '/placement', icon: 'ph ph-target'     },
       { label: 'Java DSA',  route: '/java-dsa',  icon: 'ph ph-code'       },
-      { label: 'Aptitude',  route: '/aptitude',  icon: 'ph ph-brain'      },
-      { label: 'Core CS',   route: '/core-cs',   icon: 'ph ph-cpu'        },
+      { label: 'Aptitude',    route: '/aptitude',    icon: 'ph ph-brain'      },
+      { label: 'Core CS',     route: '/core-cs',     icon: 'ph ph-cpu'        },
+      { label: 'CDS English', route: '/cds/english', icon: 'ph ph-medal'      },
     ];
     
     if (this.auth.isAdmin()) {

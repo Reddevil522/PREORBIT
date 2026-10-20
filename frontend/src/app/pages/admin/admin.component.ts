@@ -1,11 +1,14 @@
-import { Component, ChangeDetectorRef, NgZone, OnInit } from '@angular/core';
+import { Component, ChangeDetectorRef, NgZone, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { AdminTestService } from '../../core/services/admin-test.service';
+import { grammarChapters, vocabularyChapters, readingComprehensionChapters } from '../../config/cds-english.config';
+import { ThemeService } from '../../core/services/theme.service';
 
 interface ValidationError {
   questionNumber: number | string;
@@ -16,17 +19,71 @@ interface ValidationError {
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
+  protected readonly theme = inject(ThemeService);
   selectedFile: File | null = null;
   
   // Context from query parameters
   expectedTestId: string | null = null;
   expectedChapterSlug: string | null = null;
   isReplace: boolean = false;
+
+  // Module & Subject Hierarchy
+  selectedModule: string = '';
+  selectedSubject: string = '';
+  selectedSection: string = '';
+  selectedChapter: string = '';
+
+  availableModules = [
+    { value: '', label: 'Auto-detect from JSON' },
+    { value: 'cds', label: 'CDS (Combined Defence Services)' },
+    { value: 'aptitude', label: 'Aptitude' },
+    { value: 'core-cs', label: 'Core CS' },
+    { value: 'java-dsa', label: 'Java DSA' }
+  ];
+
+  cdsSections = [
+    { value: 'grammar', label: 'Grammar (20 MCQs)' },
+    { value: 'vocabulary', label: 'Vocabulary (20 MCQs)' },
+    { value: 'reading-comprehension', label: 'Reading Comprehension (10 MCQs / 2 Passages)' }
+  ];
+
+  get availableChaptersList(): { slug: string; title: string }[] {
+    if (this.selectedModule === 'cds') {
+      if (this.selectedSection === 'grammar') {
+        return grammarChapters.map(c => ({ slug: c.slug, title: c.title }));
+      }
+      if (this.selectedSection === 'vocabulary') {
+        return vocabularyChapters.map(c => ({ slug: c.slug, title: c.title }));
+      }
+      if (this.selectedSection === 'reading-comprehension') {
+        return readingComprehensionChapters.map(c => ({ slug: c.slug, title: c.title }));
+      }
+    }
+    return [];
+  }
+
+  onModuleChange(val: string) {
+    this.selectedModule = val;
+    if (val === 'cds') {
+      this.selectedSubject = 'english';
+      this.selectedSection = 'grammar';
+      this.selectedChapter = '';
+    } else {
+      this.selectedSubject = '';
+      this.selectedSection = '';
+      this.selectedChapter = '';
+    }
+  }
+
+  onSectionChange(val: string) {
+    this.selectedSection = val;
+    this.selectedChapter = '';
+  }
   
   // State
   isUploading = false;
@@ -140,6 +197,44 @@ export class AdminComponent implements OnInit {
             this.parsedJson = null;
             this.cdr.detectChanges();
             return;
+          }
+
+          // Validate or apply UI hierarchy selection if specified
+          if (this.selectedModule) {
+            if (this.parsedJson.module && this.parsedJson.module !== this.selectedModule) {
+              this.generalError = `Module Mismatch: Uploaded JSON specifies module '${this.parsedJson.module}', but '${this.selectedModule}' was selected.`;
+              this.isUploading = false;
+              this.parsedJson = null;
+              this.cdr.detectChanges();
+              return;
+            }
+            this.parsedJson.module = this.selectedModule;
+          }
+
+          if (this.selectedModule === 'cds') {
+            if (this.selectedSubject) {
+              this.parsedJson.subject = this.selectedSubject;
+            }
+            if (this.selectedSection) {
+              if (this.parsedJson.section && this.parsedJson.section !== this.selectedSection) {
+                this.generalError = `Section Mismatch: Uploaded JSON specifies section '${this.parsedJson.section}', but '${this.selectedSection}' was selected.`;
+                this.isUploading = false;
+                this.parsedJson = null;
+                this.cdr.detectChanges();
+                return;
+              }
+              this.parsedJson.section = this.selectedSection;
+            }
+            if (this.selectedChapter) {
+              if (this.parsedJson.chapterSlug && this.parsedJson.chapterSlug !== this.selectedChapter) {
+                this.generalError = `Chapter Mismatch: Uploaded JSON specifies chapter '${this.parsedJson.chapterSlug}', but '${this.selectedChapter}' was selected.`;
+                this.isUploading = false;
+                this.parsedJson = null;
+                this.cdr.detectChanges();
+                return;
+              }
+              this.parsedJson.chapterSlug = this.selectedChapter;
+            }
           }
 
           this.sendForPreview(this.parsedJson);

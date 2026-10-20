@@ -1,10 +1,12 @@
 const JavaDSAQuestion = require('../../models/java-dsa/JavaDSAQuestion');
 const AptitudeQuestion = require('../../models/aptitude/AptitudeQuestion');
+const CDSEnglishQuestion = require('../../models/cds/CDSEnglishQuestion');
 const OOPQuestion = require('../../models/core-cs/OOPQuestion');
 const DBMSQuestion = require('../../models/core-cs/DBMSQuestion');
 const OSQuestion = require('../../models/core-cs/OSQuestion');
 const CNQuestion = require('../../models/core-cs/CNQuestion');
 const SQLQuestion = require('../../models/core-cs/SQLQuestion');
+const CDSTestValidationService = require('../cds/CDSTestValidationService');
 const TestStatusService = require('./TestStatusService');
 const PracticeTest = require('../../models/PracticeTest');
 const ImportHistory = require('../../models/admin/ImportHistory');
@@ -47,6 +49,39 @@ class QuestionImportService {
       }
       if (!chapterSlug) errors.push({ questionNumber: 'Metadata', field: 'chapterSlug', message: 'Missing "chapterSlug" for aptitude' });
       Model = AptitudeQuestion;
+    } else if (moduleName === 'cds') {
+      const validCdsSections = ['grammar', 'vocabulary', 'reading-comprehension'];
+      const rawSection = jsonObj.section;
+      const rawSubject = subject;
+      
+      let cdsSection = null;
+      if (rawSection && validCdsSections.includes(rawSection)) {
+        cdsSection = rawSection;
+      } else if (rawSubject && validCdsSections.includes(rawSubject)) {
+        cdsSection = rawSubject;
+      }
+
+      if (!cdsSection) {
+        errors.push({
+          questionNumber: 'Metadata',
+          field: 'section',
+          message: 'Invalid or missing section for CDS English. Must be "grammar", "vocabulary", or "reading-comprehension".'
+        });
+      }
+
+      if (rawSubject && rawSubject !== 'english' && !validCdsSections.includes(rawSubject)) {
+        errors.push({
+          questionNumber: 'Metadata',
+          field: 'subject',
+          message: 'Invalid subject for CDS. Must be "english".'
+        });
+      }
+
+      if (!chapterSlug) {
+        errors.push({ questionNumber: 'Metadata', field: 'chapterSlug', message: 'Missing "chapterSlug" for CDS English.' });
+      }
+
+      Model = CDSEnglishQuestion;
     } else if (moduleName === 'core-cs') {
       if (!subject) errors.push({ questionNumber: 'Metadata', field: 'subject', message: 'Missing "subject" for core-cs' });
       if (!chapterSlug) errors.push({ questionNumber: 'Metadata', field: 'chapterSlug', message: 'Missing "chapterSlug" for core-cs' });
@@ -87,6 +122,17 @@ class QuestionImportService {
     } else if (moduleName === 'aptitude') {
       if (totalQuestions !== 15) {
         errors.push({ questionNumber: 'Composition', field: 'totalQuestions', message: `Aptitude tests must contain exactly 15 questions. Found ${totalQuestions}.` });
+      }
+    } else if (moduleName === 'cds') {
+      const validCdsSections = ['grammar', 'vocabulary', 'reading-comprehension'];
+      const cdsSection = jsonObj.section || (validCdsSections.includes(subject) ? subject : null);
+      const expectedCount = (cdsSection === 'reading-comprehension') ? 10 : 20;
+      if (totalQuestions !== expectedCount) {
+        errors.push({
+          questionNumber: 'Composition',
+          field: 'totalQuestions',
+          message: `CDS ${cdsSection || 'English'} test must contain exactly ${expectedCount} questions; ${totalQuestions} were detected.`
+        });
       }
     }
 
@@ -133,6 +179,9 @@ class QuestionImportService {
         } else if (!optionKeys.has(q.correctAnswer)) {
           errors.push({ questionNumber: qNum, field: 'correctAnswer', message: `Invalid correctAnswer "${q.correctAnswer}" (must match an option key)` });
         }
+      } else if (moduleName === 'cds') {
+        const mcqErrors = CDSTestValidationService.validateMCQQuestion(q, qNum);
+        mcqErrors.forEach(err => errors.push({ questionNumber: qNum, field: 'question', message: err }));
       } else if (moduleName === 'java-dsa' || moduleName === 'core-cs') {
         if (q.questionType !== 'mcq' && q.questionType !== 'multiple-choice') {
           errors.push({ questionNumber: qNum, field: 'questionType', message: `Invalid questionType "${q.questionType}"` });
@@ -165,6 +214,24 @@ class QuestionImportService {
     } else if (moduleName === 'aptitude') {
        if (multipleChoiceCount > 0) {
         errors.push({ questionNumber: 'Composition', field: 'types', message: `Aptitude tests do not support "multiple-choice" type questions.` });
+      }
+    } else if (moduleName === 'cds') {
+      const validCdsSections = ['grammar', 'vocabulary', 'reading-comprehension'];
+      const cdsSection = jsonObj.section || (validCdsSections.includes(subject) ? subject : null);
+      if (multipleChoiceCount > 0) {
+        errors.push({ questionNumber: 'Composition', field: 'types', message: `CDS tests only support single-choice "mcq" questions.` });
+      }
+      const cdsResult = CDSTestValidationService.validateCDSTest({
+        ...jsonObj,
+        module: 'cds',
+        section: cdsSection,
+        questions,
+        passages: jsonObj.passages
+      });
+      if (!cdsResult.valid) {
+        cdsResult.errors.forEach(err => {
+          errors.push({ questionNumber: 'CDS Rule', field: 'composition', message: err });
+        });
       }
     }
     if (errors.length > 0) {
@@ -213,11 +280,17 @@ class QuestionImportService {
       return { valid: false, errors };
     }
 
+    const validCdsSections = ['grammar', 'vocabulary', 'reading-comprehension'];
+    const resolvedCdsSection = (moduleName === 'cds')
+      ? (jsonObj.section || (validCdsSections.includes(subject) ? subject : undefined))
+      : undefined;
+
     const result = {
       valid: true,
       summary: {
         module: moduleName,
-        subject: subject || moduleName,
+        subject: moduleName === 'cds' ? 'english' : (subject || moduleName),
+        section: moduleName === 'cds' ? resolvedCdsSection : (moduleName === 'aptitude' ? subject : undefined),
         chapterSlug,
         testId,
         testNumber,
@@ -249,13 +322,16 @@ class QuestionImportService {
       ...q,
       chapterSlug: summary.chapterSlug,
       testId: summary.testId,
-      ...(summary.module === 'aptitude' ? { section: summary.subject } : {})
+      ...(summary.module === 'aptitude' ? { section: summary.subject } : {}),
+      ...(summary.module === 'cds' ? { section: summary.section, subject: 'english' } : {})
     }));
 
     if (isReplace) {
       const deleteQuery = { chapterSlug: summary.chapterSlug, testId: summary.testId };
       if (summary.module === 'aptitude') {
         deleteQuery.section = summary.subject;
+      } else if (summary.module === 'cds') {
+        deleteQuery.section = summary.section;
       }
       await Model.deleteMany(deleteQuery);
     }
@@ -264,8 +340,8 @@ class QuestionImportService {
 
     await TestStatusService.updateStatus({
       module: summary.module,
-      subject: summary.module === 'core-cs' ? summary.subject : undefined,
-      section: summary.module === 'aptitude' ? summary.subject : undefined,
+      subject: summary.module === 'cds' ? 'english' : (summary.module === 'core-cs' ? summary.subject : undefined),
+      section: summary.module === 'cds' ? summary.section : (summary.module === 'aptitude' ? summary.subject : undefined),
       chapterSlug: summary.chapterSlug,
       testId: summary.testId,
       testName: jsonObj.testName,
@@ -275,8 +351,8 @@ class QuestionImportService {
 
     await ImportHistory.create({
       module: summary.module,
-      subject: summary.module === 'core-cs' ? summary.subject : undefined,
-      section: summary.module === 'aptitude' ? summary.subject : undefined,
+      subject: summary.module === 'cds' ? 'english' : (summary.module === 'core-cs' ? summary.subject : undefined),
+      section: summary.module === 'cds' ? summary.section : (summary.module === 'aptitude' ? summary.subject : undefined),
       chapterSlug: summary.chapterSlug,
       testId: summary.testId,
       testName: jsonObj.testName,

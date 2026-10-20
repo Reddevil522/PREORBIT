@@ -28,7 +28,7 @@ class AptitudeQuestionService {
       testId: data.testId,
       question: data.question
     });
-    
+
     if (existing) {
       throw new Error('Question already exists in this test');
     }

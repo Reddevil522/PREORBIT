@@ -1,0 +1,90 @@
+<div class="theory-container fade-in">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-title-area">
+        <a [routerLink]="['/cds/english', section()]" class="back-btn" title="Back to section">
+          <i class="ph ph-arrow-left"></i>
+        </a>
+        <div class="header-text">
+          <h1>{{ title() }}</h1>
+          <p>Learn core concepts and rules ({{ filteredChapters().length }} Chapters)</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="search-container">
+      <i class="ph ph-magnifying-glass search-icon"></i>
+      <input 
+        type="text" 
+        placeholder="Search chapters or subtopics..." 
+        [ngModel]="searchQuery()" 
+        (ngModelChange)="searchQuery.set($event)"
+        class="search-input"
+      >
+    </div>
+  </div>
+
+  <!-- Chapters Grid -->
+  <div class="chapters-grid" *ngIf="filteredChapters().length > 0; else emptyState">
+    <a 
+      *ngFor="let chapter of filteredChapters()" 
+      [routerLink]="['/theory/cds/english', section(), chapter.slug]" 
+      class="chapter-card"
+    >
+      <div class="card-header">
+        <div class="chapter-number">{{ chapter.order | number:'2.0-0' }}</div>
+        <div class="chapter-status" [ngClass]="{
+          'status-completed': getChapterStatus(chapter.slug) === 'COMPLETED',
+          'status-progress': getChapterStatus(chapter.slug) === 'IN_PROGRESS',
+          'status-not-started': getChapterStatus(chapter.slug) === 'NOT_STARTED'
+        }">
+          <i class="ph" [ngClass]="{
+            'ph-check-circle': getChapterStatus(chapter.slug) === 'COMPLETED',
+            'ph-clock-countdown': getChapterStatus(chapter.slug) === 'IN_PROGRESS',
+            'ph-circle': getChapterStatus(chapter.slug) === 'NOT_STARTED'
+          }"></i>
+          {{ getChapterStatus(chapter.slug) === 'COMPLETED' ? 'Completed' : (getChapterStatus(chapter.slug) === 'IN_PROGRESS' ? 'In Progress' : 'Not Started') }}
+        </div>
+      </div>
+      
+      <div class="chapter-body">
+        <div class="chapter-icon">
+          <i class="ph {{ chapter.icon }}"></i>
+        </div>
+        <div class="chapter-content">
+          <h2>{{ chapter.title }}</h2>
+          <p>{{ chapter.description }}</p>
+          
+          <div class="theory-status" *ngIf="isTheoryCompleted(chapter.slug)">
+            <span class="theory-badge"><i class="ph ph-check"></i> Theory Completed</span>
+          </div>
+
+          <!-- Subtopic Pills -->
+          <div class="subtopics-preview" *ngIf="chapter.subtopics && chapter.subtopics.length > 0">
+            <span class="subtopic-tag" *ngFor="let sub of chapter.subtopics | slice:0:3">{{ sub }}</span>
+            <span class="subtopic-tag more-tag" *ngIf="chapter.subtopics.length > 3">+{{ chapter.subtopics.length - 3 }} more</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="chapter-footer">
+        <span class="open-text">Read Theory Guide</span>
+        <div class="chapter-action">
+          <i class="ph ph-arrow-right"></i>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state fade-in">
+      <div class="empty-icon">
+        <i class="ph ph-magnifying-glass-minus"></i>
+      </div>
+      <h2>No chapters found</h2>
+      <p>Try searching for a different keyword or topic.</p>
+    </div>
+  </ng-template>
+</div>

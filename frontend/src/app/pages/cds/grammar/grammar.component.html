@@ -1,0 +1,79 @@
+<div class="grammar-container fade-in">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-title-area">
+        <a routerLink="/cds/english" class="back-btn" title="Back to English Dashboard">
+          <i class="ph ph-arrow-left"></i>
+        </a>
+        <div class="header-text">
+          <h1>Grammar</h1>
+          <p>Master spotting errors, sentence structure, prepositions, voice, speech, and jumbled sentences</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards Grid -->
+  <div class="cards-grid">
+    <!-- Theory Card -->
+    <a routerLink="/cds/english/grammar/theory" class="feature-card">
+      <div class="card-header">
+        <div class="card-icon theory-icon">
+          <i class="ph ph-book-open-text"></i>
+        </div>
+        <div class="card-action">
+          <i class="ph ph-arrow-right"></i>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <h2>Grammar Theory</h2>
+        <p>Comprehensive rule breakdowns, exceptions, examples, and common grammatical pitfalls.</p>
+      </div>
+
+      <div class="card-footer">
+        <div class="progress-info">
+          <span class="progress-title">Theory Progress</span>
+          <span class="progress-stats">{{ completedTheoryCount() }} / {{ totalChapters }} Chapters Completed</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="(completedTheoryCount() / totalChapters) * 100"></div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Tests Card -->
+    <a routerLink="/cds/english/grammar/tests" class="feature-card">
+      <div class="card-header">
+        <div class="card-icon tests-icon">
+          <i class="ph ph-exam"></i>
+        </div>
+        <div class="card-action">
+          <i class="ph ph-arrow-right"></i>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <h2>Grammar Tests</h2>
+        <p>Practice chapter-wise tests under timed conditions.</p>
+        <div class="test-rules">
+          <span><i class="ph ph-stack"></i> Chapter-wise Practice</span>
+          <span><i class="ph ph-list-numbers"></i> 20 Questions per Test</span>
+          <span><i class="ph ph-check-circle"></i> Single Choice (A/B/C/D)</span>
+        </div>
+      </div>
+
+      <div class="card-footer test-summary-footer">
+        <div class="test-stat">
+          <span class="stat-value">{{ availableTestsCount() }}</span>
+          <span class="stat-label">Available</span>
+        </div>
+        <div class="test-stat">
+          <span class="stat-value">{{ completedTestsCount() }}</span>
+          <span class="stat-label">Completed</span>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>

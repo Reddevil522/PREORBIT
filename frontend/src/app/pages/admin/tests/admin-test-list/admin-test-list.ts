@@ -316,7 +316,7 @@ export class AdminTestList implements OnInit {
   getFilterLabel(filter: string): string {
     switch (filter) {
       case 'module': return this.moduleFilter
-        ? (this.moduleFilter === 'java-dsa' ? 'Java DSA' : this.moduleFilter === 'core-cs' ? 'Core CS' : 'Aptitude')
+        ? (this.moduleFilter === 'java-dsa' ? 'Java DSA' : this.moduleFilter === 'core-cs' ? 'Core CS' : this.moduleFilter === 'cds' ? 'CDS English' : 'Aptitude')
         : 'All Modules';
       case 'subject': return this.subjectFilter || 'All Subjects';
       case 'chapter': return this.chapterFilter

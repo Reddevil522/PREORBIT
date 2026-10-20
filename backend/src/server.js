@@ -39,6 +39,7 @@ const testRoutes = require('./routes/testRoutes');
 const progressRoutes   = require('./routes/progressRoutes');
 const careerRoutes     = require('./routes/careerRoutes');
 const placementRoutes  = require('./routes/placementRoutes');
+const cdsRoutes        = require('./routes/cds/cdsRoutes');
 
 // ── Create Express app ───────────────────────────────────────
 const app  = express();
@@ -122,6 +123,7 @@ app.use('/api/core-cs/dbms/questions', dbmsQuestionRoutes);
 app.use('/api/core-cs/os/questions', osQuestionRoutes);
 app.use('/api/core-cs/cn/questions', cnQuestionRoutes);
 app.use('/api/core-cs/sql/questions', sqlQuestionRoutes);
+app.use('/api/cds', cdsRoutes);
 
 // Admin Import Routes
 app.use('/api/admin/import', importRoutes);

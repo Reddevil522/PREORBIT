@@ -6,6 +6,7 @@ const { sendSuccess, sendError } = require('../utils/response');
 // Import Question Models
 const JavaDSAQuestion = require('../models/java-dsa/JavaDSAQuestion');
 const AptitudeQuestion = require('../models/aptitude/AptitudeQuestion');
+const CDSEnglishQuestion = require('../models/cds/CDSEnglishQuestion');
 const OOPQuestion = require('../models/core-cs/OOPQuestion');
 const DBMSQuestion = require('../models/core-cs/DBMSQuestion');
 const OSQuestion = require('../models/core-cs/OSQuestion');
@@ -40,7 +41,13 @@ function getValidUserId(reqUser) {
 
 // Helper to handle attempt question randomization
 async function processAttemptQuestions(test, attempt, rawQuestions) {
-  const expectedCount = (test.module === 'aptitude') ? 15 : 25;
+  let expectedCount = 25;
+  if (test.module === 'aptitude') {
+    expectedCount = 15;
+  } else if (test.module === 'cds') {
+    expectedCount = (test.subject === 'reading-comprehension' || test.section === 'reading-comprehension') ? 10 : 20;
+  }
+
   if (rawQuestions.length !== expectedCount) {
     throw new Error(`Test must contain exactly ${expectedCount} questions.`);
   }
@@ -50,7 +57,20 @@ async function processAttemptQuestions(test, attempt, rawQuestions) {
   if (attempt.questionIds && attempt.questionIds.length === expectedCount) {
     orderedQuestions = orderQuestions(rawQuestions, attempt.questionIds);
   } else {
-    orderedQuestions = shuffleArray(rawQuestions);
+    if (test.module === 'cds' && (test.subject === 'reading-comprehension' || test.section === 'reading-comprehension')) {
+      // Group by passageNumber 1 and 2, shuffle only within each passage
+      const p1Questions = rawQuestions.filter(q => Number(q.passageNumber) === 1);
+      const p2Questions = rawQuestions.filter(q => Number(q.passageNumber) === 2);
+      orderedQuestions = [...shuffleArray(p1Questions), ...shuffleArray(p2Questions)];
+    } else if (test.module === 'cds' && test.chapterSlug === 'synonyms-antonyms') {
+      // Group by subTopic 'synonym' and 'antonym', shuffle only within each half
+      const synQuestions = rawQuestions.filter(q => q.subTopic === 'synonym');
+      const antQuestions = rawQuestions.filter(q => q.subTopic === 'antonym');
+      orderedQuestions = [...shuffleArray(synQuestions), ...shuffleArray(antQuestions)];
+    } else {
+      orderedQuestions = shuffleArray(rawQuestions);
+    }
+
     const shuffledIds = orderedQuestions.map(q => q._id);
     
     const uniqueIds = new Set(shuffledIds.map(id => id.toString()));
@@ -109,9 +129,14 @@ exports.getAvailableTests = async (req, res, next) => {
     if (subject) {
       if (String(module) === 'aptitude') {
         query.section = String(subject);
+      } else if (String(module) === 'cds') {
+        query.$or = [{ subject: String(subject) }, { section: String(subject) }];
       } else {
         query.subject = String(subject);
       }
+    }
+    if (req.query.chapterSlug) {
+      query.chapterSlug = String(req.query.chapterSlug);
     }
 
     const tests = await PracticeTest.find(query)
@@ -194,7 +219,11 @@ exports.getTestSummary = async (req, res, next) => {
     if (module) query.module = String(module);
     if (subject) {
       if (String(module) === 'aptitude') query.section = String(subject);
+      else if (String(module) === 'cds') query.$or = [{ subject: String(subject) }, { section: String(subject) }];
       else query.subject = String(subject);
+    }
+    if (req.query.chapterSlug) {
+      query.chapterSlug = String(req.query.chapterSlug);
     }
 
     // 1. Get ALL tests for this module/subject (we need them all to determine sequence)
@@ -376,6 +405,8 @@ exports.startTest = async (req, res, next) => {
         default:
           return sendError(res, 400, 'Invalid Core CS subject');
       }
+    } else if (test.module === 'cds') {
+      QuestionModel = CDSEnglishQuestion;
     } else {
       return sendError(res, 400, 'Unknown test module');
     }
@@ -470,6 +501,8 @@ exports.submitTest = async (req, res, next) => {
         case 'sql': QuestionModel = SQLQuestion; break;
         default: return sendError(res, 400, 'Invalid Core CS subject');
       }
+    } else if (test.module === 'cds') {
+      QuestionModel = CDSEnglishQuestion;
     } else {
       return sendError(res, 400, 'Unknown test module');
     }
@@ -639,6 +672,8 @@ exports.resumeTest = async (req, res, next) => {
         case 'sql': QuestionModel = SQLQuestion; break;
         default: return sendError(res, 400, 'Invalid Core CS subject');
       }
+    } else if (test.module === 'cds') {
+      QuestionModel = CDSEnglishQuestion;
     } else return sendError(res, 400, 'Unknown test module');
 
     const rawQuestions = await QuestionModel.find({ testId }).lean();
@@ -716,6 +751,8 @@ exports.saveAnswer = async (req, res, next) => {
         case 'sql': QuestionModel = SQLQuestion; break;
         default: return sendError(res, 400, 'Invalid Core CS subject');
       }
+    } else if (test.module === 'cds') {
+      QuestionModel = CDSEnglishQuestion;
     } else return sendError(res, 400, 'Unknown test module');
 
     const question = await QuestionModel.findOne({ _id: questionId, testId }).lean();
@@ -813,6 +850,8 @@ exports.retakeTest = async (req, res, next) => {
         default:
           return sendError(res, 400, 'Invalid Core CS subject');
       }
+    } else if (test.module === 'cds') {
+      QuestionModel = CDSEnglishQuestion;
     } else {
       return sendError(res, 400, 'Unknown test module');
     }
@@ -886,6 +925,8 @@ exports.getTestResult = async (req, res, next) => {
         case 'sql': QuestionModel = SQLQuestion; break;
         default: return sendError(res, 400, 'Invalid Core CS subject');
       }
+    } else if (test.module === 'cds') {
+      QuestionModel = CDSEnglishQuestion;
     } else {
       return sendError(res, 400, 'Unknown test module');
     }
@@ -945,6 +986,10 @@ exports.getTestResult = async (req, res, next) => {
          question: q.question,
          options: q.options,
          questionType: q.questionType || 'mcq',
+         subTopic: q.subTopic || undefined,
+         passageNumber: q.passageNumber || undefined,
+         passageText: q.passageText || undefined,
+         passageTitle: q.passageTitle || undefined,
          studentAnswer: studentAnswer,
          correctAnswer: isMultipleChoice ? (q.correctAnswers || []) : q.correctAnswer,
          status,

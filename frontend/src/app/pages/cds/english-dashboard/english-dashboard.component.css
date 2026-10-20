@@ -1,0 +1,281 @@
+/*
+ * PREORBIT — CDS English Dashboard CSS
+ * Scope: english-dashboard.component ONLY
+ * Matched 1:1 to Core CS Cards UI Reference
+ */
+
+:host {
+  display: block;
+}
+
+.english-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Dashboard Header (Matched to Core CS) ─────────────────── */
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 3.5rem;
+}
+
+.header-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--surface, #ffffff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: var(--primary, #10b981);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.header-text h1 {
+  font-size: 2.5rem;
+  font-weight: var(--font-extrabold);
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary, #111827);
+  letter-spacing: -0.025em;
+}
+
+.header-text p {
+  font-size: 1.125rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0;
+}
+
+/* ── Cards Grid (2-Column Desktop Grid matched to Core CS) ──── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+/* ── Feature Card (Matched to Core CS) ──────────────────────── */
+.feature-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface, #ffffff);
+  padding: 2rem;
+  border-radius: 20px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border, #e5e7eb);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
+  border-color: var(--primary, #10b981);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Card Icon Container (Matched to Core CS Green Treatment) ── */
+.card-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.grammar-icon,
+.vocab-icon,
+.rc-icon {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+/* ── Circular Arrow Button (Matched to Core CS) ─────────────── */
+.card-action {
+  margin-top: auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-hover, #f3f4f6);
+  color: var(--text-secondary, #6b7280);
+  transition: all 0.2s ease;
+}
+
+.feature-card:hover .card-action {
+  margin-top: auto;
+  background: var(--primary, #10b981);
+  color: white;
+  transform: translateX(4px);
+}
+
+/* ── Card Typography (Matched to Core CS) ───────────────────── */
+.card-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.card-content h2 {
+  font-size: 1.25rem;
+  font-weight: var(--font-semibold);
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary, #111827);
+}
+
+.card-content p {
+  margin: 0 0 1.25rem 0;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+
+/* ── Action Pill Buttons (Theory & Tests, Matched to Core CS) ── */
+.module-options {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+.option-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.theory-pill {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.practice-pill {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+
+/* ── Animations ─────────────────────────────────────────────── */
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Dark Mode Overrides (Matched to Core CS Dark Theme) ─────── */
+:host-context([data-theme="dark"]) .header-icon,
+:host-context(html.dark) .header-icon {
+  background: var(--surface, #151920);
+  border-color: var(--border, rgba(255, 255, 255, 0.08));
+}
+
+:host-context([data-theme="dark"]) .header-text h1,
+:host-context([data-theme="dark"]) .card-content h2,
+:host-context(html.dark) .header-text h1,
+:host-context(html.dark) .card-content h2 {
+  color: var(--text-primary, #f4f6f8);
+}
+
+:host-context([data-theme="dark"]) .header-text p,
+:host-context([data-theme="dark"]) .card-content p,
+:host-context(html.dark) .header-text p,
+:host-context(html.dark) .card-content p {
+  color: var(--text-secondary, #aeb7c5);
+}
+
+:host-context([data-theme="dark"]) .feature-card,
+:host-context(html.dark) .feature-card {
+  background: var(--surface, #151920);
+  border-color: var(--border, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.20);
+}
+
+:host-context([data-theme="dark"]) .card-icon,
+:host-context(html.dark) .card-icon {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+}
+
+:host-context([data-theme="dark"]) .card-action,
+:host-context(html.dark) .card-action {
+  margin-top: auto;
+  background: var(--surface-hover, #1c2129);
+  color: var(--text-secondary, #b8c0cc);
+}
+
+
+
+:host-context([data-theme="dark"]) .theory-pill,
+:host-context(html.dark) .theory-pill {
+  background: rgba(59, 130, 246, 0.12);
+  color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.18);
+}
+
+:host-context([data-theme="dark"]) .practice-pill,
+:host-context(html.dark) .practice-pill {
+  background: rgba(16, 185, 129, 0.12);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.18);
+}
+
+/* ── Responsive Design (Matched to Core CS) ─────────────────── */
+@media (max-width: 900px) {
+  .cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .english-container {
+    padding: 1.5rem;
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-info, .header-info {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    width: 100% !important;
+  }
+}

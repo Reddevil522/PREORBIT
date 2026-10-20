@@ -87,11 +87,29 @@
       
       <!-- Question Section -->
       <main class="question-area">
+        <!-- Reading Comprehension Passage Display -->
+        <div class="passage-reading-card card" *ngIf="currentQuestion.passageText">
+          <div class="passage-header">
+            <span class="passage-badge">
+              <i class="ph ph-newspaper"></i> Reading Passage {{ currentQuestion.passageNumber ? '#' + currentQuestion.passageNumber : '' }}
+            </span>
+            <h3 *ngIf="currentQuestion.passageTitle">{{ currentQuestion.passageTitle }}</h3>
+          </div>
+          <div class="passage-body">
+            <p>{{ currentQuestion.passageText }}</p>
+          </div>
+        </div>
+
         <div class="question-card card">
           <div class="question-meta">
-            <span class="question-type badge" [ngClass]="{'badge-mcq': currentQuestion.questionType === 'mcq', 'badge-multi': currentQuestion.questionType === 'multiple-choice'}">
-              {{ currentQuestion.questionType === 'multiple-choice' ? 'Multiple Choice' : 'Single Choice (MCQ)' }}
-            </span>
+            <div class="meta-left">
+              <span class="question-type badge" [ngClass]="{'badge-mcq': currentQuestion.questionType === 'mcq', 'badge-multi': currentQuestion.questionType === 'multiple-choice'}">
+                {{ currentQuestion.questionType === 'multiple-choice' ? 'Multiple Choice' : 'Single Choice (MCQ)' }}
+              </span>
+              <span class="badge badge-subtopic" *ngIf="currentQuestion.subTopic">
+                {{ currentQuestion.subTopic | uppercase }}
+              </span>
+            </div>
             <span class="question-marks">{{ currentQuestion.marks }} Mark(s)</span>
           </div>
 

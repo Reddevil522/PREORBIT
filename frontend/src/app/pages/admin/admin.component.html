@@ -1,4 +1,4 @@
-<div class="admin-container">
+<div class="admin-container" [class.theme-light]="theme.isLight()" [class.theme-dark]="theme.isDark()">
   <div class="admin-header">
     <div class="header-text">
       <h1>Admin Panel</h1>
@@ -10,17 +10,79 @@
   <div class="upload-card glass-panel" *ngIf="!previewSummary && !importSuccess">
     <h2>Upload Questions (JSON)</h2>
     
-    <div class="alert warning-alert" *ngIf="isReplace" style="margin-bottom: var(--space-4);">
+    <div class="alert warning-alert" *ngIf="isReplace">
       <i class="ph ph-warning"></i>
-      <strong>Replace Mode Active:</strong> Existing questions for this test will be permanently deleted and replaced with the uploaded JSON.
+      <div>
+        <strong>Replace Mode Active:</strong> Existing questions for this test will be permanently deleted and replaced with the uploaded JSON.
+      </div>
     </div>
 
     <p class="subtitle" *ngIf="!expectedTestId">Select a .json file containing the questions metadata and content to preview it.</p>
     <p class="subtitle" *ngIf="expectedTestId">Uploading questions for: <strong>{{ expectedChapterSlug }} / {{ expectedTestId }}</strong></p>
 
+    <!-- Target Module & Chapter Hierarchy Selector -->
+    <div class="hierarchy-selector-section">
+      <div class="hierarchy-title">
+        Test Destination Hierarchy (Optional if defined in JSON)
+      </div>
+      <div class="hierarchy-grid">
+        <div class="form-group">
+          <label for="moduleSelect" class="form-label">Module</label>
+          <div class="select-wrapper">
+            <select
+              id="moduleSelect"
+              class="dash__input dash__select"
+              [class.is-placeholder]="!selectedModule"
+              [ngModel]="selectedModule"
+              (ngModelChange)="onModuleChange($event)">
+              <option *ngFor="let m of availableModules" [value]="m.value" [class.option-placeholder]="!m.value">
+                {{ m.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="selectedModule === 'cds'">
+          <label class="form-label">Subject</label>
+          <input type="text" class="dash__input dash__input-disabled" value="English" disabled />
+        </div>
+
+        <div class="form-group" *ngIf="selectedModule === 'cds'">
+          <label for="sectionSelect" class="form-label">Section</label>
+          <div class="select-wrapper">
+            <select
+              id="sectionSelect"
+              class="dash__input dash__select"
+              [ngModel]="selectedSection"
+              (ngModelChange)="onSectionChange($event)">
+              <option *ngFor="let s of cdsSections" [value]="s.value">
+                {{ s.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="selectedModule === 'cds' && availableChaptersList.length > 0">
+          <label for="chapterSelect" class="form-label">Chapter</label>
+          <div class="select-wrapper">
+            <select
+              id="chapterSelect"
+              class="dash__input dash__select"
+              [class.is-placeholder]="!selectedChapter"
+              [(ngModel)]="selectedChapter">
+              <option value="" class="option-placeholder">-- Select Chapter --</option>
+              <option *ngFor="let ch of availableChaptersList" [value]="ch.slug">
+                {{ ch.title }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="file-upload-wrapper">
       <input type="file" id="jsonUpload" accept=".json,application/json" (change)="onFileSelected($event)" class="file-input" />
-      <label for="jsonUpload" class="file-label">
+      <label for="jsonUpload" class="file-label" [class.has-file]="!!selectedFile">
         <i class="ph ph-file-arrow-up icon"></i>
         <span class="text">{{ selectedFile ? selectedFile.name : 'Select JSON File' }}</span>
       </label>
@@ -33,23 +95,27 @@
 
     <!-- General Error -->
     <div class="alert error-alert" *ngIf="generalError">
-      <strong>Error:</strong> {{ generalError }}
+      <i class="ph ph-warning-circle error-icon"></i>
+      <div>
+        <strong>Error:</strong> {{ generalError }}
+      </div>
     </div>
 
     <!-- Validation Errors List -->
     <div class="alert error-alert" *ngIf="validationErrors.length > 0">
-      <h3>Validation Failed</h3>
+      <h3><i class="ph ph-x-circle error-icon"></i> Validation Failed</h3>
       <ul class="error-list">
         <li *ngFor="let err of validationErrors">
           <i class="ph ph-x-circle error-icon"></i>
-          <strong>Question {{ err.questionNumber }}</strong>: {{ err.message }}
+          <div><strong>Question {{ err.questionNumber }}</strong>: {{ err.message }}</div>
         </li>
       </ul>
     </div>
 
     <div class="action-buttons">
       <button class="btn-primary upload-btn" [disabled]="!selectedFile || isUploading" (click)="previewFile()">
-        {{ isUploading ? 'Validating...' : 'Upload & Validate' }}
+        <i class="ph ph-spinner ph-spin" *ngIf="isUploading"></i>
+        <span>{{ isUploading ? 'Validating...' : 'Upload & Validate' }}</span>
       </button>
       <button class="btn-secondary" *ngIf="selectedFile && !isUploading" (click)="cancel()">Remove</button>
     </div>
@@ -66,11 +132,15 @@
       <div class="preview-grid">
         <div class="preview-item">
           <span class="label">Module</span>
-          <span class="value">{{ previewSummary.module }}</span>
+          <span class="value">{{ previewSummary.module | uppercase }}</span>
         </div>
         <div class="preview-item">
           <span class="label">Subject</span>
-          <span class="value">{{ previewSummary.subject }}</span>
+          <span class="value">{{ previewSummary.subject | titlecase }}</span>
+        </div>
+        <div class="preview-item" *ngIf="previewSummary.section">
+          <span class="label">Section</span>
+          <span class="value">{{ previewSummary.section | titlecase }}</span>
         </div>
         <div class="preview-item">
           <span class="label">Chapter</span>
@@ -84,11 +154,11 @@
           <span class="label">Total Questions</span>
           <span class="value">{{ previewSummary.totalQuestions }}</span>
         </div>
-        <div class="preview-item" *ngIf="previewSummary.module !== 'aptitude'">
+        <div class="preview-item" *ngIf="previewSummary.module !== 'aptitude' && previewSummary.module !== 'cds'">
           <span class="label">Multiple Choice</span>
           <span class="value">{{ previewSummary.multipleChoiceCount }}</span>
         </div>
-        <div class="preview-item" *ngIf="previewSummary.module !== 'aptitude'">
+        <div class="preview-item">
           <span class="label">MCQ</span>
           <span class="value">{{ previewSummary.mcqCount }}</span>
         </div>
@@ -110,10 +180,23 @@
       <div class="question-card glass-panel" *ngFor="let q of previewQuestions; let i = index">
         <div class="q-header">
           <span class="q-number">Question {{ i + 1 }}</span>
-          <span class="badge type-badge">{{ q.questionType || 'aptitude' }}</span>
-          <span class="badge marks-badge">{{ q.marks }} Mark</span>
+          <span class="badge type-badge">{{ q.questionType || 'mcq' }}</span>
+          <span class="badge subtopic-badge" *ngIf="q.subTopic">
+            {{ q.subTopic | uppercase }}
+          </span>
+          <span class="badge marks-badge">{{ q.marks || 1 }} Mark</span>
         </div>
         
+        <!-- Reading Passage Preview (if present) -->
+        <div class="q-passage-box" *ngIf="q.passageText">
+          <div class="passage-box-header">
+            <i class="ph ph-newspaper"></i> Reading Passage {{ q.passageNumber ? '#' + q.passageNumber : '' }} {{ q.passageTitle ? '— ' + q.passageTitle : '' }}
+          </div>
+          <div class="passage-box-content">
+            {{ q.passageText }}
+          </div>
+        </div>
+
         <p class="q-text">{{ q.question }}</p>
         
         <div class="options-list">
@@ -146,13 +229,15 @@
         <div class="detail-row"><span>Questions:</span> <strong>{{ previewSummary?.totalQuestions }}</strong></div>
         <div class="preview-item">
           <span class="label">Questions Found</span>
-          <span class="value badge count-badge">{{ previewSummary.questionCount }}</span>
+          <span class="value badge count-badge">{{ previewSummary?.questionCount || previewSummary?.totalQuestions }}</span>
         </div>
       </div>
       
-      <div class="alert warning-alert" *ngIf="isReplace" style="margin-top: var(--space-4);">
+      <div class="alert warning-alert" *ngIf="isReplace">
         <i class="ph ph-warning"></i>
-        <strong>Warning:</strong> Importing will delete the previous questions for this test.
+        <div>
+          <strong>Warning:</strong> Importing will delete the previous questions for this test.
+        </div>
       </div>
 
       <div class="action-buttons right-align mt-6">

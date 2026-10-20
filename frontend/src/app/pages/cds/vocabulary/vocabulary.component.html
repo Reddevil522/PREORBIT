@@ -1,0 +1,90 @@
+<div class="vocabulary-container fade-in">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-title-area">
+        <a routerLink="/cds/english" class="back-btn" title="Back to English Dashboard">
+          <i class="ph ph-arrow-left"></i>
+        </a>
+        <div class="header-text">
+          <h1>Vocabulary</h1>
+          <p>Master exam vocabulary, idioms, substitution, spelling, and contextual cloze passages</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Special Banner for Combined Synonyms & Antonyms -->
+    <div class="format-banner">
+      <div class="banner-icon">
+        <i class="ph-fill ph-info"></i>
+      </div>
+      <div class="banner-body">
+        <strong>Structure Notice: Synonyms & Antonyms is 1 Combined Chapter</strong>
+        <p>Each Synonyms & Antonyms test features exactly 20 MCQs: Questions 1–10 are Synonyms and Questions 11–20 are Antonyms.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards Grid -->
+  <div class="cards-grid">
+    <!-- Theory Card -->
+    <a routerLink="/cds/english/vocabulary/theory" class="feature-card">
+      <div class="card-header">
+        <div class="card-icon theory-icon">
+          <i class="ph ph-book-open-text"></i>
+        </div>
+        <div class="card-action">
+          <i class="ph ph-arrow-right"></i>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <h2>Vocabulary Theory</h2>
+        <p>High-frequency word lists, root words, prefixes/suffixes, idiom origins, and contextual sentence examples.</p>
+      </div>
+
+      <div class="card-footer">
+        <div class="progress-info">
+          <span class="progress-title">Theory Progress</span>
+          <span class="progress-stats">{{ completedTheoryCount() }} / {{ totalChapters }} Chapters Completed</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="(completedTheoryCount() / totalChapters) * 100"></div>
+        </div>
+      </div>
+    </a>
+
+    <!-- Tests Card -->
+    <a routerLink="/cds/english/vocabulary/tests" class="feature-card">
+      <div class="card-header">
+        <div class="card-icon tests-icon">
+          <i class="ph ph-exam"></i>
+        </div>
+        <div class="card-action">
+          <i class="ph ph-arrow-right"></i>
+        </div>
+      </div>
+
+      <div class="card-content">
+        <h2>Vocabulary Tests</h2>
+        <p>Timed MCQ tests covering all vocabulary categories.</p>
+        <div class="test-rules">
+          <span><i class="ph ph-stack"></i> 20 Questions per Test</span>
+          <span><i class="ph ph-arrows-left-right"></i> 10 Synonyms + 10 Antonyms in Combined Test</span>
+          <span><i class="ph ph-check-circle"></i> Single Choice (A/B/C/D)</span>
+        </div>
+      </div>
+
+      <div class="card-footer test-summary-footer">
+        <div class="test-stat">
+          <span class="stat-value">{{ availableTestsCount() }}</span>
+          <span class="stat-label">Available</span>
+        </div>
+        <div class="test-stat">
+          <span class="stat-value">{{ completedTestsCount() }}</span>
+          <span class="stat-label">Completed</span>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>

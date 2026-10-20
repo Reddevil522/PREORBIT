@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--text-color);">Test Configuration</h3>
+      <h3 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--text-primary);">Test Configuration</h3>
       <div class="test-stats-grid">
         <div class="stat-box">
           <div class="stat-num">{{ test.configuration?.totalQuestions || test.questionCount }}</div>
@@ -84,11 +84,11 @@
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3); flex-wrap: wrap; gap: var(--space-3);">
         <h2 style="margin: 0;">Question List ({{ questions.length }})</h2>
         <div style="flex: 1; max-width: 300px;">
-          <input type="text" class="dash__input" [(ngModel)]="searchQuery" (input)="onSearchChange()" placeholder="Search questions..." style="width: 100%; padding: var(--space-2); border: 1px solid var(--border-color); border-radius: var(--radius-md);">
+          <input type="text" class="dash__input" [(ngModel)]="searchQuery" (input)="onSearchChange()" placeholder="Search questions..." style="width: 100%; padding: var(--space-2); border: 1px solid var(--border-default); border-radius: var(--radius-md);">
         </div>
       </div>
 
-      <div class="empty-state" *ngIf="filteredQuestions.length === 0" style="text-align: center; padding: var(--space-6) 0; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border-color); color: var(--text-muted); margin-top: var(--space-4);">
+      <div class="empty-state" *ngIf="filteredQuestions.length === 0" style="text-align: center; padding: var(--space-6) 0; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px dashed var(--border-default); color: var(--text-muted); margin-top: var(--space-4);">
         <i class="ph ph-file-dashed" style="font-size: 2.5rem; margin-bottom: var(--space-3);"></i>
         <h3>No Questions</h3>
         <p>This test currently has no questions matching your criteria.</p>
@@ -100,11 +100,24 @@
           <span class="q-number">Question {{ (currentPage - 1) * pageSize + i + 1 }}</span>
           <div class="q-tags">
             <span class="badge type-badge">{{ q.questionType }}</span>
+            <span class="badge" *ngIf="q.subTopic" style="background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.25);">
+              {{ q.subTopic | uppercase }}
+            </span>
             <span class="badge marks-badge">{{ q.marks || 1 }} Mark(s)</span>
           </div>
         </div>
 
         <div class="q-body">
+          <!-- Reading Passage Info (if present) -->
+          <div class="q-passage-box" *ngIf="q.passageText" style="margin-bottom: var(--space-3); padding: var(--space-3); background: rgba(245, 158, 11, 0.08); border-left: 3px solid #f59e0b; border-radius: var(--radius-sm);">
+            <div style="font-weight: 600; font-size: 0.85rem; color: #d97706; margin-bottom: 4px;">
+              <i class="ph ph-newspaper"></i> Reading Passage {{ q.passageNumber ? '#' + q.passageNumber : '' }} {{ q.passageTitle ? '— ' + q.passageTitle : '' }}
+            </div>
+            <div style="font-size: 0.85rem; line-height: 1.5; color: var(--text-primary); max-height: 120px; overflow-y: auto;">
+              {{ q.passageText }}
+            </div>
+          </div>
+
           <p class="q-text">{{ q.question }}</p>
           
           <div class="q-options">

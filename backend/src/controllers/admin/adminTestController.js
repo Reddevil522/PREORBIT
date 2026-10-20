@@ -105,7 +105,7 @@ exports.getTestById = async (req, res, next) => {
     }
 
     const questions = await Model.find(questionQuery)
-      .select('question options questionType correctAnswer correctAnswers marks explanation')
+      .select('question options questionType correctAnswer correctAnswers marks explanation subTopic passageNumber passageText passageTitle')
       .lean();
 
     return sendSuccess(res, 200, 'Test details retrieved successfully', {
@@ -147,6 +147,8 @@ exports.deleteTest = async (req, res, next) => {
     // 3. Build query to delete associated questions
     const questionQuery = { chapterSlug: test.chapterSlug, testId: test.testId };
     if (test.module === 'aptitude') {
+      questionQuery.section = test.section;
+    } else if (test.module === 'cds' && test.section) {
       questionQuery.section = test.section;
     }
 

@@ -148,6 +148,65 @@ export const routes: Routes = [
         title: 'Aptitude Practice — PREORBIT',
       },
 
+      // ── CDS English ──────────────────────────────────────
+      {
+        path: 'cds/english',
+        pathMatch: 'full',
+        loadComponent: () =>
+          import('./pages/cds/english-dashboard/english-dashboard.component').then(
+            (m) => m.EnglishDashboardComponent
+          ),
+        title: 'CDS English — PREORBIT',
+      },
+      {
+        path: 'cds/english/grammar',
+        loadComponent: () =>
+          import('./pages/cds/grammar/grammar.component').then(
+            (m) => m.GrammarComponent
+          ),
+        title: 'CDS Grammar — PREORBIT',
+      },
+      {
+        path: 'cds/english/vocabulary',
+        loadComponent: () =>
+          import('./pages/cds/vocabulary/vocabulary.component').then(
+            (m) => m.VocabularyComponent
+          ),
+        title: 'CDS Vocabulary — PREORBIT',
+      },
+      {
+        path: 'cds/english/reading-comprehension',
+        loadComponent: () =>
+          import('./pages/cds/reading-comprehension/reading-comprehension.component').then(
+            (m) => m.ReadingComprehensionComponent
+          ),
+        title: 'CDS Reading Comprehension — PREORBIT',
+      },
+      {
+        path: 'cds/english/:section/theory',
+        loadComponent: () =>
+          import('./pages/cds/section-theory/section-theory.component').then(
+            (m) => m.CdsSectionTheoryComponent
+          ),
+        title: 'CDS English Theory — PREORBIT',
+      },
+      {
+        path: 'cds/english/:section/tests',
+        loadComponent: () =>
+          import('./pages/cds/section-practice/section-practice.component').then(
+            (m) => m.CdsSectionPracticeComponent
+          ),
+        title: 'CDS English Tests — PREORBIT',
+      },
+      {
+        path: 'theory/cds/english/:section/:chapterSlug',
+        loadComponent: () =>
+          import('./pages/cds/theory-reader/theory-reader.component').then(
+            (m) => m.TheoryReaderComponent
+          ),
+        title: 'CDS English Theory Guide — PREORBIT',
+      },
+
       // ── Core CS ─────────────────────────────────────────
       {
         path: 'core-cs',

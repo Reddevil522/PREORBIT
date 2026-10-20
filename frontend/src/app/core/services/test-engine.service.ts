@@ -17,6 +17,10 @@ export interface SanitizedQuestion {
   options: TestOption[];
   questionType: 'mcq' | 'multiple-choice';
   marks: number;
+  subTopic?: 'synonym' | 'antonym' | string;
+  passageNumber?: number;
+  passageText?: string;
+  passageTitle?: string;
   // Note: correctAnswer and explanation are omitted for security
 }
 

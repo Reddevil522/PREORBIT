@@ -1,6 +1,7 @@
 const PracticeTest = require('../../models/PracticeTest');
 const JavaDSAQuestion = require('../../models/java-dsa/JavaDSAQuestion');
 const AptitudeQuestion = require('../../models/aptitude/AptitudeQuestion');
+const CDSEnglishQuestion = require('../../models/cds/CDSEnglishQuestion');
 const OOPQuestion = require('../../models/core-cs/OOPQuestion');
 const DBMSQuestion = require('../../models/core-cs/DBMSQuestion');
 const OSQuestion = require('../../models/core-cs/OSQuestion');
@@ -13,6 +14,7 @@ class TestStatusService {
   getModel(module, subject) {
     if (module === 'java-dsa') return JavaDSAQuestion;
     if (module === 'aptitude') return AptitudeQuestion;
+    if (module === 'cds') return CDSEnglishQuestion;
     if (module === 'core-cs') {
       const coreCsModels = {
         'oop': OOPQuestion,
@@ -27,7 +29,7 @@ class TestStatusService {
   }
 
   // Helper to check test requirements
-  validateRequirements(module, totalQuestions, multipleChoiceCount, mcqCount, totalMarks) {
+  validateRequirements(module, totalQuestions, multipleChoiceCount, mcqCount, totalMarks, subject, section) {
     if (module === 'java-dsa' || module === 'core-cs') {
       if (totalQuestions === 25 && multipleChoiceCount === 5 && mcqCount === 20 && totalMarks === 25) {
         return { status: 'available', reason: null };
@@ -44,6 +46,16 @@ class TestStatusService {
         status: 'incomplete', 
         reason: `Missing requirements: Expected 15 questions (15 marks). Found ${totalQuestions} questions (${totalMarks} marks).` 
       };
+    } else if (module === 'cds') {
+      const isRC = (subject === 'reading-comprehension' || section === 'reading-comprehension');
+      const expectedTotal = isRC ? 10 : 20;
+      if (totalQuestions === expectedTotal && mcqCount === expectedTotal && multipleChoiceCount === 0 && totalMarks === expectedTotal) {
+        return { status: 'available', reason: null };
+      }
+      return {
+        status: 'incomplete',
+        reason: `Missing requirements: Expected ${expectedTotal} MCQ questions (${expectedTotal} marks). Found ${totalQuestions} questions (${multipleChoiceCount} multiple-choice, ${mcqCount} mcq, ${totalMarks} marks).`
+      };
     }
     return { status: 'incomplete', reason: 'Invalid module requirements' };
   }
@@ -52,7 +64,7 @@ class TestStatusService {
     const { module, subject, section, chapterSlug, testId, testName, testNumber, chapterName } = metadata;
     
     // 1. Resolve Model
-    const Model = this.getModel(module, subject || section); // Use section as subject for aptitude if passed as such
+    const Model = this.getModel(module, subject || section); // Use section as subject for aptitude or cds if passed as such
     
     if (!Model) {
       throw new Error(`Invalid module or subject for TestStatusService: ${module} / ${subject}`);
@@ -82,7 +94,7 @@ class TestStatusService {
     });
 
     // 4. Validate Requirements
-    const { status } = this.validateRequirements(module, totalQuestions, multipleChoiceCount, mcqCount, totalMarks);
+    const { status } = this.validateRequirements(module, totalQuestions, multipleChoiceCount, mcqCount, totalMarks, subject, section);
 
     // 5. Upsert PracticeTest document
     // We do NOT upsert isAvailable. It defaults to false on insert, and preserves its existing value on update.

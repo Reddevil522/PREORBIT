@@ -1,0 +1,160 @@
+<div class="theory-reader-container fade-in">
+  
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="isLoading()">
+    <div class="spinner"></div>
+    <p>Loading theory guide...</p>
+  </div>
+
+  <!-- Not Found State -->
+  <div class="not-found-state" *ngIf="notFound()">
+    <div class="icon">⚠️</div>
+    <h2>Chapter Not Found</h2>
+    <p>The requested chapter theory could not be located.</p>
+    <a [routerLink]="['/cds/english', section(), 'theory']" class="btn btn-primary">Back to Chapters</a>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="theory-content" *ngIf="!isLoading() && !notFound() && theoryDoc()">
+    
+    <!-- Header Top Navigation -->
+    <header class="reader-header">
+      <div class="header-left">
+        <a [routerLink]="['/cds/english', section(), 'theory']" class="back-btn" title="Back to chapter list">
+          <i class="ph ph-arrow-left"></i>
+        </a>
+        <div class="title-meta">
+          <span class="section-badge">{{ section() | uppercase }}</span>
+          <h1>{{ theoryDoc()?.title }}</h1>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- Mark Complete Toggle Button -->
+        <button 
+          class="completion-btn" 
+          [class.completed]="isCompleted()" 
+          [disabled]="isCompleted() || isMarking()" 
+          (click)="markComplete()"
+        >
+          <i class="ph" [ngClass]="isCompleted() ? 'ph-check-circle' : 'ph-circle'"></i>
+          <span>{{ isCompleted() ? 'Theory Completed' : (isMarking() ? 'Recording...' : 'Mark as Complete') }}</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- 1. Topic Overview Block -->
+    <section class="content-block overview-block card">
+      <div class="block-header">
+        <i class="ph ph-info icon"></i>
+        <h2>Topic Overview</h2>
+      </div>
+      <p class="overview-text">{{ theoryDoc()?.overview }}</p>
+    </section>
+
+    <!-- 2. Definitions and Rules Block -->
+    <section class="content-block rules-block card">
+      <div class="block-header">
+        <i class="ph ph-list-checks icon"></i>
+        <h2>Core Rules & Guidelines</h2>
+      </div>
+      <div class="rules-list">
+        <div class="rule-item" *ngFor="let rule of theoryDoc()?.rules">
+          <h3>{{ rule.heading }}</h3>
+          <ul>
+            <li *ngFor="let point of rule.content">{{ point }}</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Exceptions Block -->
+    <section class="content-block exceptions-block card">
+      <div class="block-header">
+        <i class="ph ph-warning-circle icon"></i>
+        <h2>Important Exceptions</h2>
+      </div>
+      <ul class="exceptions-list">
+        <li *ngFor="let exc of theoryDoc()?.exceptions">
+          <i class="ph ph-caret-right"></i>
+          <span>{{ exc }}</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 4. Real Examples Block -->
+    <section class="content-block examples-block card">
+      <div class="block-header">
+        <i class="ph ph-presentation-chart icon"></i>
+        <h2>Exam Examples & Contextual Analysis</h2>
+      </div>
+      <div class="examples-grid">
+        <div class="example-card" *ngFor="let ex of theoryDoc()?.examples">
+          <span class="example-context">{{ ex.context }}</span>
+          <div class="example-comparison" *ngIf="ex.incorrect">
+            <div class="line incorrect">
+              <span class="label">Incorrect:</span>
+              <p>{{ ex.incorrect }}</p>
+            </div>
+            <div class="line correct">
+              <span class="label">Correct:</span>
+              <p>{{ ex.correct }}</p>
+            </div>
+          </div>
+          <p class="explanation"><strong>Explanation:</strong> {{ ex.explanation }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Common Mistakes Block -->
+    <section class="content-block mistakes-block card">
+      <div class="block-header">
+        <i class="ph ph-x-circle icon"></i>
+        <h2>Common Mistakes to Avoid</h2>
+      </div>
+      <div class="mistakes-list">
+        <div class="mistake-card" *ngFor="let m of theoryDoc()?.commonMistakes">
+          <div class="mistake-header">
+            <span class="mistake-tag">Pitfall</span>
+            <p class="mistake-text">{{ m.mistake }}</p>
+          </div>
+          <div class="correction-line">
+            <span class="correct-tag">Correction</span>
+            <p class="correct-text">{{ m.correction }}</p>
+          </div>
+          <p class="mistake-why"><em>Reason:</em> {{ m.why }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Revision Summary Block -->
+    <section class="content-block summary-block card">
+      <div class="block-header">
+        <i class="ph ph-bookmark-simple icon"></i>
+        <h2>Quick Revision Summary</h2>
+      </div>
+      <ul class="summary-list">
+        <li *ngFor="let pt of theoryDoc()?.revisionSummary">
+          <i class="ph ph-check"></i>
+          <span>{{ pt }}</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Bottom Action CTA -->
+    <footer class="reader-footer card">
+      <div class="footer-info">
+        <h3>Ready to test your knowledge?</h3>
+        <p>Apply these concepts under examination timing in the chapter test suite.</p>
+      </div>
+      <div class="footer-actions">
+        <a [routerLink]="['/cds/english', section(), 'tests']" class="btn btn-primary start-test-btn">
+          <i class="ph ph-exam"></i>
+          <span>Practice Chapter Tests</span>
+          <i class="ph ph-arrow-right"></i>
+        </a>
+      </div>
+    </footer>
+
+  </div>
+</div>
