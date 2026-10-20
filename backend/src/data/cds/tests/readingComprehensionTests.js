@@ -2,9 +2,188 @@
 // PREORBIT — CDS English Reading Comprehension Test Bank
 // (4 Tests x 2 Passages x 5 MCQs = 40 MCQs total across 8 Passages)
 // ============================================================
+// ── 1. Factual Comprehension Test ───────────────────────────
+const rcPassage1Text = `The geopolitical significance of the Indo-Pacific region has escalated dramatically over the past two decades. As the primary maritime highway connecting the energy-rich Persian Gulf with the burgeoning manufacturing hubs of East and Southeast Asia, the sea lanes traversing the Malacca Strait and the South China Sea sustain over sixty percent of maritime commerce globally. Ensuring unimpeded freedom of navigation, upholding a rules-based international order, and fostering multilateral security dialogues have consequently become paramount strategic objectives for littoral nations. Modern naval doctrines increasingly prioritize interoperability, joint surveillance, and maritime domain awareness across vast oceanic corridors to prevent unilateral territorial assertions and safeguard critical supply chains.`;
 
-const factualCompTest = require('../../../scripts/seedCDSTests').readingComprehensionTestData;
+const rcPassage2Text = `Artificial Intelligence (AI) and autonomous systems are fundamentally revolutionizing defense paradigms and electronic warfare. Unlike conventional platforms that rely exclusively on human decision-cycles, algorithmic systems can synthesize petabytes of multispectral surveillance telemetry in milliseconds, identifying tactical anomalies and predicting adversary maneuvers with unprecedented fidelity. However, the integration of autonomous decision algorithms into command-and-control architectures introduces profound ethical, legal, and operational dilemmas. Military strategists emphasize that preserving meaningful human-in-the-loop oversight is vital to prevent unintended escalation, mitigate catastrophic algorithmic hallucinations, and ensure accountability under international humanitarian law.`;
 
+const factualCompTest = {
+  module: 'cds',
+  section: 'reading-comprehension',
+  subject: 'reading-comprehension',
+  chapterSlug: 'factual-comprehension',
+  chapterName: 'Factual Comprehension',
+  testId: 'factual-comprehension-test-1',
+  testName: 'Factual Comprehension - Test 1',
+  testNumber: 1,
+  passages: [
+    {
+      number: 1,
+      title: 'Strategic Dynamics in the Indo-Pacific Sea Lanes',
+      text: rcPassage1Text
+    },
+    {
+      number: 2,
+      title: 'Artificial Intelligence and Modern Military Parity',
+      text: rcPassage2Text
+    }
+  ],
+  questions: [
+    // ── PASSAGE 1 QUESTIONS (Q1–5) ──────────────────────────
+    {
+      question: 'According to Passage 1, what makes the Indo-Pacific sea lanes critically important to global trade?',
+      options: [
+        { key: 'A', text: 'They connect energy suppliers in the Persian Gulf with Asian manufacturing hubs' },
+        { key: 'B', text: 'They host the world\'s largest offshore oil extraction platforms' },
+        { key: 'C', text: 'They are completely immune to geopolitical tensions and territorial disputes' },
+        { key: 'D', text: 'They are governed by a single supranational maritime authority' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'The passage explicitly states that these sea lanes connect the energy-rich Persian Gulf with the manufacturing hubs of East and Southeast Asia, carrying over sixty percent of global maritime commerce.',
+      passageNumber: 1,
+      passageText: rcPassage1Text,
+      passageTitle: 'Strategic Dynamics in the Indo-Pacific Sea Lanes',
+      marks: 1
+    },
+    {
+      question: 'Approximately what fraction of global maritime commerce passes through the Indo-Pacific corridors?',
+      options: [
+        { key: 'A', text: 'Less than twenty percent' },
+        { key: 'B', text: 'Exactly forty percent' },
+        { key: 'C', text: 'Over sixty percent' },
+        { key: 'D', text: 'Nearly ninety-five percent' }
+      ],
+      correctAnswer: 'C',
+      explanation: 'The passage directly notes that the sea lanes "sustain over sixty percent of maritime commerce globally."',
+      passageNumber: 1,
+      passageText: rcPassage1Text,
+      passageTitle: 'Strategic Dynamics in the Indo-Pacific Sea Lanes',
+      marks: 1
+    },
+    {
+      question: 'Which of the following is highlighted as a primary goal of littoral nations in the region?',
+      options: [
+        { key: 'A', text: 'Imposing unilateral transit tariffs on foreign shipping' },
+        { key: 'B', text: 'Ensuring freedom of navigation and upholding a rules-based order' },
+        { key: 'C', text: 'Privatizing port facilities across the Malacca Strait' },
+        { key: 'D', text: 'Phasing out multilateral security dialogues' }
+      ],
+      correctAnswer: 'B',
+      explanation: 'The text highlights "ensuring unimpeded freedom of navigation, upholding a rules-based international order, and fostering multilateral security dialogues".',
+      passageNumber: 1,
+      passageText: rcPassage1Text,
+      passageTitle: 'Strategic Dynamics in the Indo-Pacific Sea Lanes',
+      marks: 1
+    },
+    {
+      question: 'What do modern naval doctrines prioritize to prevent unilateral territorial assertions?',
+      options: [
+        { key: 'A', text: 'Complete isolation of regional merchant vessels' },
+        { key: 'B', text: 'Interoperability, joint surveillance, and maritime domain awareness' },
+        { key: 'C', text: 'Decommissioning maritime surveillance satellites' },
+        { key: 'D', text: 'Relying exclusively on land-based artillery batteries' }
+      ],
+      correctAnswer: 'B',
+      explanation: 'The passage mentions that "Modern naval doctrines increasingly prioritize interoperability, joint surveillance, and maritime domain awareness across vast oceanic corridors".',
+      passageNumber: 1,
+      passageText: rcPassage1Text,
+      passageTitle: 'Strategic Dynamics in the Indo-Pacific Sea Lanes',
+      marks: 1
+    },
+    {
+      question: 'The author\'s tone in Passage 1 can best be described as:',
+      options: [
+        { key: 'A', text: 'Sarcastic and dismissive' },
+        { key: 'B', text: 'Analytical and strategic' },
+        { key: 'C', text: 'Pessimistic and sensational' },
+        { key: 'D', text: 'Sentimental and nostalgic' }
+      ],
+      correctAnswer: 'B',
+      explanation: 'The author methodically explains economic statistics, strategic goals, and modern naval doctrines in an analytical and objective manner.',
+      passageNumber: 1,
+      passageText: rcPassage1Text,
+      passageTitle: 'Strategic Dynamics in the Indo-Pacific Sea Lanes',
+      marks: 1
+    },
+
+    // ── PASSAGE 2 QUESTIONS (Q6–10) ─────────────────────────
+    {
+      question: 'According to Passage 2, what capability distinguishes algorithmic defense systems from conventional platforms?',
+      options: [
+        { key: 'A', text: 'Synthesizing petabytes of multispectral telemetry in milliseconds' },
+        { key: 'B', text: 'Operating completely without energy consumption' },
+        { key: 'C', text: 'Eliminating the need for software updates or human supervision' },
+        { key: 'D', text: 'Replacing international humanitarian law entirely' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'Passage 2 states that algorithmic systems "synthesize petabytes of multispectral surveillance telemetry in milliseconds".',
+      passageNumber: 2,
+      passageText: rcPassage2Text,
+      passageTitle: 'Artificial Intelligence and Modern Military Parity',
+      marks: 1
+    },
+    {
+      question: 'What is an acknowledged risk of integrating autonomous algorithms into command-and-control systems?',
+      options: [
+        { key: 'A', text: 'Profound ethical, legal, and operational dilemmas' },
+        { key: 'B', text: 'A total decrease in computing processing speeds' },
+        { key: 'C', text: 'Universal consensus among all global powers' },
+        { key: 'D', text: 'Complete elimination of warfare dilemmas' }
+      ],
+      correctAnswer: 'A',
+      explanation: 'The passage explicitly mentions that integration "introduces profound ethical, legal, and operational dilemmas."',
+      passageNumber: 2,
+      passageText: rcPassage2Text,
+      passageTitle: 'Artificial Intelligence and Modern Military Parity',
+      marks: 1
+    },
+    {
+      question: 'Why do military strategists emphasize preserving "human-in-the-loop" oversight?',
+      options: [
+        { key: 'A', text: 'To slow down battlefield processing speeds intentionally' },
+        { key: 'B', text: 'To prevent unintended escalation and ensure legal accountability' },
+        { key: 'C', text: 'To avoid purchasing modern computer hardware' },
+        { key: 'D', text: 'To replace human officers with civilian contractors' }
+      ],
+      correctAnswer: 'B',
+      explanation: 'The text notes human-in-the-loop oversight is vital "to prevent unintended escalation, mitigate catastrophic algorithmic hallucinations, and ensure accountability under international humanitarian law."',
+      passageNumber: 2,
+      passageText: rcPassage2Text,
+      passageTitle: 'Artificial Intelligence and Modern Military Parity',
+      marks: 1
+    },
+    {
+      question: 'The term "catastrophic algorithmic hallucinations" in the context of the passage refers to:',
+      options: [
+        { key: 'A', text: 'Spontaneous hardware power shutdowns' },
+        { key: 'B', text: 'Severe false inferences or erroneous tactical outputs generated by AI' },
+        { key: 'C', text: 'Daydreaming by human command operators' },
+        { key: 'D', text: 'Visual illusions caused by defective radar lenses' }
+      ],
+      correctAnswer: 'B',
+      explanation: 'In AI and defense contexts, hallucinations refer to erroneous outputs or fabricated patterns generated by machine learning models that could lead to dangerous tactical decisions.',
+      passageNumber: 2,
+      passageText: rcPassage2Text,
+      passageTitle: 'Artificial Intelligence and Modern Military Parity',
+      marks: 1
+    },
+    {
+      question: 'Which of the following summaries best captures the core thesis of Passage 2?',
+      options: [
+        { key: 'A', text: 'AI should be banned entirely from all defense applications' },
+        { key: 'B', text: 'AI offers revolutionary tactical capabilities but requires strict human oversight' },
+        { key: 'C', text: 'Conventional military doctrines are already obsolete in every operational theatre' },
+        { key: 'D', text: 'Autonomous algorithms have eradicated all errors from tactical decision-making' }
+      ],
+      correctAnswer: 'B',
+      explanation: 'The passage balances the immense processing speed and predictive benefits of AI with the imperative for ethical human-in-the-loop oversight to prevent unintended crises.',
+      passageNumber: 2,
+      passageText: rcPassage2Text,
+      passageTitle: 'Artificial Intelligence and Modern Military Parity',
+      marks: 1
+    }
+  ]
+};
 // ── 2. Inferential Comprehension Test ─────────────────────────
 const inferentialP1Text = `The transition from mechanization to automation in deep-sea submarine warfare has transformed undersea deterrence doctrines. For decades, submarine detection relied primarily upon human sonar operators who distinguished between oceanic biological background noise and mechanical propeller cavitation through auditory intuition. Modern acoustic sensor suites, however, employ deep machine-learning algorithms that process micro-decibel sound pressure variations across multiple hydrophone arrays simultaneously. While this technological evolution vastly accelerates target acquisition, it fundamentally compresses the command response timeline. Submarine captains no longer possess the luxury of prolonged deliberations before making tactical evasive decisions. The speed of algorithmic threat detection demands that commanders either trust automated defensive countermeasures immediately or risk catastrophic vulnerability to high-speed supercavitating torpedoes. Consequently, the psychological burden on undersea commanders has shifted from intuitive listening to split-second algorithmic risk management.`;
 

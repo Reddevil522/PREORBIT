@@ -1,9 +1,281 @@
 // ============================================================
 // PREORBIT — CDS English Vocabulary Test Bank (6 Tests x 20 MCQs = 120 MCQs)
 // ============================================================
+const synAntTest = {
+  module: 'cds',
+  section: 'vocabulary',
+  subject: 'vocabulary',
+  chapterSlug: 'synonyms-antonyms',
+  chapterName: 'Synonyms & Antonyms',
+  testId: 'synonyms-antonyms-test-1',
+  testName: 'Synonyms & Antonyms - Test 1',
+  testNumber: 1,
+  questions: [
+    // ── 10 SYNONYMS (Q1–10) ─────────────────────────────────
+    {
+      question: 'The officer showed **audacity** by leading the reconnaissance patrol into hostile territory. (SYNONYM)',
+      options: [
+        { key: 'A', text: 'Daring' },
+        { key: 'B', text: 'Timidity' },
+        { key: 'C', text: 'Indifference' },
+        { key: 'D', text: 'Humility' }
+      ],
+      correctAnswer: 'A',
+      explanation: '"Audacity" denotes a willingness to take bold, fearless risks. The nearest synonym is "Daring".',
+      subTopic: 'synonym',
+      marks: 1
+    },
+    {
+      question: 'The diplomat made an **ambiguous** statement regarding the ceasefire protocol. (SYNONYM)',
+      options: [
+        { key: 'A', text: 'Precise' },
+        { key: 'B', text: 'Equivocal' },
+        { key: 'C', text: 'Definitive' },
+        { key: 'D', text: 'Luminous' }
+      ],
+      correctAnswer: 'B',
+      explanation: '"Ambiguous" means open to more than one interpretation or vague. "Equivocal" is the exact synonym.',
+      subTopic: 'synonym',
+      marks: 1
+    },
+    {
+      question: 'Her **candid** feedback helped the team rectify the strategy prior to the inspection. (SYNONYM)',
+      options: [
+        { key: 'A', text: 'Deceitful' },
+        { key: 'B', text: 'Frank' },
+        { key: 'C', text: 'Subtle' },
+        { key: 'D', text: 'Guarded' }
+      ],
+      correctAnswer: 'B',
+      explanation: '"Candid" means truthful and straightforward; frank. The nearest synonym is "Frank".',
+      subTopic: 'synonym',
+      marks: 1
+    },
+    {
+      question: 'The monsoon rainfall had a **deleterious** effect on the mountain convoy route. (SYNONYM)',
+      options: [
+        { key: 'A', text: 'Beneficial' },
+        { key: 'B', text: 'Harmful' },
+        { key: 'C', text: 'Invigorating' },
+        { key: 'D', text: 'Marginal' }
+      ],
+      correctAnswer: 'B',
+      explanation: '"Deleterious" means causing harm or damage. The nearest synonym is "Harmful".',
+      subTopic: 'synonym',
+      marks: 1
+    },
+    {
+      question: 'He was known for his **impeccable** record of service and flawless integrity. (SYNONYM)',
+      options: [
+        { key: 'A', text: 'Flawless' },
+        { key: 'B', text: 'Defective' },
+        { key: 'C', text: 'Ordinary' },
+        { key: 'D', text: 'Questionable' }
+      ],
+      correctAnswer: 'A',
+      explanation: '"Impeccable" means in accordance with the highest standards; faultless. The nearest synonym is "Flawless".',
+      subTopic: 'synonym',
+      marks: 1
+    },
+    {
+      question: 'The commander warned that **complacency** during peacetime poses a grave threat. (SYNONYM)',
+      options: [
+        { key: 'A', text: 'Vigilance' },
+        { key: 'B', text: 'Self-satisfaction' },
+        { key: 'C', text: 'Agitation' },
+        { key: 'D', text: 'Humility' }
+      ],
+      correctAnswer: 'B',
+      explanation: '"Complacency" means a feeling of smug or uncritical satisfaction with oneself or one\'s achievements. "Self-satisfaction" is the nearest synonym.',
+      subTopic: 'synonym',
+      marks: 1
+    },
+    {
+      question: 'The scientist offered an **ingenious** resolution to the radar interference problem. (SYNONYM)',
+      options: [
+        { key: 'A', text: 'Clever' },
+        { key: 'B', text: 'Clumsy' },
+        { key: 'C', text: 'Naive' },
+        { key: 'D', text: 'Conventional' }
+      ],
+      correctAnswer: 'A',
+      explanation: '"Ingenious" means clever, original, and inventive. The nearest synonym is "Clever".',
+      subTopic: 'synonym',
+      marks: 1
+    },
+    {
+      question: 'The young lieutenant remained **intrepid** under heavy artillery bombardment. (SYNONYM)',
+      options: [
+        { key: 'A', text: 'Cowardly' },
+        { key: 'B', text: 'Fearless' },
+        { key: 'C', text: 'Anxious' },
+        { key: 'D', text: 'Hesitant' }
+      ],
+      correctAnswer: 'B',
+      explanation: '"Intrepid" means resolute, fearless, and adventurous. The nearest synonym is "Fearless".',
+      subTopic: 'synonym',
+      marks: 1
+    },
+    {
+      question: 'The minister was **adamant** that the procurement guidelines must not be bypassed. (SYNONYM)',
+      options: [
+        { key: 'A', text: 'Flexible' },
+        { key: 'B', text: 'Unyielding' },
+        { key: 'C', text: 'Indifferent' },
+        { key: 'D', text: 'Uncertain' }
+      ],
+      correctAnswer: 'B',
+      explanation: '"Adamant" means refusing to be persuaded or to change one\'s mind. The nearest synonym is "Unyielding".',
+      subTopic: 'synonym',
+      marks: 1
+    },
+    {
+      question: 'The general delivered a **succinct** briefing outlining the tactical objectives. (SYNONYM)',
+      options: [
+        { key: 'A', text: 'Verbose' },
+        { key: 'B', text: 'Concise' },
+        { key: 'C', text: 'Ambiguous' },
+        { key: 'D', text: 'Elaborate' }
+      ],
+      correctAnswer: 'B',
+      explanation: '"Succinct" means briefly and clearly expressed. The nearest synonym is "Concise".',
+      subTopic: 'synonym',
+      marks: 1
+    },
 
-const synAntTest = require('../../../scripts/seedCDSTests').vocabularyTestData;
-
+    // ── 10 ANTONYMS (Q11–20) ────────────────────────────────
+    {
+      question: 'His **altruistic** gestures earned the gratitude of the entire village community. (ANTONYM)',
+      options: [
+        { key: 'A', text: 'Selfish' },
+        { key: 'B', text: 'Benevolent' },
+        { key: 'C', text: 'Generous' },
+        { key: 'D', text: 'Magnanimous' }
+      ],
+      correctAnswer: 'A',
+      explanation: '"Altruistic" means showing unselfish concern for others. The opposite (antonym) is "Selfish".',
+      subTopic: 'antonym',
+      marks: 1
+    },
+    {
+      question: 'The committee was criticized for reaching a **hasty** decision on the strategic treaty. (ANTONYM)',
+      options: [
+        { key: 'A', text: 'Deliberate' },
+        { key: 'B', text: 'Abrupt' },
+        { key: 'C', text: 'Rash' },
+        { key: 'D', text: 'Impulsive' }
+      ],
+      correctAnswer: 'A',
+      explanation: '"Hasty" means done with excessive speed or urgency. The opposite (antonym) is "Deliberate".',
+      subTopic: 'antonym',
+      marks: 1
+    },
+    {
+      question: 'The squad leader displayed **stoic** calm despite the perilous circumstances. (ANTONYM)',
+      options: [
+        { key: 'A', text: 'Emotional' },
+        { key: 'B', text: 'Composed' },
+        { key: 'C', text: 'Unflinching' },
+        { key: 'D', text: 'Resigned' }
+      ],
+      correctAnswer: 'A',
+      explanation: '"Stoic" means enduring pain or hardship without showing feelings. The opposite (antonym) is "Emotional".',
+      subTopic: 'antonym',
+      marks: 1
+    },
+    {
+      question: 'The army launched a **clandestine** operation across the borderline at dusk. (ANTONYM)',
+      options: [
+        { key: 'A', text: 'Covert' },
+        { key: 'B', text: 'Overt' },
+        { key: 'C', text: 'Furtive' },
+        { key: 'D', text: 'Stealthy' }
+      ],
+      correctAnswer: 'B',
+      explanation: '"Clandestine" means kept secret or done secretly. The direct antonym is "Overt" (done openly).',
+      subTopic: 'antonym',
+      marks: 1
+    },
+    {
+      question: 'The region is blessed with an **abundance** of fresh water resources. (ANTONYM)',
+      options: [
+        { key: 'A', text: 'Surfeit' },
+        { key: 'B', text: 'Scarcity' },
+        { key: 'C', text: 'Plethora' },
+        { key: 'D', text: 'Copiousness' }
+      ],
+      correctAnswer: 'B',
+      explanation: '"Abundance" means a very large quantity of something. The opposite (antonym) is "Scarcity".',
+      subTopic: 'antonym',
+      marks: 1
+    },
+    {
+      question: 'The new rules are **mandatory** for all cadets undergoing pre-commission training. (ANTONYM)',
+      options: [
+        { key: 'A', text: 'Compulsory' },
+        { key: 'B', text: 'Optional' },
+        { key: 'C', text: 'Obligatory' },
+        { key: 'D', text: 'Inescapable' }
+      ],
+      correctAnswer: 'B',
+      explanation: '"Mandatory" means required by law or rules; compulsory. The opposite (antonym) is "Optional".',
+      subTopic: 'antonym',
+      marks: 1
+    },
+    {
+      question: 'The colonel praised the **zealous** dedication of the engineering regiment. (ANTONYM)',
+      options: [
+        { key: 'A', text: 'Apathetic' },
+        { key: 'B', text: 'Enthusiastic' },
+        { key: 'C', text: 'Ardent' },
+        { key: 'D', text: 'Fervent' }
+      ],
+      correctAnswer: 'A',
+      explanation: '"Zealous" means having great energy or enthusiasm. The opposite (antonym) is "Apathetic".',
+      subTopic: 'antonym',
+      marks: 1
+    },
+    {
+      question: 'The cease-fire brought a **transient** peace to the disputed valley. (ANTONYM)',
+      options: [
+        { key: 'A', text: 'Permanent' },
+        { key: 'B', text: 'Fleeting' },
+        { key: 'C', text: 'Ephemeral' },
+        { key: 'D', text: 'Brief' }
+      ],
+      correctAnswer: 'A',
+      explanation: '"Transient" means lasting only for a short time; impermanent. The opposite (antonym) is "Permanent".',
+      subTopic: 'antonym',
+      marks: 1
+    },
+    {
+      question: 'The evidence presented during the court martial was wholly **conclusive**. (ANTONYM)',
+      options: [
+        { key: 'A', text: 'Decisive' },
+        { key: 'B', text: 'Dubious' },
+        { key: 'C', text: 'Irrefutable' },
+        { key: 'D', text: 'Definite' }
+      ],
+      correctAnswer: 'B',
+      explanation: '"Conclusive" means serving to settle an issue or convincing. The opposite (antonym) is "Dubious".',
+      subTopic: 'antonym',
+      marks: 1
+    },
+    {
+      question: 'The government took stringent steps to **mitigate** the effects of the drought. (ANTONYM)',
+      options: [
+        { key: 'A', text: 'Alleviate' },
+        { key: 'B', text: 'Aggravate' },
+        { key: 'C', text: 'Assuage' },
+        { key: 'D', text: 'Moderate' }
+      ],
+      correctAnswer: 'B',
+      explanation: '"Mitigate" means make less severe, serious, or painful. The opposite (antonym) is "Aggravate" (to worsen).',
+      subTopic: 'antonym',
+      marks: 1
+    }
+  ]
+};
 const idiomsPhrasesTest = {
   module: 'cds',
   section: 'vocabulary',
